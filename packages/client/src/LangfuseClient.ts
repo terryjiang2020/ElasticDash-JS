@@ -49,6 +49,12 @@ export interface LangfuseClientParams {
    * Additional HTTP headers to include with API requests.
    */
   additionalHeaders?: Record<string, string>;
+
+  /**
+   * Boolean flag to indicate if the environment is production.
+   * Used for environment-specific configuration and behavior.
+   */
+  is_prod?: boolean;
 }
 
 /**
