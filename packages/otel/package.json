@@ -1,6 +1,6 @@
 {
   "name": "@elasticdash/otel",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Langfuse",
   "license": "MIT",
   "repository": {
@@ -36,7 +36,7 @@
     "dist"
   ],
   "dependencies": {
-    "@elasticdash/core": "^0.0.2"
+    "@elasticdash/core": "^0.0.3"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.9.0",

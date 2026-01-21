@@ -1,6 +1,6 @@
 {
   "name": "@elasticdash/core",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Core functions and utilities for Langfuse packages",
   "type": "module",
   "sideEffects": false,

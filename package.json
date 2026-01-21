@@ -1,6 +1,6 @@
 {
   "name": "elasticdash-js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Langfuse JavaScript / TypeScript SDK",
   "author": "Langfuse",
   "license": "MIT",

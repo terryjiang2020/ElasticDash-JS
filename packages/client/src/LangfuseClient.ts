@@ -54,7 +54,7 @@ export interface LangfuseClientParams {
    * Boolean flag to indicate if the environment is production.
    * Used for environment-specific configuration and behavior.
    */
-  is_prod?: boolean;
+  isProd?: boolean;
 }
 
 /**
