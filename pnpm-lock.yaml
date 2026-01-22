@@ -123,10 +123,10 @@ importers:
   packages/client:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../core
       '@elasticdash/tracing':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../tracing
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -152,10 +152,10 @@ importers:
   packages/langchain:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../core
       '@elasticdash/tracing':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../tracing
       '@langchain/core':
         specifier: '>=0.3.8'
@@ -167,10 +167,10 @@ importers:
   packages/openai:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../core
       '@elasticdash/tracing':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../tracing
     devDependencies:
       openai:
@@ -180,7 +180,7 @@ importers:
   packages/otel:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../core
       '@opentelemetry/api':
         specifier: ^1.9.0
@@ -198,7 +198,7 @@ importers:
   packages/tracing:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.4
+        specifier: ^0.0.5
         version: link:../core
       '@opentelemetry/api':
         specifier: ^1.9.0

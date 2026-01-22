@@ -1,6 +1,6 @@
 {
   "name": "@elasticdash/openai",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "ElasticDash integration for OpenAI SDK",
   "type": "module",
   "sideEffects": false,
@@ -33,8 +33,8 @@
     "dist"
   ],
   "dependencies": {
-    "@elasticdash/core": "^0.0.4",
-    "@elasticdash/tracing": "^0.0.4"
+    "@elasticdash/core": "^0.0.5",
+    "@elasticdash/tracing": "^0.0.5"
   },
   "devDependencies": {
     "openai": "^5.0.0"
