@@ -15,7 +15,7 @@ import {
 } from "@opentelemetry/api";
 
 import {
-  LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+  ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
   LangfuseOtelSpanAttributes,
 } from "./constants.js";
 import { getGlobalLogger } from "./logger/index.js";
@@ -70,8 +70,8 @@ export const LangfuseOtelContextKeys: Record<PropagatedKey, symbol> = {
   ),
 };
 
-const LANGFUSE_BAGGAGE_PREFIX = "langfuse_";
-const LANGFUSE_BAGGAGE_TAGS_SEPARATOR = ",";
+const ELASTICDASH_BAGGAGE_PREFIX = "langfuse_";
+const ELASTICDASH_BAGGAGE_TAGS_SEPARATOR = ",";
 
 /**
  * Parameters for propagateAttributes function.
@@ -406,7 +406,7 @@ export function getPropagatedAttributesFromContext(
 
   if (baggage) {
     baggage.getAllEntries().forEach(([baggageKey, baggageEntry]) => {
-      if (baggageKey.startsWith(LANGFUSE_BAGGAGE_PREFIX)) {
+      if (baggageKey.startsWith(ELASTICDASH_BAGGAGE_PREFIX)) {
         const spanKey = getSpanKeyFromBaggageKey(baggageKey);
 
         if (spanKey) {
@@ -414,7 +414,7 @@ export function getPropagatedAttributesFromContext(
             baggageKey == getBaggageKeyForPropagatedKey("tags");
 
           propagatedAttributes[spanKey] = isMergedTags
-            ? baggageEntry.value.split(LANGFUSE_BAGGAGE_TAGS_SEPARATOR)
+            ? baggageEntry.value.split(ELASTICDASH_BAGGAGE_TAGS_SEPARATOR)
             : baggageEntry.value;
         }
       }
@@ -484,7 +484,7 @@ export function getPropagatedAttributesFromContext(
     ]
   ) {
     propagatedAttributes[LangfuseOtelSpanAttributes.ENVIRONMENT] =
-      LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT;
+      ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT;
   }
 
   return propagatedAttributes;
@@ -559,7 +559,7 @@ function setPropagatedAttribute(params: SetPropagatedAttributeParams): Context {
       }
     } else if (key === "tags") {
       baggage = baggage.setEntry(baggageKey, {
-        value: mergedTags.join(LANGFUSE_BAGGAGE_TAGS_SEPARATOR),
+        value: mergedTags.join(ELASTICDASH_BAGGAGE_TAGS_SEPARATOR),
       });
     } else {
       baggage = baggage.setEntry(baggageKey, { value });
@@ -671,31 +671,31 @@ function getBaggageKeyForPropagatedKey(key: PropagatedKey): string {
   // second service might run Python SDK that is expecting snake case keys
   switch (key) {
     case "userId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}user_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}user_id`;
     case "sessionId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}session_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}session_id`;
     case "version":
-      return `${LANGFUSE_BAGGAGE_PREFIX}version`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}version`;
     case "traceName":
-      return `${LANGFUSE_BAGGAGE_PREFIX}trace_name`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}trace_name`;
     case "metadata":
-      return `${LANGFUSE_BAGGAGE_PREFIX}metadata`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}metadata`;
     case "tags":
-      return `${LANGFUSE_BAGGAGE_PREFIX}tags`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}tags`;
     case "experimentId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_id`;
     case "experimentName":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_name`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_name`;
     case "experimentMetadata":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_metadata`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_metadata`;
     case "experimentDatasetId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_dataset_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_dataset_id`;
     case "experimentItemId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_item_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_item_id`;
     case "experimentItemMetadata":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_item_metadata`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_item_metadata`;
     case "experimentItemRootObservationId":
-      return `${LANGFUSE_BAGGAGE_PREFIX}experiment_item_root_observation_id`;
+      return `${ELASTICDASH_BAGGAGE_PREFIX}experiment_item_root_observation_id`;
     default: {
       const fallback: never = key;
 
@@ -705,9 +705,9 @@ function getBaggageKeyForPropagatedKey(key: PropagatedKey): string {
 }
 
 function getSpanKeyFromBaggageKey(baggageKey: string): string | undefined {
-  if (!baggageKey.startsWith(LANGFUSE_BAGGAGE_PREFIX)) return;
+  if (!baggageKey.startsWith(ELASTICDASH_BAGGAGE_PREFIX)) return;
 
-  const suffix = baggageKey.slice(LANGFUSE_BAGGAGE_PREFIX.length);
+  const suffix = baggageKey.slice(ELASTICDASH_BAGGAGE_PREFIX.length);
 
   // Metadata keys have format: langfuse_metadata_{key_name}
   if (suffix.startsWith("metadata_")) {

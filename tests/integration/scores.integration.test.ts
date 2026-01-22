@@ -134,7 +134,7 @@ describe("ScoreManager Integration Tests", () => {
 
     it("should set environment from environment variable", async () => {
       const scoreManager = createScoreManager(mockAPIClient);
-      process.env.LANGFUSE_TRACING_ENVIRONMENT = "test-env";
+      process.env.ELASTICDASH_TRACING_ENVIRONMENT = "test-env";
 
       scoreManager.create({ name: "test", value: 1 });
       await scoreManager.flush();
@@ -143,7 +143,7 @@ describe("ScoreManager Integration Tests", () => {
       const event = mockAPIClient.ingestion.batch.mock.calls[0][0].batch[0];
       expect(event.body.environment).toBe("test-env");
 
-      delete process.env.LANGFUSE_TRACING_ENVIRONMENT;
+      delete process.env.ELASTICDASH_TRACING_ENVIRONMENT;
     });
   });
 
@@ -283,7 +283,7 @@ describe("ScoreManager Integration Tests", () => {
 
   describe("Flush Logic", () => {
     it("should flush when reaching flushAtCount", async () => {
-      process.env.LANGFUSE_FLUSH_AT = "3";
+      process.env.ELASTICDASH_FLUSH_AT = "3";
       const scoreManager = createScoreManager(mockAPIClient);
 
       // Add 2 scores - should not flush yet
@@ -302,11 +302,11 @@ describe("ScoreManager Integration Tests", () => {
       const batch = mockAPIClient.ingestion.batch.mock.calls[0][0].batch;
       expect(batch).toHaveLength(3);
 
-      delete process.env.LANGFUSE_FLUSH_AT;
+      delete process.env.ELASTICDASH_FLUSH_AT;
     });
 
     it("should flush on timer when below flushAtCount", async () => {
-      process.env.LANGFUSE_FLUSH_INTERVAL = "0.1"; // 100ms
+      process.env.ELASTICDASH_FLUSH_INTERVAL = "0.1"; // 100ms
       const scoreManager = createScoreManager(mockAPIClient);
 
       scoreManager.create({ name: "timer-score", value: 1 });
@@ -315,12 +315,12 @@ describe("ScoreManager Integration Tests", () => {
       await waitFor(200);
       expect(mockAPIClient.ingestion.batch).toHaveBeenCalledTimes(1);
 
-      delete process.env.LANGFUSE_FLUSH_INTERVAL;
+      delete process.env.ELASTICDASH_FLUSH_INTERVAL;
     });
 
     it("should batch scores correctly with MAX_BATCH_SIZE", async () => {
       // Set high flush count so items accumulate
-      process.env.LANGFUSE_FLUSH_AT = "200";
+      process.env.ELASTICDASH_FLUSH_AT = "200";
       const scoreManager = createScoreManager(mockAPIClient);
 
       // Create 150 scores to test batching (MAX_BATCH_SIZE = 100)
@@ -340,7 +340,7 @@ describe("ScoreManager Integration Tests", () => {
       expect(firstBatch).toHaveLength(100);
       expect(secondBatch).toHaveLength(50);
 
-      delete process.env.LANGFUSE_FLUSH_AT;
+      delete process.env.ELASTICDASH_FLUSH_AT;
     });
 
     it("should handle multiple concurrent flush calls", async () => {
@@ -440,7 +440,7 @@ describe("ScoreManager Integration Tests", () => {
 
     it("should continue processing other batches if one fails", async () => {
       // Set high flush count so items accumulate
-      process.env.LANGFUSE_FLUSH_AT = "200";
+      process.env.ELASTICDASH_FLUSH_AT = "200";
       const scoreManager = createScoreManager(mockAPIClient);
 
       // Add enough scores to create multiple batches
@@ -469,7 +469,7 @@ describe("ScoreManager Integration Tests", () => {
         expect.any(Error),
       );
 
-      delete process.env.LANGFUSE_FLUSH_AT;
+      delete process.env.ELASTICDASH_FLUSH_AT;
     });
 
     it("should handle flush promise rejection", async () => {
@@ -496,7 +496,7 @@ describe("ScoreManager Integration Tests", () => {
 
   describe("Timer Management", () => {
     it("should clear timer when manual flush is called", async () => {
-      process.env.LANGFUSE_FLUSH_INTERVAL = "1"; // 1 second
+      process.env.ELASTICDASH_FLUSH_INTERVAL = "1"; // 1 second
       const scoreManager = createScoreManager(mockAPIClient);
 
       scoreManager.create({ name: "timer-test", value: 1 });
@@ -511,11 +511,11 @@ describe("ScoreManager Integration Tests", () => {
       await waitFor(1100);
       expect(mockAPIClient.ingestion.batch).toHaveBeenCalledTimes(1);
 
-      delete process.env.LANGFUSE_FLUSH_INTERVAL;
+      delete process.env.ELASTICDASH_FLUSH_INTERVAL;
     });
 
     it("should not create multiple timers for multiple scores", async () => {
-      process.env.LANGFUSE_FLUSH_INTERVAL = "0.2"; // 200ms
+      process.env.ELASTICDASH_FLUSH_INTERVAL = "0.2"; // 200ms
       const scoreManager = createScoreManager(mockAPIClient);
 
       // Add multiple scores quickly
@@ -532,7 +532,7 @@ describe("ScoreManager Integration Tests", () => {
         3,
       );
 
-      delete process.env.LANGFUSE_FLUSH_INTERVAL;
+      delete process.env.ELASTICDASH_FLUSH_INTERVAL;
     });
   });
 
@@ -580,16 +580,16 @@ describe("ScoreManager Integration Tests", () => {
     });
 
     it("should use environment configuration values", () => {
-      process.env.LANGFUSE_FLUSH_AT = "25";
-      process.env.LANGFUSE_FLUSH_INTERVAL = "5";
+      process.env.ELASTICDASH_FLUSH_AT = "25";
+      process.env.ELASTICDASH_FLUSH_INTERVAL = "5";
 
       const scoreManager = createScoreManager(mockAPIClient);
 
       expect((scoreManager as any).flushAtCount).toBe(25);
       expect((scoreManager as any).flushIntervalSeconds).toBe(5);
 
-      delete process.env.LANGFUSE_FLUSH_AT;
-      delete process.env.LANGFUSE_FLUSH_INTERVAL;
+      delete process.env.ELASTICDASH_FLUSH_AT;
+      delete process.env.ELASTICDASH_FLUSH_INTERVAL;
     });
   });
 
@@ -665,7 +665,7 @@ describe("ScoreManager Integration Tests", () => {
   describe("Edge Cases and Additional Coverage", () => {
     it("should handle environment override in create method", async () => {
       const scoreManager = createScoreManager(mockAPIClient);
-      process.env.LANGFUSE_TRACING_ENVIRONMENT = "default-env";
+      process.env.ELASTICDASH_TRACING_ENVIRONMENT = "default-env";
 
       scoreManager.create({
         name: "override-env-test",
@@ -679,12 +679,12 @@ describe("ScoreManager Integration Tests", () => {
       const event = mockAPIClient.ingestion.batch.mock.calls[0][0].batch[0];
       expect(event.body.environment).toBe("custom-env");
 
-      delete process.env.LANGFUSE_TRACING_ENVIRONMENT;
+      delete process.env.ELASTICDASH_TRACING_ENVIRONMENT;
     });
 
     it("should handle invalid environment variable numbers gracefully", async () => {
-      process.env.LANGFUSE_FLUSH_AT = "invalid-number";
-      process.env.LANGFUSE_FLUSH_INTERVAL = "also-invalid";
+      process.env.ELASTICDASH_FLUSH_AT = "invalid-number";
+      process.env.ELASTICDASH_FLUSH_INTERVAL = "also-invalid";
 
       const scoreManager = createScoreManager(mockAPIClient);
 
@@ -699,8 +699,8 @@ describe("ScoreManager Integration Tests", () => {
 
       expect(mockAPIClient.ingestion.batch).toHaveBeenCalledTimes(1);
 
-      delete process.env.LANGFUSE_FLUSH_AT;
-      delete process.env.LANGFUSE_FLUSH_INTERVAL;
+      delete process.env.ELASTICDASH_FLUSH_AT;
+      delete process.env.ELASTICDASH_FLUSH_INTERVAL;
     });
 
     it("should generate unique IDs for multiple scores", async () => {

@@ -39,8 +39,8 @@ export class ScoreManager {
   constructor(params: { apiClient: LangfuseAPIClient }) {
     this.apiClient = params.apiClient;
 
-    const envFlushAtCount = getEnv("LANGFUSE_FLUSH_AT");
-    const envFlushIntervalSeconds = getEnv("LANGFUSE_FLUSH_INTERVAL");
+    const envFlushAtCount = getEnv("ELASTICDASH_FLUSH_AT");
+    const envFlushIntervalSeconds = getEnv("ELASTICDASH_FLUSH_INTERVAL");
 
     this.flushAtCount = envFlushAtCount ? Number(envFlushAtCount) : 10;
     this.flushIntervalSeconds = envFlushIntervalSeconds
@@ -75,7 +75,8 @@ export class ScoreManager {
     const scoreData: ScoreBody = {
       ...data,
       id: data.id ?? generateUUID(),
-      environment: data.environment ?? getEnv("LANGFUSE_TRACING_ENVIRONMENT"),
+      environment:
+        data.environment ?? getEnv("ELASTICDASH_TRACING_ENVIRONMENT"),
     };
 
     const scoreIngestionEvent: IngestionEvent = {

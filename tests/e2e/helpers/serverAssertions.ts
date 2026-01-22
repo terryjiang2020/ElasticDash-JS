@@ -12,14 +12,14 @@ export class ServerAssertions {
   public api: LangfuseAPIClient;
 
   constructor() {
-    this.baseUrl = getEnv("LANGFUSE_BASE_URL") || "http://localhost:3000";
+    this.baseUrl = getEnv("ELASTICDASH_BASE_URL") || "http://localhost:3000";
 
-    const publicKey = getEnv("LANGFUSE_PUBLIC_KEY");
-    const secretKey = getEnv("LANGFUSE_SECRET_KEY");
+    const publicKey = getEnv("ELASTICDASH_PUBLIC_KEY");
+    const secretKey = getEnv("ELASTICDASH_SECRET_KEY");
 
     if (!publicKey || !secretKey) {
       throw new Error(
-        "LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY must be set for E2E tests",
+        "ELASTICDASH_PUBLIC_KEY and ELASTICDASH_SECRET_KEY must be set for E2E tests",
       );
     }
 

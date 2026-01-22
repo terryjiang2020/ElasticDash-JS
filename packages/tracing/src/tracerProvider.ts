@@ -1,11 +1,11 @@
 import {
   getGlobalLogger,
-  LANGFUSE_SDK_VERSION,
-  LANGFUSE_TRACER_NAME,
+  ELASTICDASH_SDK_VERSION,
+  ELASTICDASH_TRACER_NAME,
 } from "@elasticdash/core";
 import { TracerProvider, trace } from "@opentelemetry/api";
 
-const LANGFUSE_GLOBAL_SYMBOL = Symbol.for("langfuse");
+const ELASTICDASH_GLOBAL_SYMBOL = Symbol.for("langfuse");
 
 type LangfuseGlobalState = {
   isolatedTracerProvider: TracerProvider | null;
@@ -18,7 +18,7 @@ function createState(): LangfuseGlobalState {
 }
 
 interface GlobalThis {
-  [LANGFUSE_GLOBAL_SYMBOL]?: LangfuseGlobalState;
+  [ELASTICDASH_GLOBAL_SYMBOL]?: LangfuseGlobalState;
 }
 
 function getGlobalState(): LangfuseGlobalState {
@@ -34,8 +34,8 @@ function getGlobalState(): LangfuseGlobalState {
       return initialState;
     }
 
-    if (!g[LANGFUSE_GLOBAL_SYMBOL]) {
-      Object.defineProperty(g, LANGFUSE_GLOBAL_SYMBOL, {
+    if (!g[ELASTICDASH_GLOBAL_SYMBOL]) {
+      Object.defineProperty(g, ELASTICDASH_GLOBAL_SYMBOL, {
         value: initialState,
         writable: false, // lock the slot (not the contents)
         configurable: false,
@@ -43,7 +43,7 @@ function getGlobalState(): LangfuseGlobalState {
       });
     }
 
-    return g[LANGFUSE_GLOBAL_SYMBOL]!;
+    return g[ELASTICDASH_GLOBAL_SYMBOL]!;
   } catch (err) {
     if (err instanceof Error) {
       getGlobalLogger().error(`Failed to access global state: ${err.message}`);
@@ -149,7 +149,7 @@ export function getLangfuseTracerProvider(): TracerProvider {
  */
 export function getLangfuseTracer() {
   return getLangfuseTracerProvider().getTracer(
-    LANGFUSE_TRACER_NAME,
-    LANGFUSE_SDK_VERSION,
+    ELASTICDASH_TRACER_NAME,
+    ELASTICDASH_SDK_VERSION,
   );
 }

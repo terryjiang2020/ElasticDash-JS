@@ -6,7 +6,7 @@ import {
   createExperimentId,
   createExperimentItemId,
   LangfuseOtelSpanAttributes,
-  LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+  ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
 } from "@elasticdash/core";
 import { startActiveObservation } from "@elasticdash/tracing";
 import { ProxyTracerProvider, trace } from "@opentelemetry/api";
@@ -405,7 +405,7 @@ export class ExperimentManager {
         // Set non-propagated experiment attributes directly on root span
         const rootSpanAttributes: Record<string, string> = {
           [LangfuseOtelSpanAttributes.ENVIRONMENT]:
-            LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+            ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
         };
         if (params.experimentDescription) {
           rootSpanAttributes[

@@ -1,10 +1,19 @@
+export type ElasticDashEnvVar =
+  | "ELASTICDASH_PUBLIC_KEY"
+  | "ELASTICDASH_SECRET_KEY"
+  | "ELASTICDASH_BASE_URL"
+  | "ELASTICDASH_BASEURL"
+  | "ELASTICDASH_TIMEOUT"
+  | "ELASTICDASH_FLUSH_AT"
+  | "ELASTICDASH_FLUSH_INTERVAL"
+  | "ELASTICDASH_TRACING_ENVIRONMENT";
 import packageJson from "../package.json" with { type: "json" };
 
-export const LANGFUSE_TRACER_NAME = "langfuse-sdk";
-export const LANGFUSE_SDK_VERSION = packageJson.version;
-export const LANGFUSE_SDK_NAME = "javascript";
+export const ELASTICDASH_TRACER_NAME = "langfuse-sdk";
+export const ELASTICDASH_SDK_VERSION = packageJson.version;
+export const ELASTICDASH_SDK_NAME = "javascript";
 
-export const LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT = "sdk-experiment";
+export const ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT = "sdk-experiment";
 
 // From Langfuse platform: web/src/features/otel/server/attributes.ts
 export enum LangfuseOtelSpanAttributes {

@@ -8,7 +8,7 @@
 import { LangfuseClient } from "@elasticdash/client";
 import {
   LangfuseOtelSpanAttributes,
-  LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+  ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
 } from "@elasticdash/core";
 import { startObservation, startActiveObservation } from "@elasticdash/tracing";
 import { trace as otelTrace } from "@opentelemetry/api";
@@ -529,16 +529,16 @@ describe("Experiment Attribute Propagation", () => {
 
       // ALL spans should have the experiment environment attribute
       expect(rootSpan?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
       );
       expect(level1?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
       );
       expect(level2?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
       );
       expect(level3?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        LANGFUSE_SDK_EXPERIMENT_ENVIRONMENT,
+        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
       );
     });
 
