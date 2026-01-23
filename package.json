@@ -1,6 +1,6 @@
 {
   "name": "elasticdash-js",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "ElasticDash JavaScript / TypeScript SDK",
   "author": "ElasticDash",
   "license": "MIT",
