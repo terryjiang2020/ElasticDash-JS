@@ -15,7 +15,7 @@ export enum LogLevel {
 
 function parseLogLevelFromEnv(): LogLevel | undefined {
   if (typeof process === "object" && "env" in process) {
-    const envValue = getEnv("LANGFUSE_LOG_LEVEL");
+    const envValue = getEnv("ELASTICDASH_LOG_LEVEL");
     const value = (envValue ?? "").toUpperCase();
 
     switch (value) {

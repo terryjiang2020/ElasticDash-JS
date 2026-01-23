@@ -1,6 +1,7 @@
 import {
   LangfuseAPIClient,
-  LANGFUSE_SDK_VERSION,
+  ELASTICDASH_SDK_VERSION,
+  ElasticDashEnvVar,
   getGlobalLogger,
   getEnv,
 } from "@elasticdash/core";
@@ -19,19 +20,19 @@ import { ScoreManager } from "./score/index.js";
 export interface LangfuseClientParams {
   /**
    * Public API key for authentication with Langfuse.
-   * Can also be provided via LANGFUSE_PUBLIC_KEY environment variable.
+   * Can also be provided via ELASTICDASH_PUBLIC_KEY environment variable.
    */
   publicKey?: string;
 
   /**
    * Secret API key for authentication with Langfuse.
-   * Can also be provided via LANGFUSE_SECRET_KEY environment variable.
+   * Can also be provided via ELASTICDASH_SECRET_KEY environment variable.
    */
   secretKey?: string;
 
   /**
    * Base URL of the Langfuse instance to connect to.
-   * Can also be provided via LANGFUSE_BASE_URL environment variable.
+   * Can also be provided via ELASTICDASH_BASE_URL environment variable.
    *
    * @defaultValue "https://cloud.langfuse.com"
    */
@@ -39,7 +40,7 @@ export interface LangfuseClientParams {
 
   /**
    * Request timeout in seconds.
-   * Can also be provided via LANGFUSE_TIMEOUT environment variable.
+   * Can also be provided via ELASTICDASH_TIMEOUT environment variable.
    *
    * @defaultValue 5
    */
@@ -54,7 +55,7 @@ export interface LangfuseClientParams {
    * Boolean flag to indicate if the environment is production.
    * Used for environment-specific configuration and behavior.
    */
-  is_prod?: boolean;
+  isProd?: boolean;
 }
 
 /**
@@ -260,33 +261,37 @@ export class LangfuseClient {
   constructor(params?: LangfuseClientParams) {
     const logger = getGlobalLogger();
 
-    const publicKey = params?.publicKey ?? getEnv("LANGFUSE_PUBLIC_KEY");
-    const secretKey = params?.secretKey ?? getEnv("LANGFUSE_SECRET_KEY");
+    const publicKey =
+      params?.publicKey ??
+      getEnv("ELASTICDASH_PUBLIC_KEY" as ElasticDashEnvVar);
+    const secretKey =
+      params?.secretKey ??
+      getEnv("ELASTICDASH_SECRET_KEY" as ElasticDashEnvVar);
     this.baseUrl =
       params?.baseUrl ??
-      getEnv("LANGFUSE_BASE_URL") ??
-      getEnv("LANGFUSE_BASEURL") ?? // legacy v2
+      getEnv("ELASTICDASH_BASE_URL" as ElasticDashEnvVar) ??
+      getEnv("ELASTICDASH_BASEURL" as ElasticDashEnvVar) ?? // legacy v2
       "https://cloud.langfuse.com";
 
     if (!publicKey) {
       logger.warn(
-        "No public key provided in constructor or as LANGFUSE_PUBLIC_KEY env var. Client operations will fail.",
+        "No public key provided in constructor or as ELASTICDASH_PUBLIC_KEY env var. Client operations will fail.",
       );
     }
     if (!secretKey) {
       logger.warn(
-        "No secret key provided in constructor or as LANGFUSE_SECRET_KEY env var. Client operations will fail.",
+        "No secret key provided in constructor or as ELASTICDASH_SECRET_KEY env var. Client operations will fail.",
       );
     }
     const timeoutSeconds =
-      params?.timeout ?? Number(getEnv("LANGFUSE_TIMEOUT") ?? 5);
+      params?.timeout ?? Number(getEnv("ELASTICDASH_TIMEOUT") ?? 5);
 
     this.api = new LangfuseAPIClient({
       baseUrl: this.baseUrl,
       username: publicKey,
       password: secretKey,
       xLangfusePublicKey: publicKey,
-      xLangfuseSdkVersion: LANGFUSE_SDK_VERSION,
+      xLangfuseSdkVersion: ELASTICDASH_SDK_VERSION,
       xLangfuseSdkName: "javascript",
       environment: "", // noop as baseUrl is set
       headers: params?.additionalHeaders,

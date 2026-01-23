@@ -1,17 +1,17 @@
 {
   "name": "@elasticdash/tracing",
-  "version": "0.0.2",
-  "author": "Langfuse",
+  "version": "0.0.5",
+  "author": "ElasticDash",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/langfuse/langfuse-js.git",
+    "url": "https://github.com/terryjiang2020/elasticdash-js.git",
     "directory": "packages/tracing"
   },
   "engines": {
     "node": ">=20"
   },
-  "description": "Langfuse instrumentation methods based on OpenTelemetry",
+  "description": "ElasticDash instrumentation methods based on OpenTelemetry",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -36,7 +36,7 @@
     "dist"
   ],
   "dependencies": {
-    "@elasticdash/core": "^0.0.2"
+    "@elasticdash/core": "^0.0.5"
   },
   "peerDependencies": {
     "@opentelemetry/api": "^1.9.0"

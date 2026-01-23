@@ -90,7 +90,7 @@ pnpm release:rc       # Create release candidate
 ### E2E Tests
 
 - Requires running Langfuse server
-- Set environment variables: `LANGFUSE_BASE_URL`, `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY`
+- Set environment variables: `ELASTICDASH_BASE_URL`, `ELASTICDASH_PUBLIC_KEY`, `ELASTICDASH_SECRET_KEY`
 
 ## Architecture
 

@@ -9,7 +9,7 @@ import { SpanContext } from "@opentelemetry/api";
  *
  * @public
  */
-export type LangfuseConfig = {
+export type ElasticDashConfig = {
   /** OpenTelemetry span context to use as parent for the generated span */
   parentSpanContext?: SpanContext;
   /** Name for the trace that will contain this generation */
@@ -34,4 +34,6 @@ export type LangfuseConfig = {
     /** Whether this is a fallback prompt due to retrieval failure */
     isFallback: boolean;
   };
+
+  isProd?: boolean;
 };

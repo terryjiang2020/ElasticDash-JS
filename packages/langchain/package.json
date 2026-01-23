@@ -1,7 +1,7 @@
 {
   "name": "@elasticdash/langchain",
-  "version": "0.0.2",
-  "description": "Langfuse integration for LangChain",
+  "version": "0.0.5",
+  "description": "ElasticDash integration for LangChain",
   "type": "module",
   "sideEffects": false,
   "main": "./dist/index.cjs",
@@ -22,19 +22,19 @@
     "format:check": "prettier --check \"src/**/*.ts\"",
     "clean": "rm -rf dist"
   },
-  "author": "Langfuse",
+  "author": "ElasticDash",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/langfuse/langfuse-js.git",
+    "url": "https://github.com/terryjiang2020/elasticdash-js.git",
     "directory": "packages/langchain"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@elasticdash/core": "^0.0.2",
-    "@elasticdash/tracing": "^0.0.2"
+    "@elasticdash/core": "^0.0.5",
+    "@elasticdash/tracing": "^0.0.5"
   },
   "peerDependencies": {
     "@langchain/core": ">=0.3.8",

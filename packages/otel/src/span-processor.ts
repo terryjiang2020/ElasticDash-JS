@@ -2,7 +2,7 @@ import {
   Logger,
   getGlobalLogger,
   LangfuseAPIClient,
-  LANGFUSE_SDK_VERSION,
+  ELASTICDASH_SDK_VERSION,
   LangfuseOtelSpanAttributes,
   getEnv,
   base64Encode,
@@ -74,28 +74,28 @@ export interface LangfuseSpanProcessorParams {
   exporter?: SpanExporter;
 
   /**
-   * Langfuse public API key. Can also be set via LANGFUSE_PUBLIC_KEY environment variable.
+   * Langfuse public API key. Can also be set via ELASTICDASH_PUBLIC_KEY environment variable.
    */
   publicKey?: string;
 
   /**
-   * Langfuse secret API key. Can also be set via LANGFUSE_SECRET_KEY environment variable.
+   * Langfuse secret API key. Can also be set via ELASTICDASH_SECRET_KEY environment variable.
    */
   secretKey?: string;
 
   /**
-   * Langfuse instance base URL. Can also be set via LANGFUSE_BASE_URL environment variable.
+   * Langfuse instance base URL. Can also be set via ELASTICDASH_BASE_URL environment variable.
    * @defaultValue "https://cloud.langfuse.com"
    */
   baseUrl?: string;
 
   /**
-   * Number of spans to batch before flushing. Can also be set via LANGFUSE_FLUSH_AT environment variable.
+   * Number of spans to batch before flushing. Can also be set via ELASTICDASH_FLUSH_AT environment variable.
    */
   flushAt?: number;
 
   /**
-   * Flush interval in seconds. Can also be set via LANGFUSE_FLUSH_INTERVAL environment variable.
+   * Flush interval in seconds. Can also be set via ELASTICDASH_FLUSH_INTERVAL environment variable.
    */
   flushInterval?: number;
 
@@ -110,17 +110,17 @@ export interface LangfuseSpanProcessorParams {
   shouldExportSpan?: ShouldExportSpan;
 
   /**
-   * Environment identifier for the traces. Can also be set via LANGFUSE_TRACING_ENVIRONMENT environment variable.
+   * Environment identifier for the traces. Can also be set via ELASTICDASH_TRACING_ENVIRONMENT environment variable.
    */
   environment?: string;
 
   /**
-   * Release identifier for the traces. Can also be set via LANGFUSE_RELEASE environment variable.
+   * Release identifier for the traces. Can also be set via ELASTICDASH_RELEASE environment variable.
    */
   release?: string;
 
   /**
-   * Request timeout in seconds. Can also be set via LANGFUSE_TIMEOUT environment variable.
+   * Request timeout in seconds. Can also be set via ELASTICDASH_TIMEOUT environment variable.
    * @defaultValue 5
    */
   timeout?: number;
@@ -219,31 +219,31 @@ export class LangfuseSpanProcessor implements SpanProcessor {
   constructor(params?: LangfuseSpanProcessorParams) {
     const logger = getGlobalLogger();
 
-    const publicKey = params?.publicKey ?? getEnv("LANGFUSE_PUBLIC_KEY");
-    const secretKey = params?.secretKey ?? getEnv("LANGFUSE_SECRET_KEY");
+    const publicKey = params?.publicKey ?? getEnv("ELASTICDASH_PUBLIC_KEY");
+    const secretKey = params?.secretKey ?? getEnv("ELASTICDASH_SECRET_KEY");
     const baseUrl =
       params?.baseUrl ??
-      getEnv("LANGFUSE_BASE_URL") ??
-      getEnv("LANGFUSE_BASEURL") ?? // legacy v2
+      getEnv("ELASTICDASH_BASE_URL") ??
+      getEnv("ELASTICDASH_BASEURL") ?? // legacy v2
       "https://cloud.langfuse.com";
 
     if (!params?.exporter && !publicKey) {
       logger.warn(
-        "No exporter configured and no public key provided in constructor or as LANGFUSE_PUBLIC_KEY env var. Span exports will fail.",
+        "No exporter configured and no public key provided in constructor or as ELASTICDASH_PUBLIC_KEY env var. Span exports will fail.",
       );
     }
     if (!params?.exporter && !secretKey) {
       logger.warn(
-        "No exporter configured and no secret key provided in constructor or as LANGFUSE_SECRET_KEY env var. Span exports will fail.",
+        "No exporter configured and no secret key provided in constructor or as ELASTICDASH_SECRET_KEY env var. Span exports will fail.",
       );
     }
-    const flushAt = params?.flushAt ?? getEnv("LANGFUSE_FLUSH_AT");
+    const flushAt = params?.flushAt ?? getEnv("ELASTICDASH_FLUSH_AT");
     const flushIntervalSeconds =
-      params?.flushInterval ?? getEnv("LANGFUSE_FLUSH_INTERVAL");
+      params?.flushInterval ?? getEnv("ELASTICDASH_FLUSH_INTERVAL");
 
     const authHeaderValue = base64Encode(`${publicKey}:${secretKey}`);
     const timeoutSeconds =
-      params?.timeout ?? Number(getEnv("LANGFUSE_TIMEOUT") ?? 5);
+      params?.timeout ?? Number(getEnv("ELASTICDASH_TIMEOUT") ?? 5);
 
     const exporter =
       params?.exporter ??
@@ -252,7 +252,7 @@ export class LangfuseSpanProcessor implements SpanProcessor {
         headers: {
           Authorization: `Basic ${authHeaderValue}`,
           x_langfuse_sdk_name: "javascript",
-          x_langfuse_sdk_version: LANGFUSE_SDK_VERSION,
+          x_langfuse_sdk_version: ELASTICDASH_SDK_VERSION,
           x_langfuse_public_key: publicKey ?? "<missing>",
           ...params?.additionalHeaders,
         },
@@ -272,8 +272,8 @@ export class LangfuseSpanProcessor implements SpanProcessor {
     this.publicKey = publicKey;
     this.baseUrl = baseUrl;
     this.environment =
-      params?.environment ?? getEnv("LANGFUSE_TRACING_ENVIRONMENT");
-    this.release = params?.release ?? getEnv("LANGFUSE_RELEASE");
+      params?.environment ?? getEnv("ELASTICDASH_TRACING_ENVIRONMENT");
+    this.release = params?.release ?? getEnv("ELASTICDASH_RELEASE");
     this.mask = params?.mask;
     this.shouldExportSpan = params?.shouldExportSpan;
     this.apiClient = new LangfuseAPIClient({
@@ -281,7 +281,7 @@ export class LangfuseSpanProcessor implements SpanProcessor {
       username: this.publicKey,
       password: secretKey,
       xLangfusePublicKey: this.publicKey,
-      xLangfuseSdkVersion: LANGFUSE_SDK_VERSION,
+      xLangfuseSdkVersion: ELASTICDASH_SDK_VERSION,
       xLangfuseSdkName: "javascript",
       environment: "", // noop as baseUrl is set
       headers: params?.additionalHeaders,

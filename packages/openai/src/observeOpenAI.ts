@@ -1,5 +1,5 @@
 import { withTracing } from "./traceMethod.js";
-import type { LangfuseConfig } from "./types.js";
+import type { ElasticDashConfig } from "./types.js";
 
 /**
  * Wraps an OpenAI SDK client with automatic Langfuse tracing.
@@ -14,7 +14,7 @@ import type { LangfuseConfig } from "./types.js";
  * automatically captured as Langfuse generations.
  *
  * @param sdk - The OpenAI SDK client instance to wrap with tracing
- * @param langfuseConfig - Optional configuration for tracing behavior
+ * @param elasticDashConfig - Optional configuration for tracing behavior
  * @returns A proxied version of the OpenAI SDK with automatic tracing
  *
  * @example
@@ -91,7 +91,7 @@ import type { LangfuseConfig } from "./types.js";
  */
 export const observeOpenAI = <SDKType extends object>(
   sdk: SDKType,
-  langfuseConfig?: LangfuseConfig,
+  elasticDashConfig?: ElasticDashConfig,
 ): SDKType => {
   return new Proxy(sdk, {
     get(wrappedSdk, propKey, proxy) {
@@ -99,8 +99,8 @@ export const observeOpenAI = <SDKType extends object>(
 
       const defaultGenerationName = `${sdk.constructor?.name}.${propKey.toString()}`;
       const generationName =
-        langfuseConfig?.generationName ?? defaultGenerationName;
-      const config = { ...langfuseConfig, generationName };
+        elasticDashConfig?.generationName ?? defaultGenerationName;
+      const config = { ...elasticDashConfig, generationName };
 
       // Trace methods of the OpenAI SDK
       if (typeof originalProperty === "function") {

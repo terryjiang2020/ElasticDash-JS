@@ -1,8 +1,8 @@
 {
   "name": "elasticdash-js",
-  "version": "0.0.2",
-  "description": "Langfuse JavaScript / TypeScript SDK",
-  "author": "Langfuse",
+  "version": "0.0.5",
+  "description": "ElasticDash JavaScript / TypeScript SDK",
+  "author": "ElasticDash",
   "license": "MIT",
   "private": false,
   "type": "module",

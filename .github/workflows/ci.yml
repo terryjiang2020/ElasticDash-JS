@@ -16,9 +16,9 @@ jobs:
     timeout-minutes: 3
     runs-on: ubuntu-latest
     env:
-      LANGFUSE_BASE_URL: "http://localhost:3000"
-      LANGFUSE_SECRET_KEY: "sk-lf-1234567890"
-      LANGFUSE_PUBLIC_KEY: "pk-lf-1234567890"
+      ELASTICDASH_BASE_URL: "http://localhost:3000"
+      ELASTICDASH_SECRET_KEY: "sk-lf-1234567890"
+      ELASTICDASH_PUBLIC_KEY: "pk-lf-1234567890"
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     steps:
       - uses: actions/checkout@v3
@@ -35,9 +35,9 @@ jobs:
     timeout-minutes: 15
     runs-on: ubuntu-latest
     env:
-      LANGFUSE_BASE_URL: "http://localhost:3000"
-      LANGFUSE_SECRET_KEY: "sk-lf-1234567890"
-      LANGFUSE_PUBLIC_KEY: "pk-lf-1234567890"
+      ELASTICDASH_BASE_URL: "http://localhost:3000"
+      ELASTICDASH_SECRET_KEY: "sk-lf-1234567890"
+      ELASTICDASH_PUBLIC_KEY: "pk-lf-1234567890"
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
     steps:
@@ -87,9 +87,9 @@ jobs:
 
           echo "::group::Run server"
           TELEMETRY_ENABLED=false \
-          LANGFUSE_S3_MEDIA_UPLOAD_ENDPOINT=http://localhost:9090 \
-          LANGFUSE_INGESTION_QUEUE_DELAY_MS=10 \
-          LANGFUSE_INGESTION_CLICKHOUSE_WRITE_INTERVAL_MS=10 \
+          ELASTICDASH_S3_MEDIA_UPLOAD_ENDPOINT=http://localhost:9090 \
+          ELASTICDASH_INGESTION_QUEUE_DELAY_MS=10 \
+          ELASTICDASH_INGESTION_CLICKHOUSE_WRITE_INTERVAL_MS=10 \
           docker compose up -d
 
           echo "::endgroup::"

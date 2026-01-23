@@ -10,7 +10,7 @@ import {
   parseModelDataFromResponse,
   parseUsageDetailsFromResponse,
 } from "./parseOpenAI.js";
-import type { LangfuseConfig } from "./types.js";
+import type { ElasticDashConfig } from "./types.js";
 import { isAsyncIterable } from "./utils.js";
 
 /**
@@ -34,7 +34,7 @@ type GenericMethod = (...args: unknown[]) => unknown;
  */
 export const withTracing = <T extends GenericMethod>(
   tracedMethod: T,
-  config?: LangfuseConfig & Required<{ generationName: string }>,
+  config?: ElasticDashConfig & Required<{ generationName: string }>,
 ): ((...args: Parameters<T>) => Promise<ReturnType<T>>) => {
   return (...args) => wrapMethod(tracedMethod, config, ...args);
 };
@@ -55,7 +55,7 @@ export const withTracing = <T extends GenericMethod>(
  */
 const wrapMethod = <T extends GenericMethod>(
   tracedMethod: T,
-  config?: LangfuseConfig,
+  config?: ElasticDashConfig,
   ...args: Parameters<T>
 ): ReturnType<T> | any => {
   const { model, input, modelParameters } = parseInputArgs(args[0] ?? {});
