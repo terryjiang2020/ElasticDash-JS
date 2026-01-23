@@ -1035,7 +1035,9 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         "elasticdash.observation.metadata.execution_time",
       );
       expect(
-        typeof spanAttributes["elasticdash.observation.metadata.execution_time"],
+        typeof spanAttributes[
+          "elasticdash.observation.metadata.execution_time"
+        ],
       ).toBe("string");
 
       // Verify trace attributes

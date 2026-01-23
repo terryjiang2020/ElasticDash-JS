@@ -550,10 +550,13 @@ describe("Langfuse Prompts E2E", () => {
           { role: "user", content: "Hello {{name}}" },
         ];
 
-        const result = await elasticdash.prompt.get("non-existent-chat-fallback", {
-          fallback: fallbackMessages,
-          type: "chat",
-        });
+        const result = await elasticdash.prompt.get(
+          "non-existent-chat-fallback",
+          {
+            fallback: fallbackMessages,
+            type: "chat",
+          },
+        );
 
         expect(result).toBeInstanceOf(ChatPromptClient);
         expect(result.name).toBe("non-existent-chat-fallback");
@@ -662,7 +665,8 @@ describe("Langfuse Prompts E2E", () => {
           newLabels: ["production", "updated"],
         });
 
-        const serverPrompt = await elasticdash.api.prompts.get("consistency-test");
+        const serverPrompt =
+          await elasticdash.api.prompts.get("consistency-test");
         expect(serverPrompt.labels).toContain("updated");
         expect(serverPrompt.labels).toContain("production");
         expect(serverPrompt.config).toEqual({ temperature: 0.5 });

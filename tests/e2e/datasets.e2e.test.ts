@@ -167,7 +167,8 @@ describe("Langfuse Datasets E2E", () => {
       await Promise.all(promises);
 
       // default
-      const getDatasetDefault = await elasticdash.dataset.get(datasetNameRandom);
+      const getDatasetDefault =
+        await elasticdash.dataset.get(datasetNameRandom);
       expect(getDatasetDefault.items.length).toEqual(99);
       expect(getDatasetDefault.items).toEqual(
         expect.arrayContaining([
@@ -180,14 +181,20 @@ describe("Langfuse Datasets E2E", () => {
       );
 
       // Verify pagination by fetching in chunks (DatasetManager handles pagination internally)
-      const getDatasetChunk8 = await elasticdash.dataset.get(datasetNameRandom, {
-        fetchItemsPageSize: 8,
-      });
+      const getDatasetChunk8 = await elasticdash.dataset.get(
+        datasetNameRandom,
+        {
+          fetchItemsPageSize: 8,
+        },
+      );
       expect(getDatasetChunk8.items.length).toEqual(99);
 
-      const getDatasetChunk11 = await elasticdash.dataset.get(datasetNameRandom, {
-        fetchItemsPageSize: 11,
-      });
+      const getDatasetChunk11 = await elasticdash.dataset.get(
+        datasetNameRandom,
+        {
+          fetchItemsPageSize: 11,
+        },
+      );
       expect(getDatasetChunk11.items.length).toEqual(99);
     }, 20000);
 
