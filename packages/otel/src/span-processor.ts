@@ -395,6 +395,40 @@ export class ElasticDashSpanProcessor implements SpanProcessor {
       }
     }
 
+    // Set top-level input/output if missing, using trace or observation fields (trace preferred)
+    if (span.attributes) {
+      // Input
+      if (span.attributes.input == null) {
+        if (
+          span.attributes[ElasticDashOtelSpanAttributes.TRACE_INPUT] != null
+        ) {
+          span.attributes.input =
+            span.attributes[ElasticDashOtelSpanAttributes.TRACE_INPUT];
+        } else if (
+          span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_INPUT] !=
+          null
+        ) {
+          span.attributes.input =
+            span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_INPUT];
+        }
+      }
+      // Output
+      if (span.attributes.output == null) {
+        if (
+          span.attributes[ElasticDashOtelSpanAttributes.TRACE_OUTPUT] != null
+        ) {
+          span.attributes.output =
+            span.attributes[ElasticDashOtelSpanAttributes.TRACE_OUTPUT];
+        } else if (
+          span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT] !=
+          null
+        ) {
+          span.attributes.output =
+            span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT];
+        }
+      }
+    }
+
     this.applyMaskInPlace(span);
     await this.mediaService.process(span);
 
