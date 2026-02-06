@@ -123,11 +123,11 @@ importers:
   packages/client:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.5
-        version: link:../core
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@elasticdash/tracing':
-        specifier: ^0.0.5
-        version: link:../tracing
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -152,11 +152,11 @@ importers:
   packages/langchain:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.5
-        version: link:../core
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@elasticdash/tracing':
-        specifier: ^0.0.5
-        version: link:../tracing
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@langchain/core':
         specifier: '>=0.3.8'
         version: 1.1.8(@opentelemetry/api@1.9.0)(@opentelemetry/exporter-trace-otlp-proto@0.203.0(@opentelemetry/api@1.9.0))(@opentelemetry/sdk-trace-base@2.0.1(@opentelemetry/api@1.9.0))(openai@6.7.0(zod@3.25.76))
@@ -167,11 +167,11 @@ importers:
   packages/openai:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.5
-        version: link:../core
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@elasticdash/tracing':
-        specifier: ^0.0.5
-        version: link:../tracing
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
     devDependencies:
       openai:
         specifier: ^5.0.0
@@ -180,8 +180,8 @@ importers:
   packages/otel:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.5
-        version: link:../core
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -198,8 +198,8 @@ importers:
   packages/tracing:
     dependencies:
       '@elasticdash/core':
-        specifier: ^0.0.5
-        version: link:../core
+        specifier: ^0.0.10
+        version: 0.0.10(@opentelemetry/api@1.9.0)
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.0
@@ -259,6 +259,17 @@ packages:
 
   '@cfworker/json-schema@4.1.1':
     resolution: {integrity: sha512-gAmrUZSGtKc3AiBL71iNWxDsyUC5uMaKKGdvzYsBoTW/xi42JQHl7eKV2OYzCUqvc+D2RCcf7EXY2iCyFIk6og==}
+
+  '@elasticdash/core@0.0.10':
+    resolution: {integrity: sha512-kkBdb2/RdZ7mBp4Q0Buy28kx7k/AiAwKHN0Kj7jegNRl1V5XdVriQuJX6zVMk900yqScZ3N12emhiMWRS2wB5g==}
+    peerDependencies:
+      '@opentelemetry/api': ^1.9.0
+
+  '@elasticdash/tracing@0.0.10':
+    resolution: {integrity: sha512-drbv9zWaTvFJjeWuPiRmpDAPg0tzOs/FvximyNANR3avRBrWzr+PNFX2N83LbWrdou1T1/g+807g33/+jr0UmA==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@opentelemetry/api': ^1.9.0
 
   '@esbuild/aix-ppc64@0.25.5':
     resolution: {integrity: sha512-9o3TMmpmftaCMepOdA5k/yDw8SfInyzWWTjYTFCX3kPSDJMROQTb8jg+h9Cnwnmm1vOzvxN7gIfB5V2ewpjtGA==}
@@ -3548,6 +3559,15 @@ snapshots:
     optional: true
 
   '@cfworker/json-schema@4.1.1': {}
+
+  '@elasticdash/core@0.0.10(@opentelemetry/api@1.9.0)':
+    dependencies:
+      '@opentelemetry/api': 1.9.0
+
+  '@elasticdash/tracing@0.0.10(@opentelemetry/api@1.9.0)':
+    dependencies:
+      '@elasticdash/core': 0.0.10(@opentelemetry/api@1.9.0)
+      '@opentelemetry/api': 1.9.0
 
   '@esbuild/aix-ppc64@0.25.5':
     optional: true
