@@ -1,10 +1,10 @@
 import { SpanContext } from "@opentelemetry/api";
 
 /**
- * Configuration options for Langfuse OpenAI tracing.
+ * Configuration options for ElasticDash OpenAI tracing.
  *
  * This interface defines all available options for customizing how OpenAI
- * SDK calls are traced and stored in Langfuse. It includes both trace-level
+ * SDK calls are traced and stored in ElasticDash. It includes both trace-level
  * metadata and generation-specific configuration.
  *
  * @public
@@ -25,9 +25,9 @@ export type ElasticDashConfig = {
   generationName?: string;
   /** Additional metadata to attach to the generation */
   generationMetadata?: Record<string, unknown>;
-  /** Information about the Langfuse prompt used for this generation */
-  langfusePrompt?: {
-    /** Name of the prompt template in Langfuse */
+  /** Information about the ElasticDash prompt used for this generation */
+  elasticDashPrompt?: {
+    /** Name of the prompt template in ElasticDash */
     name: string;
     /** Version number of the prompt template */
     version: number;

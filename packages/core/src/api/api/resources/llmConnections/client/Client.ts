@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace LlmConnections {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace LlmConnections {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -63,31 +63,31 @@ export class LlmConnections {
   /**
    * Get all LLM connections in a project
    *
-   * @param {LangfuseAPI.GetLlmConnectionsRequest} request
+   * @param {ElasticDashAPI.GetLlmConnectionsRequest} request
    * @param {LlmConnections.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.llmConnections.list()
    */
   public list(
-    request: LangfuseAPI.GetLlmConnectionsRequest = {},
+    request: ElasticDashAPI.GetLlmConnectionsRequest = {},
     requestOptions?: LlmConnections.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.PaginatedLlmConnections> {
+  ): core.HttpResponsePromise<ElasticDashAPI.PaginatedLlmConnections> {
     return core.HttpResponsePromise.fromPromise(
       this.__list(request, requestOptions),
     );
   }
 
   private async __list(
-    request: LangfuseAPI.GetLlmConnectionsRequest = {},
+    request: ElasticDashAPI.GetLlmConnectionsRequest = {},
     requestOptions?: LlmConnections.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.PaginatedLlmConnections>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.PaginatedLlmConnections>> {
     const { page, limit } = request;
     const _queryParams: Record<
       string,
@@ -105,14 +105,15 @@ export class LlmConnections {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -134,7 +135,7 @@ export class LlmConnections {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.PaginatedLlmConnections,
+        data: _response.body as ElasticDashAPI.PaginatedLlmConnections,
         rawResponse: _response.rawResponse,
       };
     }
@@ -142,32 +143,32 @@ export class LlmConnections {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -177,17 +178,17 @@ export class LlmConnections {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/llm-connections.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -197,14 +198,14 @@ export class LlmConnections {
   /**
    * Create or update an LLM connection. The connection is upserted on provider.
    *
-   * @param {LangfuseAPI.UpsertLlmConnectionRequest} request
+   * @param {ElasticDashAPI.UpsertLlmConnectionRequest} request
    * @param {LlmConnections.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.llmConnections.upsert({
@@ -219,30 +220,31 @@ export class LlmConnections {
    *     })
    */
   public upsert(
-    request: LangfuseAPI.UpsertLlmConnectionRequest,
+    request: ElasticDashAPI.UpsertLlmConnectionRequest,
     requestOptions?: LlmConnections.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.LlmConnection> {
+  ): core.HttpResponsePromise<ElasticDashAPI.LlmConnection> {
     return core.HttpResponsePromise.fromPromise(
       this.__upsert(request, requestOptions),
     );
   }
 
   private async __upsert(
-    request: LangfuseAPI.UpsertLlmConnectionRequest,
+    request: ElasticDashAPI.UpsertLlmConnectionRequest,
     requestOptions?: LlmConnections.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.LlmConnection>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.LlmConnection>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -267,7 +269,7 @@ export class LlmConnections {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.LlmConnection,
+        data: _response.body as ElasticDashAPI.LlmConnection,
         rawResponse: _response.rawResponse,
       };
     }
@@ -275,32 +277,32 @@ export class LlmConnections {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -310,17 +312,17 @@ export class LlmConnections {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling PUT /api/public/llm-connections.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

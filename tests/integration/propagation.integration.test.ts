@@ -7,8 +7,8 @@
  */
 
 import {
-  LangfuseOtelContextKeys,
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelContextKeys,
+  ElasticDashOtelSpanAttributes,
   getPropagatedAttributesFromContext,
 } from "@elasticdash/core";
 import { propagateAttributes, startObservation } from "@elasticdash/tracing";
@@ -58,12 +58,12 @@ describe("propagateAttributes", () => {
       const child1 = spans.find((s) => s.name === "child-1");
       const child2 = spans.find((s) => s.name === "child-2");
 
-      expect(child1?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
-      expect(child2?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
+      expect(
+        child1?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
+      expect(
+        child2?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
     });
 
     it("should propagate sessionId to child spans", async () => {
@@ -86,10 +86,10 @@ describe("propagateAttributes", () => {
       const child2 = spans.find((s) => s.name === "child-2");
 
       expect(
-        child1?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child1?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session_abc");
       expect(
-        child2?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child2?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session_abc");
     });
 
@@ -112,10 +112,10 @@ describe("propagateAttributes", () => {
       const child1 = spans.find((s) => s.name === "child-1");
       const child2 = spans.find((s) => s.name === "child-2");
 
-      expect(child1?.attributes[LangfuseOtelSpanAttributes.VERSION]).toBe(
+      expect(child1?.attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe(
         "v1.2.3",
       );
-      expect(child2?.attributes[LangfuseOtelSpanAttributes.VERSION]).toBe(
+      expect(child2?.attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe(
         "v1.2.3",
       );
     });
@@ -139,10 +139,10 @@ describe("propagateAttributes", () => {
       const child1 = spans.find((s) => s.name === "child-1");
       const child2 = spans.find((s) => s.name === "child-2");
 
-      expect(child1?.attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(child1?.attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         "my-trace-name",
       );
-      expect(child2?.attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(child2?.attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         "my-trace-name",
       );
     });
@@ -173,22 +173,22 @@ describe("propagateAttributes", () => {
 
       expect(
         child1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.experiment`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.experiment`
         ],
       ).toBe("variant_a");
       expect(
         child1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.version`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.version`
         ],
       ).toBe("1.0");
       expect(
         child2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.experiment`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.experiment`
         ],
       ).toBe("variant_a");
       expect(
         child2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.version`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.version`
         ],
       ).toBe("1.0");
     });
@@ -216,22 +216,24 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session_abc");
-      expect(child?.attributes[LangfuseOtelSpanAttributes.VERSION]).toBe(
+      expect(child?.attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe(
         "v2.0.0",
       );
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.experiment`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.experiment`
         ],
       ).toBe("test");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.env`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.env`
+        ],
       ).toBe("prod");
     });
 
@@ -261,12 +263,12 @@ describe("propagateAttributes", () => {
       const child1 = spans.find((s) => s.name === "child-1");
       const child2 = spans.find((s) => s.name === "child-2");
 
-      expect(child1?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
-      expect(child2?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
+      expect(
+        child1?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
+      expect(
+        child2?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
     });
 
     it("should propagate all attributes together (async)", async () => {
@@ -292,19 +294,21 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user_123",
-      );
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user_123");
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session_abc");
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.experiment`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.experiment`
         ],
       ).toBe("test");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.env`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.env`
+        ],
       ).toBe("prod");
     });
   });
@@ -329,12 +333,12 @@ describe("propagateAttributes", () => {
       const child1 = spans.find((s) => s.name === "child-1");
       const child2 = spans.find((s) => s.name === "child-2");
 
-      expect(child1?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual(
-        ["production", "experiment-a"],
-      );
-      expect(child2?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual(
-        ["production", "experiment-a"],
-      );
+      expect(
+        child1?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["production", "experiment-a"]);
+      expect(
+        child2?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["production", "experiment-a"]);
     });
 
     it("should merge tags from multiple propagateAttributes calls", async () => {
@@ -355,12 +359,15 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       // Child should have all four tags merged
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual(
-        expect.arrayContaining(["tag1", "tag2", "tag3", "tag4"]),
-      );
       expect(
-        (child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS] as string[])
-          ?.length,
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(expect.arrayContaining(["tag1", "tag2", "tag3", "tag4"]));
+      expect(
+        (
+          child?.attributes[
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
+          ] as string[]
+        )?.length,
       ).toBe(4);
     });
 
@@ -382,12 +389,15 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       // Should have unique tags only: tag1, tag2, tag3
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual(
-        expect.arrayContaining(["tag1", "tag2", "tag3"]),
-      );
       expect(
-        (child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS] as string[])
-          ?.length,
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(expect.arrayContaining(["tag1", "tag2", "tag3"]));
+      expect(
+        (
+          child?.attributes[
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
+          ] as string[]
+        )?.length,
       ).toBe(3);
     });
 
@@ -418,36 +428,36 @@ describe("propagateAttributes", () => {
 
       // spanOuter1: ["outer", "shared"]
       expect(
-        spanOuter1?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS],
+        spanOuter1?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
       ).toEqual(expect.arrayContaining(["outer", "shared"]));
       expect(
         (
           spanOuter1?.attributes[
-            LangfuseOtelSpanAttributes.TRACE_TAGS
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
           ] as string[]
         )?.length,
       ).toBe(2);
 
       // spanInner: ["outer", "shared", "inner"] - "shared" deduplicated
       expect(
-        spanInner?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS],
+        spanInner?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
       ).toEqual(expect.arrayContaining(["outer", "shared", "inner"]));
       expect(
         (
           spanInner?.attributes[
-            LangfuseOtelSpanAttributes.TRACE_TAGS
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
           ] as string[]
         )?.length,
       ).toBe(3);
 
       // spanOuter2: ["outer", "shared"] - restored to outer context
       expect(
-        spanOuter2?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS],
+        spanOuter2?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
       ).toEqual(expect.arrayContaining(["outer", "shared"]));
       expect(
         (
           spanOuter2?.attributes[
-            LangfuseOtelSpanAttributes.TRACE_TAGS
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
           ] as string[]
         )?.length,
       ).toBe(2);
@@ -471,9 +481,9 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       // Should still have tag1 from outer context
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual([
-        "tag1",
-      ]);
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["tag1"]);
     });
 
     it("should propagate tags in baggage mode", async () => {
@@ -488,7 +498,9 @@ describe("propagateAttributes", () => {
 
             expect(baggage).toBeDefined();
             const entries = Array.from(baggage!.getAllEntries());
-            const tagsEntry = entries.find(([key]) => key === "langfuse_tags");
+            const tagsEntry = entries.find(
+              ([key]) => key === "elasticdash_tags",
+            );
 
             expect(tagsEntry).toBeDefined();
             // Tags should be comma-separated in baggage
@@ -505,11 +517,9 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual([
-        "tag1",
-        "tag2",
-        "tag3",
-      ]);
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["tag1", "tag2", "tag3"]);
     });
 
     it("should merge tags in baggage mode", async () => {
@@ -523,7 +533,9 @@ describe("propagateAttributes", () => {
 
             expect(baggage).toBeDefined();
             const entries = Array.from(baggage!.getAllEntries());
-            const tagsEntry = entries.find(([key]) => key === "langfuse_tags");
+            const tagsEntry = entries.find(
+              ([key]) => key === "elasticdash_tags",
+            );
 
             expect(tagsEntry).toBeDefined();
             // Merged tags should be comma-separated
@@ -540,9 +552,9 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual(
-        expect.arrayContaining(["tag1", "tag2"]),
-      );
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(expect.arrayContaining(["tag1", "tag2"]));
     });
 
     it("should drop tags over 200 characters", async () => {
@@ -561,9 +573,9 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual([
-        "valid-tag",
-      ]);
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["valid-tag"]);
     });
 
     it("should propagate tags with other attributes", async () => {
@@ -589,18 +601,19 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user123",
-      );
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user123");
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session456");
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_TAGS]).toEqual([
-        "production",
-        "test",
-      ]);
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.env`],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_TAGS],
+      ).toEqual(["production", "test"]);
+      expect(
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.env`
+        ],
       ).toBe("prod");
     });
   });
@@ -625,10 +638,14 @@ describe("propagateAttributes", () => {
 
       // Child should have both key1 and key2
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`
+        ],
       ).toBe("value2");
     });
 
@@ -651,7 +668,9 @@ describe("propagateAttributes", () => {
 
       // Newer value should override
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value2");
     });
 
@@ -679,21 +698,25 @@ describe("propagateAttributes", () => {
       // child1 should only have "existing"
       expect(
         child1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.existing`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.existing`
         ],
       ).toBe("value");
       expect(
-        child1?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.new`],
+        child1?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.new`
+        ],
       ).toBeUndefined();
 
       // child2 should have both "existing" and "new"
       expect(
         child2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.existing`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.existing`
         ],
       ).toBe("value");
       expect(
-        child2?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.new`],
+        child2?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.new`
+        ],
       ).toBe("value2");
     });
 
@@ -732,51 +755,51 @@ describe("propagateAttributes", () => {
       // spanOuter1: {level: "outer", shared: "outer"}
       expect(
         spanOuter1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.level`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.level`
         ],
       ).toBe("outer");
       expect(
         spanOuter1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.shared`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.shared`
         ],
       ).toBe("outer");
       expect(
         spanOuter1?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.extra`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.extra`
         ],
       ).toBeUndefined();
 
       // spanInner: {level: "outer", shared: "inner", extra: "inner"}
       expect(
         spanInner?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.level`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.level`
         ],
       ).toBe("outer");
       expect(
         spanInner?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.shared`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.shared`
         ],
       ).toBe("inner");
       expect(
         spanInner?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.extra`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.extra`
         ],
       ).toBe("inner");
 
       // spanOuter2: {level: "outer", shared: "outer"} (restored)
       expect(
         spanOuter2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.level`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.level`
         ],
       ).toBe("outer");
       expect(
         spanOuter2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.shared`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.shared`
         ],
       ).toBe("outer");
       expect(
         spanOuter2?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.extra`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.extra`
         ],
       ).toBeUndefined();
     });
@@ -802,13 +825,19 @@ describe("propagateAttributes", () => {
 
       // All three keys should be present
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`
+        ],
       ).toBe("value2");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key3`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key3`
+        ],
       ).toBe("value3");
     });
 
@@ -831,7 +860,9 @@ describe("propagateAttributes", () => {
 
       // key1 should still be present
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
     });
 
@@ -854,11 +885,13 @@ describe("propagateAttributes", () => {
 
       // Both metadata and userId should be present
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user123",
-      );
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user123");
     });
 
     it("should merge metadata after some keys were dropped due to validation", async () => {
@@ -885,16 +918,18 @@ describe("propagateAttributes", () => {
 
       // valid and additional should be present, invalid should be dropped
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.valid`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.valid`
+        ],
       ).toBe("ok");
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.additional`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.additional`
         ],
       ).toBe("value");
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.invalid`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.invalid`
         ],
       ).toBeUndefined();
     });
@@ -923,14 +958,18 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       // userId should be user2 (overwritten), both metadata keys should be present
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user2",
-      );
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user2");
+      expect(
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`
+        ],
       ).toBe("value2");
     });
 
@@ -959,17 +998,21 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       // All attributes should be present with merged metadata
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user1",
-      );
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user1");
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("session1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`
+        ],
       ).toBe("value2");
     });
   });
@@ -992,7 +1035,7 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
       ).toBeUndefined();
     });
 
@@ -1012,9 +1055,9 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        userId200,
-      );
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe(userId200);
     });
 
     it("should drop sessionId over 200 characters", async () => {
@@ -1034,7 +1077,7 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBeUndefined();
     });
 
@@ -1055,7 +1098,7 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.VERSION],
+        child?.attributes[ElasticDashOtelSpanAttributes.VERSION],
       ).toBeUndefined();
     });
 
@@ -1075,7 +1118,7 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.VERSION]).toBe(
+      expect(child?.attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe(
         version200,
       );
     });
@@ -1097,7 +1140,7 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_NAME],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_NAME],
       ).toBeUndefined();
     });
 
@@ -1117,7 +1160,7 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(child?.attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         traceName200,
       );
     });
@@ -1144,7 +1187,9 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key`
+        ],
       ).toBeUndefined();
     });
 
@@ -1164,7 +1209,7 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
       ).toBeUndefined();
     });
 
@@ -1194,17 +1239,17 @@ describe("propagateAttributes", () => {
 
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.valid_key`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.valid_key`
         ],
       ).toBe("valid_value");
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.another_valid`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.another_valid`
         ],
       ).toBe("ok");
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.invalid_key`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.invalid_key`
         ],
       ).toBeUndefined();
     });
@@ -1229,16 +1274,16 @@ describe("propagateAttributes", () => {
                 const baggageKeys = entries.map(([key]) => key);
 
                 // Both metadata keys should be in baggage
-                expect(baggageKeys).toContain("langfuse_metadata_key1");
-                expect(baggageKeys).toContain("langfuse_metadata_key2");
+                expect(baggageKeys).toContain("elasticdash_metadata_key1");
+                expect(baggageKeys).toContain("elasticdash_metadata_key2");
 
                 const key1Entry = entries.find(
-                  ([key]) => key === "langfuse_metadata_key1",
+                  ([key]) => key === "elasticdash_metadata_key1",
                 );
                 expect(key1Entry?.[1].value).toBe("value1");
 
                 const key2Entry = entries.find(
-                  ([key]) => key === "langfuse_metadata_key2",
+                  ([key]) => key === "elasticdash_metadata_key2",
                 );
                 expect(key2Entry?.[1].value).toBe("value2");
 
@@ -1257,10 +1302,14 @@ describe("propagateAttributes", () => {
       const child = spans.find((s) => s.name === "child");
 
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`
+        ],
       ).toBe("value1");
       expect(
-        child?.attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        child?.attributes[
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`
+        ],
       ).toBe("value2");
     });
 
@@ -1287,36 +1336,36 @@ describe("propagateAttributes", () => {
 
             // Check baggage keys exist
             const baggageKeys = entries.map(([key]) => key);
-            expect(baggageKeys).toContain("langfuse_user_id");
-            expect(baggageKeys).toContain("langfuse_session_id");
-            expect(baggageKeys).toContain("langfuse_version");
-            expect(baggageKeys).toContain("langfuse_trace_name");
-            expect(baggageKeys).toContain("langfuse_metadata_env");
-            expect(baggageKeys).toContain("langfuse_metadata_region");
+            expect(baggageKeys).toContain("elasticdash_user_id");
+            expect(baggageKeys).toContain("elasticdash_session_id");
+            expect(baggageKeys).toContain("elasticdash_version");
+            expect(baggageKeys).toContain("elasticdash_trace_name");
+            expect(baggageKeys).toContain("elasticdash_metadata_env");
+            expect(baggageKeys).toContain("elasticdash_metadata_region");
 
             // Check baggage values
             const userIdEntry = entries.find(
-              ([key]) => key === "langfuse_user_id",
+              ([key]) => key === "elasticdash_user_id",
             );
             expect(userIdEntry?.[1].value).toBe("user_123");
 
             const sessionIdEntry = entries.find(
-              ([key]) => key === "langfuse_session_id",
+              ([key]) => key === "elasticdash_session_id",
             );
             expect(sessionIdEntry?.[1].value).toBe("session_abc");
 
             const versionEntry = entries.find(
-              ([key]) => key === "langfuse_version",
+              ([key]) => key === "elasticdash_version",
             );
             expect(versionEntry?.[1].value).toBe("v2.0");
 
             const traceNameEntry = entries.find(
-              ([key]) => key === "langfuse_trace_name",
+              ([key]) => key === "elasticdash_trace_name",
             );
             expect(traceNameEntry?.[1].value).toBe("my-trace");
 
             const envEntry = entries.find(
-              ([key]) => key === "langfuse_metadata_env",
+              ([key]) => key === "elasticdash_metadata_env",
             );
             expect(envEntry?.[1].value).toBe("test");
           },
@@ -1352,21 +1401,21 @@ describe("propagateAttributes", () => {
       const spans = testEnv.mockExporter.exportedSpans;
       const child = spans.find((s) => s.name === "child");
 
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "baggage_user",
-      );
       expect(
-        child?.attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID],
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("baggage_user");
+      expect(
+        child?.attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID],
       ).toBe("baggage_session");
-      expect(child?.attributes[LangfuseOtelSpanAttributes.VERSION]).toBe(
+      expect(child?.attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe(
         "v1.0-baggage",
       );
-      expect(child?.attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(child?.attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         "baggage-trace",
       );
       expect(
         child?.attributes[
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.source`
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.source`
         ],
       ).toBe("baggage");
     });
@@ -1416,12 +1465,12 @@ describe("propagateAttributes", () => {
       const span1 = spans.find((s) => s.name === "span-1");
       const span2 = spans.find((s) => s.name === "span-2");
 
-      expect(span1?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user1",
-      );
-      expect(span2?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user2",
-      );
+      expect(
+        span1?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user1");
+      expect(
+        span2?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user2");
     });
 
     it("should restore outer context after inner context exits", async () => {
@@ -1450,15 +1499,15 @@ describe("propagateAttributes", () => {
       const span2 = spans.find((s) => s.name === "span-2");
       const span3 = spans.find((s) => s.name === "span-3");
 
-      expect(span1?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user1",
-      );
-      expect(span2?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user2",
-      );
-      expect(span3?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
-        "user1",
-      );
+      expect(
+        span1?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user1");
+      expect(
+        span2?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user2");
+      expect(
+        span3?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
+      ).toBe("user1");
     });
 
     it("should not propagate to spans outside context", async () => {
@@ -1488,13 +1537,13 @@ describe("propagateAttributes", () => {
       const afterSpan = spans.find((s) => s.name === "after");
 
       expect(
-        beforeSpan?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID],
+        beforeSpan?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
       ).toBeUndefined();
       expect(
-        insideSpan?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID],
+        insideSpan?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
       ).toBe("user_123");
       expect(
-        afterSpan?.attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID],
+        afterSpan?.attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID],
       ).toBeUndefined();
     });
   });
@@ -1502,53 +1551,53 @@ describe("propagateAttributes", () => {
   describe("getPropagatedAttributesFromContext", () => {
     it("should read userId from context", () => {
       const context = ROOT_CONTEXT.setValue(
-        LangfuseOtelContextKeys["userId"],
+        ElasticDashOtelContextKeys["userId"],
         "test_user",
       );
       const attributes = getPropagatedAttributesFromContext(context);
 
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID]).toBe(
         "test_user",
       );
     });
 
     it("should read sessionId from context", () => {
       const context = ROOT_CONTEXT.setValue(
-        LangfuseOtelContextKeys["sessionId"],
+        ElasticDashOtelContextKeys["sessionId"],
         "test_session",
       );
       const attributes = getPropagatedAttributesFromContext(context);
 
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID]).toBe(
         "test_session",
       );
     });
 
     it("should read version from context", () => {
       const context = ROOT_CONTEXT.setValue(
-        LangfuseOtelContextKeys["version"],
+        ElasticDashOtelContextKeys["version"],
         "v3.1.4",
       );
       const attributes = getPropagatedAttributesFromContext(context);
 
-      expect(attributes[LangfuseOtelSpanAttributes.VERSION]).toBe("v3.1.4");
+      expect(attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe("v3.1.4");
     });
 
     it("should read traceName from context", () => {
       const context = ROOT_CONTEXT.setValue(
-        LangfuseOtelContextKeys["traceName"],
+        ElasticDashOtelContextKeys["traceName"],
         "context-trace-name",
       );
       const attributes = getPropagatedAttributesFromContext(context);
 
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         "context-trace-name",
       );
     });
 
     it("should read metadata from context", () => {
       const context = ROOT_CONTEXT.setValue(
-        LangfuseOtelContextKeys["metadata"],
+        ElasticDashOtelContextKeys["metadata"],
         {
           key1: "value1",
           key2: "value2",
@@ -1557,40 +1606,42 @@ describe("propagateAttributes", () => {
       const attributes = getPropagatedAttributesFromContext(context);
 
       expect(
-        attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key1`],
+        attributes[`${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key1`],
       ).toBe("value1");
       expect(
-        attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.key2`],
+        attributes[`${ElasticDashOtelSpanAttributes.TRACE_METADATA}.key2`],
       ).toBe("value2");
     });
 
     it("should read attributes from baggage", () => {
       let baggage = propagation.createBaggage();
-      baggage = baggage.setEntry("langfuse_user_id", { value: "baggage_user" });
-      baggage = baggage.setEntry("langfuse_session_id", {
+      baggage = baggage.setEntry("elasticdash_user_id", {
+        value: "baggage_user",
+      });
+      baggage = baggage.setEntry("elasticdash_session_id", {
         value: "baggage_session",
       });
-      baggage = baggage.setEntry("langfuse_version", { value: "v2.5.1" });
-      baggage = baggage.setEntry("langfuse_trace_name", {
+      baggage = baggage.setEntry("elasticdash_version", { value: "v2.5.1" });
+      baggage = baggage.setEntry("elasticdash_trace_name", {
         value: "baggage-trace",
       });
-      baggage = baggage.setEntry("langfuse_metadata_env", { value: "prod" });
+      baggage = baggage.setEntry("elasticdash_metadata_env", { value: "prod" });
 
       const context = propagation.setBaggage(ROOT_CONTEXT, baggage);
       const attributes = getPropagatedAttributesFromContext(context);
 
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_USER_ID]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_USER_ID]).toBe(
         "baggage_user",
       );
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_SESSION_ID]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_SESSION_ID]).toBe(
         "baggage_session",
       );
-      expect(attributes[LangfuseOtelSpanAttributes.VERSION]).toBe("v2.5.1");
-      expect(attributes[LangfuseOtelSpanAttributes.TRACE_NAME]).toBe(
+      expect(attributes[ElasticDashOtelSpanAttributes.VERSION]).toBe("v2.5.1");
+      expect(attributes[ElasticDashOtelSpanAttributes.TRACE_NAME]).toBe(
         "baggage-trace",
       );
       expect(
-        attributes[`${LangfuseOtelSpanAttributes.TRACE_METADATA}.env`],
+        attributes[`${ElasticDashOtelSpanAttributes.TRACE_METADATA}.env`],
       ).toBe("prod");
     });
 

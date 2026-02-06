@@ -3,7 +3,7 @@
  */
 
 /**
- * Unit of usage in Langfuse
+ * Unit of usage in ElasticDash
  */
 export type ModelUsageUnit =
   | "CHARACTERS"

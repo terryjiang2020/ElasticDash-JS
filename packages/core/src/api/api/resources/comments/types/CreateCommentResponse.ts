@@ -3,6 +3,6 @@
  */
 
 export interface CreateCommentResponse {
-  /** The id of the created object in Langfuse */
+  /** The id of the created object in ElasticDash */
   id: string;
 }

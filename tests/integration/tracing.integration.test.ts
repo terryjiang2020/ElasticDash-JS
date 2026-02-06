@@ -4,7 +4,7 @@ import {
   observe,
   updateActiveObservation,
   updateActiveTrace,
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelSpanAttributes,
   createTraceId,
   getActiveTraceId,
 } from "@elasticdash/tracing";
@@ -81,17 +81,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
       assertions.expectSpanAttribute(
         "test-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".key",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".key",
         "value",
       );
       assertions.expectSpanAttribute(
         "test-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         '{"prompt":"test prompt"}',
       );
       assertions.expectSpanAttribute(
         "test-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"response":"test response"}',
       );
     });
@@ -109,12 +109,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
       assertions.expectSpanAttribute(
         "error-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "ERROR",
       );
       assertions.expectSpanAttribute(
         "error-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
         "Test error",
       );
     });
@@ -160,7 +160,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify trace attributes were set
         assertions.expectSpanAttribute(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "nested-spans-trace",
         );
         assertions.expectSpanAttribute("parent-span", "user.id", "user-123");
@@ -172,8 +172,8 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify tags array is set correctly
         const parentAttributes =
           testEnv.mockExporter.getSpanAttributes("parent-span");
-        expect(parentAttributes).toHaveProperty("langfuse.trace.tags");
-        expect(parentAttributes["langfuse.trace.tags"]).toEqual(
+        expect(parentAttributes).toHaveProperty("elasticdash.trace.tags");
+        expect(parentAttributes["elasticdash.trace.tags"]).toEqual(
           expect.arrayContaining(["nested"]),
         );
       });
@@ -234,30 +234,30 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify all attributes are set correctly
         assertions.expectSpanAttribute(
           "child-1",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "DEFAULT",
         );
         assertions.expectSpanAttribute(
           "child-2",
-          LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
           "Child 2 completed successfully",
         );
 
         // Verify trace attributes are inherited
         assertions.expectSpanAttribute(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "multi-child-trace",
         );
         assertions.expectSpanAttribute("parent-span", "user.id", "user-789");
         assertions.expectSpanAttributeContains(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".test_type",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".test_type",
           "multi-child",
         );
         assertions.expectSpanAttributeContains(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".version",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".version",
           "1.0",
         );
       });
@@ -296,12 +296,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttribute(
           "env-span",
-          LangfuseOtelSpanAttributes.ENVIRONMENT,
+          ElasticDashOtelSpanAttributes.ENVIRONMENT,
           "test-env",
         );
         assertions.expectSpanAttribute(
           "env-span",
-          LangfuseOtelSpanAttributes.RELEASE,
+          ElasticDashOtelSpanAttributes.RELEASE,
           "v1.0.0",
         );
       });
@@ -375,32 +375,32 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("test-generation");
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
         "gpt-4",
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         JSON.stringify({ prompt: "Hello world" }),
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         JSON.stringify({ content: "Hello! How can I help you?" }),
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEFAULT",
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
         JSON.stringify({
           promptTokens: 3,
           completionTokens: 8,
@@ -411,19 +411,19 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify metadata attributes
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".test_run",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".test_run",
         "true",
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".version",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".version",
         "1.0",
       );
 
       // Verify trace attributes
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "generation-test-trace",
       );
       assertions.expectSpanAttribute("test-generation", "user.id", "test-user");
@@ -434,7 +434,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       );
       assertions.expectSpanAttribute(
         "test-generation",
-        LangfuseOtelSpanAttributes.TRACE_PUBLIC,
+        ElasticDashOtelSpanAttributes.TRACE_PUBLIC,
         true,
       );
     });
@@ -461,23 +461,23 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("usage-generation");
       assertions.expectSpanAttribute(
         "usage-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "usage-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
         "gpt-3.5-turbo",
       );
       assertions.expectSpanAttribute(
         "usage-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         JSON.stringify({ messages: [{ role: "user", content: "test" }] }),
       );
       // Test complete usage details object
       assertions.expectSpanAttribute(
         "usage-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
         JSON.stringify({
           promptTokens: 10,
           completionTokens: 15,
@@ -529,54 +529,54 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify event attributes
       assertions.expectSpanAttribute(
         "test-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "event",
       );
       assertions.expectSpanAttributeContains(
         "test-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         "user_click",
       );
       assertions.expectSpanAttribute(
         "test-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         JSON.stringify({ success: true, duration_ms: 45 }),
       );
       assertions.expectSpanAttribute(
         "test-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEFAULT",
       );
 
       // Verify metadata
       assertions.expectSpanAttribute(
         "test-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".element",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".element",
         "button",
       );
       assertions.expectSpanAttributeContains(
         "test-event",
-        "langfuse.observation.metadata.coordinates",
+        "elasticdash.observation.metadata.coordinates",
         "100",
       );
 
       // Verify trace attributes on parent
       assertions.expectSpanAttribute(
         "event-parent",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "event-test-trace",
       );
       assertions.expectSpanAttribute("event-parent", "user.id", "event-user");
       // Verify tags array contains expected values
       const eventParentAttrs =
         testEnv.mockExporter.getSpanAttributes("event-parent");
-      expect(eventParentAttrs).toHaveProperty("langfuse.trace.tags");
-      expect(eventParentAttrs["langfuse.trace.tags"]).toEqual(
+      expect(eventParentAttrs).toHaveProperty("elasticdash.trace.tags");
+      expect(eventParentAttrs["elasticdash.trace.tags"]).toEqual(
         expect.arrayContaining(["events"]),
       );
       assertions.expectSpanAttribute(
         "event-parent",
-        LangfuseOtelSpanAttributes.TRACE_METADATA + ".platform",
+        ElasticDashOtelSpanAttributes.TRACE_METADATA + ".platform",
         "web",
       );
     });
@@ -630,52 +630,52 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify event attributes
       assertions.expectSpanAttribute(
         "timestamped-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "event",
       );
       assertions.expectSpanAttribute(
         "timestamped-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEBUG",
       );
       assertions.expectSpanAttribute(
         "timestamped-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".source",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".source",
         "test-suite",
       );
       assertions.expectSpanAttributeContains(
         "timestamped-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         "test",
       );
 
       // Verify parent generation attributes
       assertions.expectSpanAttribute(
         "timestamp-parent",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "timestamp-parent",
-        LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
         JSON.stringify({ totalTokens: 5 }),
       );
 
       // Verify trace attributes
       assertions.expectSpanAttribute(
         "timestamp-parent",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "timestamp-test-trace",
       );
       assertions.expectSpanAttribute(
         "timestamp-parent",
-        LangfuseOtelSpanAttributes.RELEASE,
+        ElasticDashOtelSpanAttributes.RELEASE,
         "v1.2.3",
       );
       // Note: environment is set via trace attributes, not individual span attributes
       assertions.expectSpanAttribute(
         "timestamp-parent",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "timestamp-test-trace",
       );
     });
@@ -699,12 +699,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("test-agent");
       assertions.expectSpanAttribute(
         "test-agent",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "agent",
       );
       assertions.expectSpanAttribute(
         "test-agent",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         '{"query":"What\'s the weather?"}',
       );
     });
@@ -729,12 +729,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
       assertions.expectSpanAttribute(
         "agent-with-updates",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"analysis":"Document contains 5 sections"}',
       );
       assertions.expectSpanAttribute(
         "agent-with-updates",
-        LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".processingTime",
+        ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".processingTime",
         "150",
       );
     });
@@ -758,12 +758,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("weather-tool");
       assertions.expectSpanAttribute(
         "weather-tool",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "tool",
       );
       assertions.expectSpanAttribute(
         "weather-tool",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         '{"location":"San Francisco"}',
       );
     });
@@ -792,12 +792,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("rag-chain");
       assertions.expectSpanAttribute(
         "rag-chain",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "chain",
       );
       assertions.expectSpanAttribute(
         "rag-chain",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"answer":"Machine learning is...","sources":["doc1","doc2"]}',
       );
     });
@@ -831,12 +831,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("vector-search");
       assertions.expectSpanAttribute(
         "vector-search",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "retriever",
       );
       assertions.expectSpanAttribute(
         "vector-search",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         '{"query":"machine learning algorithms","topK":5}',
       );
     });
@@ -869,12 +869,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("quality-evaluator");
       assertions.expectSpanAttribute(
         "quality-evaluator",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "evaluator",
       );
       assertions.expectSpanAttribute(
         "quality-evaluator",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"score":0.92,"passed":true}',
       );
     });
@@ -907,12 +907,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("content-filter");
       assertions.expectSpanAttribute(
         "content-filter",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "guardrail",
       );
       assertions.expectSpanAttribute(
         "content-filter",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"allowed":true,"violations":[],"confidence":0.99}',
       );
     });
@@ -948,12 +948,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("text-embedder");
       assertions.expectSpanAttribute(
         "text-embedder",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "embedding",
       );
       assertions.expectSpanAttribute(
         "text-embedder",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         '{"texts":["Hello world","Machine learning"]}',
       );
     });
@@ -1010,38 +1010,40 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify all attributes
       assertions.expectSpanAttribute(
         "active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "span",
       );
       assertions.expectSpanAttribute(
         "active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEFAULT",
       );
       assertions.expectSpanAttributeContains(
         "active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         "executed in active context",
       );
       assertions.expectSpanAttributeContains(
         "active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         "test result",
       );
       // Check that execution_time metadata exists and is a timestamp-like string
       const spanAttributes =
         testEnv.mockExporter.getSpanAttributes("active-span");
       expect(spanAttributes).toHaveProperty(
-        "langfuse.observation.metadata.execution_time",
+        "elasticdash.observation.metadata.execution_time",
       );
       expect(
-        typeof spanAttributes["langfuse.observation.metadata.execution_time"],
+        typeof spanAttributes[
+          "elasticdash.observation.metadata.execution_time"
+        ],
       ).toBe("string");
 
       // Verify trace attributes
       assertions.expectSpanAttribute(
         "active-span",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "active-span-trace",
       );
       assertions.expectSpanAttribute("active-span", "user.id", "active-user");
@@ -1052,19 +1054,19 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       );
       assertions.expectSpanAttribute(
         "active-span",
-        LangfuseOtelSpanAttributes.TRACE_METADATA + ".execution_context",
+        ElasticDashOtelSpanAttributes.TRACE_METADATA + ".execution_context",
         "active",
       );
 
       // Verify nested span attributes
       assertions.expectSpanAttribute(
         "nested-active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "span",
       );
       assertions.expectSpanAttributeContains(
         "nested-active-span",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         "success",
       );
     });
@@ -1116,7 +1118,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-resolve-span");
         assertions.expectSpanAttributeContains(
           "promise-resolve-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "async task",
         );
       });
@@ -1151,7 +1153,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-reject-span");
         assertions.expectSpanAttributeContains(
           "promise-reject-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "failing async task",
         );
       });
@@ -1182,7 +1184,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-chain-span");
         assertions.expectSpanAttributeContains(
           "promise-chain-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "start",
         );
       });
@@ -1215,7 +1217,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-chain-reject-span");
         assertions.expectSpanAttributeContains(
           "promise-chain-reject-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "start",
         );
       });
@@ -1258,7 +1260,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("sequential-promise-span");
         assertions.expectSpanAttributeContains(
           "sequential-promise-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "outer",
         );
       });
@@ -1304,7 +1306,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("truly-nested-promise-span");
         assertions.expectSpanAttributeContains(
           "truly-nested-promise-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "nested promises",
         );
       });
@@ -1420,7 +1422,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("parallel-promises-span");
         assertions.expectSpanAttributeContains(
           "parallel-promises-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "parallel",
         );
       });
@@ -1775,12 +1777,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("active-generation");
       assertions.expectSpanAttribute(
         "active-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "active-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
         "gpt-4",
       );
     });
@@ -1877,24 +1879,24 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify generation attributes
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "DEFAULT",
         );
         // Note: status_message set via update() call
         assertions.expectSpanWithName("async-llm-generation");
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           JSON.stringify({ prompt: "Tell me a story" }),
         );
         // Note: Output updates within startActiveObservation generation are not automatically
@@ -1907,19 +1909,19 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify metadata attributes
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
           "0.7",
         );
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".max_tokens",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".max_tokens",
           "100",
         );
 
         // Verify trace attributes
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "async-llm-trace",
         );
         assertions.expectSpanAttribute(
@@ -1936,13 +1938,13 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         const llmGenAttrs = testEnv.mockExporter.getSpanAttributes(
           "async-llm-generation",
         );
-        expect(llmGenAttrs).toHaveProperty("langfuse.trace.tags");
-        expect(llmGenAttrs["langfuse.trace.tags"]).toEqual(
+        expect(llmGenAttrs).toHaveProperty("elasticdash.trace.tags");
+        expect(llmGenAttrs["elasticdash.trace.tags"]).toEqual(
           expect.arrayContaining(["async"]),
         );
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.TRACE_PUBLIC,
+          ElasticDashOtelSpanAttributes.TRACE_PUBLIC,
           false,
         );
       });
@@ -1983,12 +1985,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("failing-llm-generation");
         assertions.expectSpanAttributeContains(
           "failing-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "This will fail",
         );
         assertions.expectSpanAttribute(
           "failing-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
       });
@@ -2036,7 +2038,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("streaming-generation");
         assertions.expectSpanAttributeContains(
           "streaming-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "Generate text step by step",
         );
       });
@@ -2082,12 +2084,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("concurrent-generations");
         assertions.expectSpanAttributeContains(
           "concurrent-generations",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "prompt1",
         );
         assertions.expectSpanAttribute(
           "concurrent-generations",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
       });
@@ -2187,7 +2189,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("nested-generation");
         assertions.expectSpanAttributeContains(
           "nested-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "multi-step generation",
         );
       });
@@ -2342,17 +2344,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify all are generation type
         assertions.expectSpanAttribute(
           "chained-llm",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "inner-generation-1",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "inner-generation-2",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
       });
@@ -2458,29 +2460,29 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify span types and attributes
         assertions.expectSpanAttribute(
           "generation-with-nested-promises",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "preprocess-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "span",
         );
         assertions.expectSpanAttribute(
           "model-inference-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "span",
         );
 
         // Verify span content
         assertions.expectSpanAttributeContains(
           "preprocess-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "preprocessing",
         );
         assertions.expectSpanAttributeContains(
           "model-inference-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "inference",
         );
       });
@@ -2517,7 +2519,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("ai-agent-workflow");
       assertions.expectSpanAttribute(
         "ai-agent-workflow",
-        LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+        ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         '{"sentiment":"positive","confidence":0.95}',
       );
     });
@@ -2707,7 +2709,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectSpanWithName("text-embedding");
       assertions.expectSpanAttribute(
         "text-embedding",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "embedding",
       );
     });
@@ -2894,39 +2896,39 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify different observation types
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "span",
       );
       assertions.expectSpanAttribute(
         "user-interaction",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "event",
       );
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "post-processing",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "span",
       );
       assertions.expectSpanAttribute(
         "analytics-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "event",
       );
 
       // Verify comprehensive attributes for generation
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
         "gpt-4",
       );
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
         JSON.stringify({
           promptTokens: 5,
           completionTokens: 8,
@@ -2935,7 +2937,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       );
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_COST_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_COST_DETAILS,
         JSON.stringify({
           input_cost: 0.001,
           output_cost: 0.002,
@@ -2944,19 +2946,19 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       );
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_MODEL_PARAMETERS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_MODEL_PARAMETERS,
         JSON.stringify({ temperature: 0.8, max_tokens: 150 }),
       );
       assertions.expectSpanAttribute(
         "ai-response",
-        LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
         "Generation completed successfully",
       );
 
       // Verify trace attributes on root span
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.TRACE_NAME,
+        ElasticDashOtelSpanAttributes.TRACE_NAME,
         "complex-ai-workflow",
       );
       assertions.expectSpanAttribute("ai-workflow", "user.id", "user-456");
@@ -2968,45 +2970,45 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify tags array is set correctly
       const workflowAttributes =
         testEnv.mockExporter.getSpanAttributes("ai-workflow");
-      expect(workflowAttributes).toHaveProperty("langfuse.trace.tags");
-      expect(workflowAttributes["langfuse.trace.tags"]).toEqual(
+      expect(workflowAttributes).toHaveProperty("elasticdash.trace.tags");
+      expect(workflowAttributes["elasticdash.trace.tags"]).toEqual(
         expect.arrayContaining(["complex"]),
       );
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.TRACE_PUBLIC,
+        ElasticDashOtelSpanAttributes.TRACE_PUBLIC,
         true,
       );
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.TRACE_METADATA + ".platform",
+        ElasticDashOtelSpanAttributes.TRACE_METADATA + ".platform",
         "web",
       );
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.TRACE_METADATA + ".version",
+        ElasticDashOtelSpanAttributes.TRACE_METADATA + ".version",
         "2.1.0",
       );
       assertions.expectSpanAttribute(
         "ai-workflow",
-        LangfuseOtelSpanAttributes.TRACE_INPUT,
+        ElasticDashOtelSpanAttributes.TRACE_INPUT,
         JSON.stringify({ original_query: "Hello AI" }),
       );
 
       // Verify level attributes across different observations
       assertions.expectSpanAttribute(
         "user-interaction",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEFAULT",
       );
       assertions.expectSpanAttribute(
         "analytics-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEBUG",
       );
       assertions.expectSpanAttribute(
         "post-processing",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "DEFAULT",
       );
     });
@@ -3090,7 +3092,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify generation attributes with complete usage details
       assertions.expectSpanAttribute(
         "response-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+        ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
         JSON.stringify({
           promptTokens: 15,
           completionTokens: 12,
@@ -3101,17 +3103,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       // Verify all observation types
       assertions.expectSpanAttribute(
         "conversation-handler",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "span",
       );
       assertions.expectSpanAttribute(
         "intent-detection",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
       assertions.expectSpanAttribute(
         "response-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+        ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
         "generation",
       );
     });
@@ -3358,17 +3360,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
       assertions.expectAllSpansInSameTrace();
       assertions.expectSpanAttribute(
         "error-generation",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "ERROR",
       );
       assertions.expectSpanAttribute(
         "error-event",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "ERROR",
       );
       assertions.expectSpanAttribute(
         "error-workflow",
-        LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+        ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
         "WARNING",
       );
     });
@@ -3593,7 +3595,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("originalFunc");
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "span",
         );
       });
@@ -3705,7 +3707,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("originalFunc");
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
       });
@@ -3721,7 +3723,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         const spanAttributes =
           testEnv.mockExporter.getSpanAttributes("originalFunc");
         expect(spanAttributes).not.toHaveProperty(
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
         );
       });
 
@@ -3736,7 +3738,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         const spanAttributes =
           testEnv.mockExporter.getSpanAttributes("originalFunc");
         expect(spanAttributes).not.toHaveProperty(
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         );
       });
     });
@@ -3752,7 +3754,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "value",
         );
       });
@@ -3767,17 +3769,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "42",
         );
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "test",
         );
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "true",
         );
       });
@@ -3792,12 +3794,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "success",
         );
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "200",
         );
       });
@@ -3815,7 +3817,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "completed",
         );
       });
@@ -3835,12 +3837,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
           "Test error",
         );
       });
@@ -3858,12 +3860,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
         assertions.expectSpanAttribute(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
           "Async error",
         );
       });
@@ -3880,7 +3882,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "Error: Detailed error",
         );
       });
@@ -3898,7 +3900,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         const spanAttributes =
           testEnv.mockExporter.getSpanAttributes("originalFunc");
         expect(spanAttributes).not.toHaveProperty(
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
         );
       });
     });
@@ -3928,17 +3930,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("llm-generate");
         assertions.expectSpanAttribute(
           "llm-generate",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttributeContains(
           "llm-generate",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "Hello world",
         );
         assertions.expectSpanAttributeContains(
           "llm-generate",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "Generated response",
         );
       });
@@ -3965,7 +3967,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("db-query");
         assertions.expectSpanAttributeContains(
           "db-query",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "SELECT * FROM users",
         );
       });
@@ -3992,7 +3994,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("compute-stats");
         assertions.expectSpanAttributeContains(
           "compute-stats",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "15",
         );
       });
@@ -4018,12 +4020,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("async-processor");
         assertions.expectSpanAttributeContains(
           "async-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "test-data",
         );
         assertions.expectSpanAttributeContains(
           "async-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "processed-test-data",
         );
       });
@@ -4050,12 +4052,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("failing-async-processor");
         assertions.expectSpanAttribute(
           "failing-async-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
         assertions.expectSpanAttribute(
           "failing-async-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE,
           "Async operation failed",
         );
       });
@@ -4080,7 +4082,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-creator");
         assertions.expectSpanAttributeContains(
           "promise-creator",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "delayed-40ms",
         );
       });
@@ -4111,7 +4113,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("rejecting-promise-creator");
         assertions.expectSpanAttribute(
           "rejecting-promise-creator",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
       });
@@ -4137,7 +4139,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-chain-func");
         assertions.expectSpanAttributeContains(
           "promise-chain-func",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "final-step2-step1-start",
         );
       });
@@ -4168,7 +4170,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("promise-chain-reject-func");
         assertions.expectSpanAttribute(
           "promise-chain-reject-func",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
       });
@@ -4200,7 +4202,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("parallel-processor");
         assertions.expectSpanAttributeContains(
           "parallel-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "processed-a",
         );
       });
@@ -4238,7 +4240,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("parallel-fail-processor");
         assertions.expectSpanAttribute(
           "parallel-fail-processor",
-          LangfuseOtelSpanAttributes.OBSERVATION_LEVEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL,
           "ERROR",
         );
       });
@@ -4280,7 +4282,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("properly-nested-promise-func");
         assertions.expectSpanAttributeContains(
           "properly-nested-promise-func",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "nested-depth-2",
         );
       });
@@ -4361,17 +4363,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify span attributes
         assertions.expectSpanAttributeContains(
           "outer-work-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "outer",
         );
         assertions.expectSpanAttributeContains(
           "inner-work-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "inner",
         );
         assertions.expectSpanAttributeContains(
           "nested-promise-with-spans",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "outer-inner-processed",
         );
       });
@@ -4403,17 +4405,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanWithName("async-llm-generation");
         assertions.expectSpanAttribute(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttributeContains(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "Tell me a joke",
         );
         assertions.expectSpanAttributeContains(
           "async-llm-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "Generated response",
         );
       });
@@ -4592,12 +4594,12 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Verify all observation types
         assertions.expectSpanAttribute(
           "llm-pipeline",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "model-inference",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
 
@@ -4672,7 +4674,7 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
 
         assertions.expectSpanAttributeContains(
           "originalFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           "test",
         );
       });
@@ -4696,17 +4698,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           '{"prompt":"updated input"}',
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           '{"result":"updated output"}',
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".key",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".key",
           "updated value",
         );
       });
@@ -4739,13 +4741,13 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "testFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".executionStep",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".executionStep",
           "processing",
         );
         // The observe function captures the return value as output, overriding updateActiveSpan
         assertions.expectSpanAttribute(
           "testFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
           "processed: test input",
         );
       });
@@ -4780,22 +4782,22 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+          ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
           '{"promptTokens":10,"completionTokens":20,"totalTokens":30}',
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
           "0.7",
         );
       });
@@ -4832,22 +4834,22 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+          ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
           '{"promptTokens":10,"completionTokens":20,"totalTokens":30}',
         );
         assertions.expectSpanAttribute(
           "llm-call",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".temperature",
           "0.7",
         );
       });
@@ -4892,22 +4894,22 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "llmFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "llmFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-3.5-turbo",
         );
         assertions.expectSpanAttribute(
           "llmFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+          ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
           '{"promptTokens":15,"completionTokens":25,"totalTokens":40}',
         );
         assertions.expectSpanAttribute(
           "llmFunc",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".provider",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".provider",
           "openai",
         );
       });
@@ -4931,33 +4933,33 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "updated-trace-name",
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.TRACE_USER_ID,
+          ElasticDashOtelSpanAttributes.TRACE_USER_ID,
           "user-123",
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.TRACE_SESSION_ID,
+          ElasticDashOtelSpanAttributes.TRACE_SESSION_ID,
           "session-456",
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".version",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".version",
           "1.0",
         );
         assertions.expectSpanAttribute(
           "test-span",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".environment",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".environment",
           "test",
         );
         // Check tags array using toStrictEqual
         expect(
           assertions.mockExporter.getSpanByName("test-span")!.attributes[
-            LangfuseOtelSpanAttributes.TRACE_TAGS
+            ElasticDashOtelSpanAttributes.TRACE_TAGS
           ],
         ).toStrictEqual(["tag1", "tag2"]);
       });
@@ -4998,23 +5000,23 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Both spans should have the trace attributes
         assertions.expectSpanAttribute(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "complex-trace",
         );
         assertions.expectSpanAttribute(
           "parent-span",
-          LangfuseOtelSpanAttributes.TRACE_USER_ID,
+          ElasticDashOtelSpanAttributes.TRACE_USER_ID,
           "user-456",
         );
 
         assertions.expectSpanAttribute(
           "child-span",
-          LangfuseOtelSpanAttributes.TRACE_SESSION_ID,
+          ElasticDashOtelSpanAttributes.TRACE_SESSION_ID,
           "session-789",
         );
         assertions.expectSpanAttribute(
           "child-span",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".childOperation",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".childOperation",
           "processing",
         );
       });
@@ -5037,17 +5039,17 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         assertions.expectSpanCount(1);
         assertions.expectSpanAttribute(
           "testFunc",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "user-operation",
         );
         assertions.expectSpanAttribute(
           "testFunc",
-          LangfuseOtelSpanAttributes.TRACE_USER_ID,
+          ElasticDashOtelSpanAttributes.TRACE_USER_ID,
           "user-789",
         );
         assertions.expectSpanAttribute(
           "testFunc",
-          LangfuseOtelSpanAttributes.TRACE_METADATA + ".source",
+          ElasticDashOtelSpanAttributes.TRACE_METADATA + ".source",
           "observe-function",
         );
       });
@@ -5074,24 +5076,24 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Check trace attributes
         assertions.expectSpanAttribute(
           "combined-span",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "combined-trace",
         );
         assertions.expectSpanAttribute(
           "combined-span",
-          LangfuseOtelSpanAttributes.TRACE_USER_ID,
+          ElasticDashOtelSpanAttributes.TRACE_USER_ID,
           "user-combined",
         );
 
         // Check span attributes
         assertions.expectSpanAttribute(
           "combined-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
+          ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
           '{"operation":"combined-operation"}',
         );
         assertions.expectSpanAttribute(
           "combined-span",
-          LangfuseOtelSpanAttributes.OBSERVATION_METADATA + ".step",
+          ElasticDashOtelSpanAttributes.OBSERVATION_METADATA + ".step",
           "1",
         );
       });
@@ -5130,29 +5132,29 @@ describe("Tracing Methods Interoperability E2E Tests", () => {
         // Check trace attributes
         assertions.expectSpanAttribute(
           "combined-generation",
-          LangfuseOtelSpanAttributes.TRACE_NAME,
+          ElasticDashOtelSpanAttributes.TRACE_NAME,
           "llm-trace",
         );
         assertions.expectSpanAttribute(
           "combined-generation",
-          LangfuseOtelSpanAttributes.TRACE_USER_ID,
+          ElasticDashOtelSpanAttributes.TRACE_USER_ID,
           "user-llm",
         );
 
         // Check generation attributes
         assertions.expectSpanAttribute(
           "combined-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_TYPE,
+          ElasticDashOtelSpanAttributes.OBSERVATION_TYPE,
           "generation",
         );
         assertions.expectSpanAttribute(
           "combined-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_MODEL,
+          ElasticDashOtelSpanAttributes.OBSERVATION_MODEL,
           "gpt-4",
         );
         assertions.expectSpanAttribute(
           "combined-generation",
-          LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
+          ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS,
           '{"promptTokens":50,"completionTokens":100,"totalTokens":150}',
         );
       });

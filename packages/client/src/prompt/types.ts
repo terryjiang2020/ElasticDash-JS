@@ -6,7 +6,7 @@ import {
 } from "@elasticdash/core";
 
 /**
- * Enumeration of chat message types in Langfuse prompts.
+ * Enumeration of chat message types in ElasticDash prompts.
  *
  * @public
  */
@@ -31,7 +31,7 @@ export type ChatMessageOrPlaceholder =
 /**
  * Represents a LangChain MessagesPlaceholder object.
  *
- * Used when converting Langfuse prompts to LangChain format,
+ * Used when converting ElasticDash prompts to LangChain format,
  * unresolved placeholders become LangChain MessagesPlaceholder objects.
  *
  * @public

@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace Scim {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace Scim {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -65,18 +65,18 @@ export class Scim {
    *
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.getServiceProviderConfig()
    */
   public getServiceProviderConfig(
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ServiceProviderConfig> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ServiceProviderConfig> {
     return core.HttpResponsePromise.fromPromise(
       this.__getServiceProviderConfig(requestOptions),
     );
@@ -84,19 +84,20 @@ export class Scim {
 
   private async __getServiceProviderConfig(
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ServiceProviderConfig>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ServiceProviderConfig>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -118,7 +119,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ServiceProviderConfig,
+        data: _response.body as ElasticDashAPI.ServiceProviderConfig,
         rawResponse: _response.rawResponse,
       };
     }
@@ -126,32 +127,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -161,17 +162,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/scim/ServiceProviderConfig.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -183,18 +184,18 @@ export class Scim {
    *
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.getResourceTypes()
    */
   public getResourceTypes(
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ResourceTypesResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ResourceTypesResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__getResourceTypes(requestOptions),
     );
@@ -202,19 +203,20 @@ export class Scim {
 
   private async __getResourceTypes(
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ResourceTypesResponse>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ResourceTypesResponse>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -236,7 +238,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ResourceTypesResponse,
+        data: _response.body as ElasticDashAPI.ResourceTypesResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -244,32 +246,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -279,17 +281,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/scim/ResourceTypes.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -301,18 +303,18 @@ export class Scim {
    *
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.getSchemas()
    */
   public getSchemas(
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.SchemasResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.SchemasResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__getSchemas(requestOptions),
     );
@@ -320,19 +322,20 @@ export class Scim {
 
   private async __getSchemas(
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.SchemasResponse>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.SchemasResponse>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -354,7 +357,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.SchemasResponse,
+        data: _response.body as ElasticDashAPI.SchemasResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -362,32 +365,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -397,17 +400,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/scim/Schemas.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -417,31 +420,31 @@ export class Scim {
   /**
    * List users in the organization (requires organization-scoped API key)
    *
-   * @param {LangfuseAPI.ListUsersRequest} request
+   * @param {ElasticDashAPI.ListUsersRequest} request
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.listUsers()
    */
   public listUsers(
-    request: LangfuseAPI.ListUsersRequest = {},
+    request: ElasticDashAPI.ListUsersRequest = {},
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ScimUsersListResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ScimUsersListResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__listUsers(request, requestOptions),
     );
   }
 
   private async __listUsers(
-    request: LangfuseAPI.ListUsersRequest = {},
+    request: ElasticDashAPI.ListUsersRequest = {},
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ScimUsersListResponse>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ScimUsersListResponse>> {
     const { filter, startIndex, count } = request;
     const _queryParams: Record<
       string,
@@ -463,14 +466,15 @@ export class Scim {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -492,7 +496,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ScimUsersListResponse,
+        data: _response.body as ElasticDashAPI.ScimUsersListResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -500,32 +504,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -535,17 +539,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/scim/Users.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -555,14 +559,14 @@ export class Scim {
   /**
    * Create a new user in the organization (requires organization-scoped API key)
    *
-   * @param {LangfuseAPI.CreateUserRequest} request
+   * @param {ElasticDashAPI.CreateUserRequest} request
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.createUser({
@@ -576,30 +580,31 @@ export class Scim {
    *     })
    */
   public createUser(
-    request: LangfuseAPI.CreateUserRequest,
+    request: ElasticDashAPI.CreateUserRequest,
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ScimUser> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ScimUser> {
     return core.HttpResponsePromise.fromPromise(
       this.__createUser(request, requestOptions),
     );
   }
 
   private async __createUser(
-    request: LangfuseAPI.CreateUserRequest,
+    request: ElasticDashAPI.CreateUserRequest,
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ScimUser>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ScimUser>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -624,7 +629,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ScimUser,
+        data: _response.body as ElasticDashAPI.ScimUser,
         rawResponse: _response.rawResponse,
       };
     }
@@ -632,32 +637,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -667,17 +672,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/scim/Users.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -690,11 +695,11 @@ export class Scim {
    * @param {string} userId
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.getUser("userId")
@@ -702,7 +707,7 @@ export class Scim {
   public getUser(
     userId: string,
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ScimUser> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ScimUser> {
     return core.HttpResponsePromise.fromPromise(
       this.__getUser(userId, requestOptions),
     );
@@ -711,19 +716,20 @@ export class Scim {
   private async __getUser(
     userId: string,
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ScimUser>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ScimUser>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -745,7 +751,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ScimUser,
+        data: _response.body as ElasticDashAPI.ScimUser,
         rawResponse: _response.rawResponse,
       };
     }
@@ -753,32 +759,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -788,17 +794,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/scim/Users/{userId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -811,11 +817,11 @@ export class Scim {
    * @param {string} userId
    * @param {Scim.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.scim.deleteUser("userId")
@@ -823,7 +829,7 @@ export class Scim {
   public deleteUser(
     userId: string,
     requestOptions?: Scim.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.EmptyResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.EmptyResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__deleteUser(userId, requestOptions),
     );
@@ -832,19 +838,20 @@ export class Scim {
   private async __deleteUser(
     userId: string,
     requestOptions?: Scim.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.EmptyResponse>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.EmptyResponse>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -866,7 +873,7 @@ export class Scim {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.EmptyResponse,
+        data: _response.body as ElasticDashAPI.EmptyResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -874,32 +881,32 @@ export class Scim {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -909,17 +916,17 @@ export class Scim {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling DELETE /api/public/scim/Users/{userId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

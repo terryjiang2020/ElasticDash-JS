@@ -51,7 +51,7 @@ export interface LoggerConfig {
  *
  * @example
  * ```typescript
- * const logger = new Logger({ level: LogLevel.DEBUG, prefix: 'Langfuse SDK' });
+ * const logger = new Logger({ level: LogLevel.DEBUG, prefix: 'ElasticDash SDK' });
  * logger.info('Application started');
  * logger.error('An error occurred', error);
  * ```
@@ -92,7 +92,7 @@ export class Logger {
     const timestamp = this.config.enableTimestamp
       ? new Date().toISOString()
       : "";
-    const prefix = this.config.prefix || "[Langfuse SDK]";
+    const prefix = this.config.prefix || "[ElasticDash SDK]";
     const parts = [timestamp, prefix, `[${level}]`, message].filter(Boolean);
 
     return parts.join(" ");
@@ -250,7 +250,7 @@ export const getGlobalLogger = (): Logger => {
  * ```typescript
  * configureGlobalLogger({
  *   level: LogLevel.DEBUG,
- *   prefix: 'Langfuse SDK',
+ *   prefix: 'ElasticDash SDK',
  *   enableTimestamp: true
  * });
  * ```

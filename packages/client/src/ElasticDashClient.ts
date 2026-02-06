@@ -1,5 +1,5 @@
 import {
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   ELASTICDASH_SDK_VERSION,
   ElasticDashEnvVar,
   getGlobalLogger,
@@ -13,28 +13,28 @@ import { PromptManager } from "./prompt/index.js";
 import { ScoreManager } from "./score/index.js";
 
 /**
- * Configuration parameters for initializing a LangfuseClient instance.
+ * Configuration parameters for initializing a ElasticDashClient instance.
  *
  * @public
  */
-export interface LangfuseClientParams {
+export interface ElasticDashClientParams {
   /**
-   * Public API key for authentication with Langfuse.
+   * Public API key for authentication with ElasticDash.
    * Can also be provided via ELASTICDASH_PUBLIC_KEY environment variable.
    */
   publicKey?: string;
 
   /**
-   * Secret API key for authentication with Langfuse.
+   * Secret API key for authentication with ElasticDash.
    * Can also be provided via ELASTICDASH_SECRET_KEY environment variable.
    */
   secretKey?: string;
 
   /**
-   * Base URL of the Langfuse instance to connect to.
+   * Base URL of the ElasticDash instance to connect to.
    * Can also be provided via ELASTICDASH_BASE_URL environment variable.
    *
-   * @defaultValue "https://cloud.langfuse.com"
+   * @defaultValue "https://devserver-logger.elasticdash.com"
    */
   baseUrl?: string;
 
@@ -59,9 +59,9 @@ export interface LangfuseClientParams {
 }
 
 /**
- * Main client for interacting with the Langfuse API.
+ * Main client for interacting with the ElasticDash API.
  *
- * The LangfuseClient provides access to all Langfuse functionality including:
+ * The ElasticDashClient provides access to all ElasticDash functionality including:
  * - Prompt management and retrieval
  * - Dataset operations
  * - Score creation and management
@@ -71,28 +71,28 @@ export interface LangfuseClientParams {
  * @example
  * ```typescript
  * // Initialize with explicit credentials
- * const langfuse = new LangfuseClient({
+ * const elasticdash = new ElasticDashClient({
  *   publicKey: "pk_...",
  *   secretKey: "sk_...",
- *   baseUrl: "https://cloud.langfuse.com"
+ *   baseUrl: "https://devserver-logger.elasticdash.com"
  * });
  *
  * // Or use environment variables
- * const langfuse = new LangfuseClient();
+ * const elasticdash = new ElasticDashClient();
  *
  * // Use the client
- * const prompt = await langfuse.prompt.get("my-prompt");
+ * const prompt = await elasticdash.prompt.get("my-prompt");
  * const compiledPrompt = prompt.compile({ variable: "value" });
  * ```
  *
  * @public
  */
-export class LangfuseClient {
+export class ElasticDashClient {
   /**
-   * Direct access to the underlying Langfuse API client.
+   * Direct access to the underlying ElasticDash API client.
    * Use this for advanced API operations not covered by the high-level managers.
    */
-  public api: LangfuseAPIClient;
+  public api: ElasticDashAPIClient;
 
   /**
    * Manager for prompt operations including creation, retrieval, and caching.
@@ -126,9 +126,9 @@ export class LangfuseClient {
    *
    * @example Basic experiment execution
    * ```typescript
-   * const langfuse = new LangfuseClient();
+   * const elasticdash = new ElasticDashClient();
    *
-   * const result = await langfuse.experiment.run({
+   * const result = await elasticdash.experiment.run({
    *   name: "Model Evaluation",
    *   description: "Testing model performance on Q&A tasks",
    *   data: [
@@ -153,7 +153,7 @@ export class LangfuseClient {
    *
    * @example Using with datasets
    * ```typescript
-   * const dataset = await langfuse.dataset.get("my-test-dataset");
+   * const dataset = await elasticdash.dataset.get("my-test-dataset");
    * const result = await dataset.runExperiment({
    *   name: "Production Readiness Test",
    *   task: myTask,
@@ -192,54 +192,54 @@ export class LangfuseClient {
   /**
    * @deprecated Use api.trace.get instead
    */
-  public fetchTrace: typeof LangfuseAPIClient.prototype.trace.get;
+  public fetchTrace: typeof ElasticDashAPIClient.prototype.trace.get;
   /**
    * @deprecated Use api.trace.list instead
    */
-  public fetchTraces: typeof LangfuseAPIClient.prototype.trace.list;
+  public fetchTraces: typeof ElasticDashAPIClient.prototype.trace.list;
   /**
    * @deprecated Use api.observations.get instead
    */
-  public fetchObservation: typeof LangfuseAPIClient.prototype.observations.get;
+  public fetchObservation: typeof ElasticDashAPIClient.prototype.observations.get;
   /**
    * @deprecated Use api.observations.list instead
    */
-  public fetchObservations: typeof LangfuseAPIClient.prototype.observations.getMany;
+  public fetchObservations: typeof ElasticDashAPIClient.prototype.observations.getMany;
   /**
    * @deprecated Use api.sessions.get instead
    */
-  public fetchSessions: typeof LangfuseAPIClient.prototype.sessions.get;
+  public fetchSessions: typeof ElasticDashAPIClient.prototype.sessions.get;
   /**
    * @deprecated Use api.datasets.getRun instead
    */
-  public getDatasetRun: typeof LangfuseAPIClient.prototype.datasets.getRun;
+  public getDatasetRun: typeof ElasticDashAPIClient.prototype.datasets.getRun;
   /**
    * @deprecated Use api.datasets.getRuns instead
    */
-  public getDatasetRuns: typeof LangfuseAPIClient.prototype.datasets.getRuns;
+  public getDatasetRuns: typeof ElasticDashAPIClient.prototype.datasets.getRuns;
   /**
    * @deprecated Use api.datasets.create instead
    */
-  public createDataset: typeof LangfuseAPIClient.prototype.datasets.create;
+  public createDataset: typeof ElasticDashAPIClient.prototype.datasets.create;
   /**
    * @deprecated Use api.datasetItems.get instead
    */
-  public getDatasetItem: typeof LangfuseAPIClient.prototype.datasetItems.get;
+  public getDatasetItem: typeof ElasticDashAPIClient.prototype.datasetItems.get;
   /**
    * @deprecated Use api.datasetItems.create instead
    */
-  public createDatasetItem: typeof LangfuseAPIClient.prototype.datasetItems.create;
+  public createDatasetItem: typeof ElasticDashAPIClient.prototype.datasetItems.create;
   /**
    * @deprecated Use api.media.get instead
    */
-  public fetchMedia: typeof LangfuseAPIClient.prototype.media.get;
+  public fetchMedia: typeof ElasticDashAPIClient.prototype.media.get;
   /**
    * @deprecated Use media.resolveReferences instead
    */
   public resolveMediaReferences: typeof MediaManager.prototype.resolveReferences;
 
   /**
-   * Creates a new LangfuseClient instance.
+   * Creates a new ElasticDashClient instance.
    *
    * @param params - Configuration parameters. If not provided, will use environment variables.
    *
@@ -248,17 +248,17 @@ export class LangfuseClient {
    * @example
    * ```typescript
    * // With explicit configuration
-   * const client = new LangfuseClient({
+   * const client = new ElasticDashClient({
    *   publicKey: "pk_...",
    *   secretKey: "sk_...",
-   *   baseUrl: "https://your-instance.langfuse.com"
+   *   baseUrl: "https://your-instance.elasticdash.com"
    * });
    *
    * // Using environment variables
-   * const client = new LangfuseClient();
+   * const client = new ElasticDashClient();
    * ```
    */
-  constructor(params?: LangfuseClientParams) {
+  constructor(params?: ElasticDashClientParams) {
     const logger = getGlobalLogger();
 
     const publicKey =
@@ -271,7 +271,7 @@ export class LangfuseClient {
       params?.baseUrl ??
       getEnv("ELASTICDASH_BASE_URL" as ElasticDashEnvVar) ??
       getEnv("ELASTICDASH_BASEURL" as ElasticDashEnvVar) ?? // legacy v2
-      "https://cloud.langfuse.com";
+      "https://devserver-logger.elasticdash.com";
 
     if (!publicKey) {
       logger.warn(
@@ -286,28 +286,28 @@ export class LangfuseClient {
     const timeoutSeconds =
       params?.timeout ?? Number(getEnv("ELASTICDASH_TIMEOUT") ?? 5);
 
-    this.api = new LangfuseAPIClient({
+    this.api = new ElasticDashAPIClient({
       baseUrl: this.baseUrl,
       username: publicKey,
       password: secretKey,
-      xLangfusePublicKey: publicKey,
-      xLangfuseSdkVersion: ELASTICDASH_SDK_VERSION,
-      xLangfuseSdkName: "javascript",
+      xElasticDashPublicKey: publicKey,
+      xElasticDashSdkVersion: ELASTICDASH_SDK_VERSION,
+      xElasticDashSdkName: "javascript",
       environment: "", // noop as baseUrl is set
       headers: params?.additionalHeaders,
     });
 
-    logger.debug("Initialized LangfuseClient with params:", {
+    logger.debug("Initialized ElasticDashClient with params:", {
       publicKey,
       baseUrl: this.baseUrl,
       timeoutSeconds,
     });
 
     this.prompt = new PromptManager({ apiClient: this.api });
-    this.dataset = new DatasetManager({ langfuseClient: this });
+    this.dataset = new DatasetManager({ elasticdashClient: this });
     this.score = new ScoreManager({ apiClient: this.api });
     this.media = new MediaManager({ apiClient: this.api });
-    this.experiment = new ExperimentManager({ langfuseClient: this });
+    this.experiment = new ExperimentManager({ elasticdashClient: this });
 
     // Keep v3 compat by exposing old interface
     this.getPrompt = this.prompt.get.bind(this.prompt); // keep correct this context for cache access
@@ -329,7 +329,7 @@ export class LangfuseClient {
   }
 
   /**
-   * Flushes any pending score events to the Langfuse API.
+   * Flushes any pending score events to the ElasticDash API.
    *
    * This method ensures all queued scores are sent immediately rather than
    * waiting for the automatic flush interval or batch size threshold.
@@ -338,8 +338,8 @@ export class LangfuseClient {
    *
    * @example
    * ```typescript
-   * langfuse.score.create({ name: "quality", value: 0.8 });
-   * await langfuse.flush(); // Ensures the score is sent immediately
+   * elasticdash.score.create({ name: "quality", value: 0.8 });
+   * await elasticdash.flush(); // Ensures the score is sent immediately
    * ```
    */
   public async flush() {
@@ -350,14 +350,14 @@ export class LangfuseClient {
    * Gracefully shuts down the client by flushing all pending data.
    *
    * This method should be called before your application exits to ensure
-   * all data is sent to Langfuse.
+   * all data is sent to ElasticDash.
    *
    * @returns Promise that resolves when shutdown is complete
    *
    * @example
    * ```typescript
    * // Before application exit
-   * await langfuse.shutdown();
+   * await elasticdash.shutdown();
    * ```
    */
   public async shutdown() {
@@ -365,7 +365,7 @@ export class LangfuseClient {
   }
 
   /**
-   * Generates a URL to view a specific trace in the Langfuse UI.
+   * Generates a URL to view a specific trace in the ElasticDash UI.
    *
    * @param traceId - The ID of the trace to generate a URL for
    * @returns Promise that resolves to the trace URL
@@ -373,7 +373,7 @@ export class LangfuseClient {
    * @example
    * ```typescript
    * const traceId = "trace-123";
-   * const url = await langfuse.getTraceUrl(traceId);
+   * const url = await elasticdash.getTraceUrl(traceId);
    * console.log(`View trace at: ${url}`);
    * ```
    */

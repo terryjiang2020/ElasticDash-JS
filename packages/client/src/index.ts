@@ -1,4 +1,4 @@
-export * from "./LangfuseClient.js";
+export * from "./ElasticDashClient.js";
 export * from "./prompt/index.js";
 export * from "./score/index.js";
 export * from "./dataset/index.js";

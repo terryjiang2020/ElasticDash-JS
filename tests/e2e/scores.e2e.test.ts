@@ -1,4 +1,4 @@
-import { LangfuseClient } from "@elasticdash/client";
+import { ElasticDashClient } from "@elasticdash/client";
 import { resetGlobalLogger } from "@elasticdash/core";
 import { startObservation } from "@elasticdash/tracing";
 import { trace } from "@opentelemetry/api";
@@ -21,11 +21,11 @@ import {
   type ServerTestEnvironment,
 } from "./helpers/serverSetup.js";
 
-function createLangfuseClient(): LangfuseClient {
-  return new LangfuseClient();
+function createElasticDashClient(): ElasticDashClient {
+  return new ElasticDashClient();
 }
 
-describe("LangfuseClient Score E2E Tests", () => {
+describe("ElasticDashClient Score E2E Tests", () => {
   let testEnv: ServerTestEnvironment;
   let assertions: ServerAssertions;
 
@@ -45,7 +45,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Score Creation Flow Validation", () => {
     it("should successfully create and flush scores without errors", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const scoreName = `e2e-flow-test-${Date.now()}`;
 
@@ -74,7 +74,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle multiple score types in batch", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const baseTime = Date.now();
 
       const testScores = [
@@ -127,7 +127,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle batch scoring scenarios", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const batchSize = 25;
       const baseTime = Date.now();
       const scoreIds: string[] = [];
@@ -174,7 +174,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("OpenTelemetry Integration", () => {
     it("should create spans and associate scores correctly", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const spanName = `e2e-span-${Date.now()}`;
 
       // Create a span and verify its context
@@ -241,7 +241,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle active span context correctly", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const parentSpanName = `e2e-parent-${Date.now()}`;
       const activeSpanName = `e2e-active-${Date.now()}`;
 
@@ -303,7 +303,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle missing active context gracefully", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const loggerSpy = vi.spyOn(client.score.logger, "warn");
 
       // Try to score without active context
@@ -332,7 +332,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Span-based Scoring", () => {
     it("should create observation scores linked to spans", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const spanName = `e2e-observation-span-${Date.now()}`;
 
@@ -378,7 +378,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should create trace scores linked to spans", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const spanName = `e2e-trace-span-${Date.now()}`;
 
@@ -421,7 +421,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should score active spans in context", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const parentSpanName = `e2e-parent-span-${Date.now()}`;
       const activeSpanName = `e2e-active-span-${Date.now()}`;
@@ -466,7 +466,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should score active trace in context", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const parentSpanName = `e2e-parent-trace-${Date.now()}`;
       const activeSpanName = `e2e-active-trace-span-${Date.now()}`;
@@ -511,7 +511,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Generation Scoring", () => {
     it("should score LLM generations correctly", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const generationName = `e2e-generation-${Date.now()}`;
 
       // Create a generation
@@ -590,7 +590,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Complex Scoring Scenarios", () => {
     it("should handle nested spans with multiple scores", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const baseTime = Date.now();
 
       // Create nested span structure using proper parent-child relationships
@@ -686,7 +686,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle batch scoring with server validation", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const batchSize = 15;
       const baseTime = Date.now();
       const scoreIds: string[] = [];
@@ -730,7 +730,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle scores with environment and config references", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
       const testEnvironment = `e2e-test-env-${Date.now()}`;
 
@@ -772,7 +772,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Error Handling and Edge Cases", () => {
     it("should handle duplicate score IDs gracefully", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const duplicateId = nanoid();
       const baseTime = Date.now();
 
@@ -808,7 +808,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle extreme score values", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const baseTime = Date.now();
 
       const extremeScores = [
@@ -862,7 +862,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle large metadata objects", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreId = nanoid();
 
       // Create large metadata object
@@ -922,7 +922,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Error Handling and Edge Cases", () => {
     it("should handle duplicate score IDs gracefully", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const duplicateId = nanoid();
       const baseTime = Date.now();
 
@@ -958,7 +958,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle extreme values gracefully", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const baseTime = Date.now();
 
       const extremeScores = [
@@ -1008,7 +1008,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle large metadata objects", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
 
       const largeMetadata = {
         testType: "large-metadata-e2e",
@@ -1065,7 +1065,7 @@ describe("LangfuseClient Score E2E Tests", () => {
 
   describe("Flush and Shutdown", () => {
     it("should handle shutdown correctly", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
 
       // Add some scores
       client.score.create({
@@ -1081,7 +1081,7 @@ describe("LangfuseClient Score E2E Tests", () => {
     });
 
     it("should handle multiple flush calls", async () => {
-      const client = createLangfuseClient();
+      const client = createElasticDashClient();
       const scoreIds: string[] = [];
 
       // Add scores

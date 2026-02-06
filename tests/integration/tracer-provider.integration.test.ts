@@ -1,8 +1,8 @@
-import { LangfuseSpanProcessor } from "@elasticdash/otel";
+import { ElasticDashSpanProcessor } from "@elasticdash/otel";
 import {
-  setLangfuseTracerProvider,
-  getLangfuseTracerProvider,
-  getLangfuseTracer,
+  setElasticDashTracerProvider,
+  getElasticDashTracerProvider,
+  getElasticDashTracer,
 } from "@elasticdash/tracing";
 import { trace, context, SpanKind } from "@opentelemetry/api";
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
@@ -29,7 +29,7 @@ describe("Tracer Provider Isolation Integration Tests", () => {
 
     // Setup isolated tracer provider
     isolatedMockExporter = new MockSpanExporter();
-    const isolatedSpanProcessor = new LangfuseSpanProcessor({
+    const isolatedSpanProcessor = new ElasticDashSpanProcessor({
       exporter: isolatedMockExporter,
       flushAt: 1,
       flushInterval: 0,
@@ -41,12 +41,12 @@ describe("Tracer Provider Isolation Integration Tests", () => {
     });
 
     // Set the isolated provider
-    setLangfuseTracerProvider(isolatedProvider);
+    setElasticDashTracerProvider(isolatedProvider);
   });
 
   afterEach(async () => {
     // Cleanup isolated provider
-    setLangfuseTracerProvider(null);
+    setElasticDashTracerProvider(null);
     await isolatedProvider.shutdown();
     await isolatedMockExporter.shutdown();
 
@@ -56,18 +56,18 @@ describe("Tracer Provider Isolation Integration Tests", () => {
 
   describe("Basic isolation functionality", () => {
     it("should use isolated provider when set", async () => {
-      const provider = getLangfuseTracerProvider();
+      const provider = getElasticDashTracerProvider();
       expect(provider).toBe(isolatedProvider);
     });
 
     it("should fall back to global provider when isolated is null", async () => {
-      setLangfuseTracerProvider(null);
-      const provider = getLangfuseTracerProvider();
+      setElasticDashTracerProvider(null);
+      const provider = getElasticDashTracerProvider();
       expect(provider).toBe(trace.getTracerProvider());
     });
 
     it("should create spans using isolated provider", async () => {
-      const tracer = getLangfuseTracer();
+      const tracer = getElasticDashTracer();
       const span = tracer.startSpan("isolated-span");
       span.end();
 
@@ -86,7 +86,7 @@ describe("Tracer Provider Isolation Integration Tests", () => {
 
       const firstProvider = new NodeTracerProvider({
         spanProcessors: [
-          new LangfuseSpanProcessor({
+          new ElasticDashSpanProcessor({
             exporter: firstMockExporter,
             flushAt: 1,
             flushInterval: 0,
@@ -95,7 +95,7 @@ describe("Tracer Provider Isolation Integration Tests", () => {
       });
       const secondProvider = new NodeTracerProvider({
         spanProcessors: [
-          new LangfuseSpanProcessor({
+          new ElasticDashSpanProcessor({
             exporter: secondMockExporter,
             flushAt: 1,
             flushInterval: 0,
@@ -104,14 +104,14 @@ describe("Tracer Provider Isolation Integration Tests", () => {
       });
 
       // Test first provider
-      setLangfuseTracerProvider(firstProvider);
-      let tracer = getLangfuseTracer();
+      setElasticDashTracerProvider(firstProvider);
+      let tracer = getElasticDashTracer();
       let span = tracer.startSpan("first-provider-span");
       span.end();
 
       // Test second provider
-      setLangfuseTracerProvider(secondProvider);
-      tracer = getLangfuseTracer();
+      setElasticDashTracerProvider(secondProvider);
+      tracer = getElasticDashTracer();
       span = tracer.startSpan("second-provider-span");
       span.end();
 
@@ -144,7 +144,7 @@ describe("Tracer Provider Isolation Integration Tests", () => {
       // Configure isolated exporter to fail
       isolatedMockExporter.shouldFail = true;
 
-      const tracer = getLangfuseTracer();
+      const tracer = getElasticDashTracer();
       const span = tracer.startSpan("failing-span");
       span.end();
 
@@ -167,7 +167,7 @@ describe("Tracer Provider Isolation Integration Tests", () => {
       isolatedMockExporter.exportDelay = 200;
 
       await context.with(globalContext, async () => {
-        const isolatedTracer = getLangfuseTracer();
+        const isolatedTracer = getElasticDashTracer();
         const isolatedSpan = isolatedTracer.startSpan("delayed-isolated-span");
 
         // Verify we still have access to the global span context

@@ -5,7 +5,7 @@
 import * as errors from "../../../../errors/index.js";
 import * as core from "../../../../core/index.js";
 
-export class ServiceUnavailableError extends errors.LangfuseAPIError {
+export class ServiceUnavailableError extends errors.ElasticDashAPIError {
   constructor(rawResponse?: core.RawResponse) {
     super({
       message: "ServiceUnavailableError",

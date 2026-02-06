@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace Models {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace Models {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -63,14 +63,14 @@ export class Models {
   /**
    * Create a model
    *
-   * @param {LangfuseAPI.CreateModelRequest} request
+   * @param {ElasticDashAPI.CreateModelRequest} request
    * @param {Models.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.models.create({
@@ -87,30 +87,31 @@ export class Models {
    *     })
    */
   public create(
-    request: LangfuseAPI.CreateModelRequest,
+    request: ElasticDashAPI.CreateModelRequest,
     requestOptions?: Models.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.Model> {
+  ): core.HttpResponsePromise<ElasticDashAPI.Model> {
     return core.HttpResponsePromise.fromPromise(
       this.__create(request, requestOptions),
     );
   }
 
   private async __create(
-    request: LangfuseAPI.CreateModelRequest,
+    request: ElasticDashAPI.CreateModelRequest,
     requestOptions?: Models.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.Model>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.Model>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -135,7 +136,7 @@ export class Models {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.Model,
+        data: _response.body as ElasticDashAPI.Model,
         rawResponse: _response.rawResponse,
       };
     }
@@ -143,32 +144,32 @@ export class Models {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -178,17 +179,17 @@ export class Models {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/models.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -198,31 +199,31 @@ export class Models {
   /**
    * Get all models
    *
-   * @param {LangfuseAPI.GetModelsRequest} request
+   * @param {ElasticDashAPI.GetModelsRequest} request
    * @param {Models.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.models.list()
    */
   public list(
-    request: LangfuseAPI.GetModelsRequest = {},
+    request: ElasticDashAPI.GetModelsRequest = {},
     requestOptions?: Models.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.PaginatedModels> {
+  ): core.HttpResponsePromise<ElasticDashAPI.PaginatedModels> {
     return core.HttpResponsePromise.fromPromise(
       this.__list(request, requestOptions),
     );
   }
 
   private async __list(
-    request: LangfuseAPI.GetModelsRequest = {},
+    request: ElasticDashAPI.GetModelsRequest = {},
     requestOptions?: Models.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.PaginatedModels>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.PaginatedModels>> {
     const { page, limit } = request;
     const _queryParams: Record<
       string,
@@ -240,14 +241,15 @@ export class Models {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -269,7 +271,7 @@ export class Models {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.PaginatedModels,
+        data: _response.body as ElasticDashAPI.PaginatedModels,
         rawResponse: _response.rawResponse,
       };
     }
@@ -277,32 +279,32 @@ export class Models {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -312,17 +314,17 @@ export class Models {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/models.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -335,11 +337,11 @@ export class Models {
    * @param {string} id
    * @param {Models.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.models.get("id")
@@ -347,26 +349,27 @@ export class Models {
   public get(
     id: string,
     requestOptions?: Models.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.Model> {
+  ): core.HttpResponsePromise<ElasticDashAPI.Model> {
     return core.HttpResponsePromise.fromPromise(this.__get(id, requestOptions));
   }
 
   private async __get(
     id: string,
     requestOptions?: Models.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.Model>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.Model>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -388,7 +391,7 @@ export class Models {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.Model,
+        data: _response.body as ElasticDashAPI.Model,
         rawResponse: _response.rawResponse,
       };
     }
@@ -396,32 +399,32 @@ export class Models {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -431,17 +434,17 @@ export class Models {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/models/{id}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -449,16 +452,16 @@ export class Models {
   }
 
   /**
-   * Delete a model. Cannot delete models managed by Langfuse. You can create your own definition with the same modelName to override the definition though.
+   * Delete a model. Cannot delete models managed by ElasticDash. You can create your own definition with the same modelName to override the definition though.
    *
    * @param {string} id
    * @param {Models.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.models.delete("id")
@@ -480,14 +483,15 @@ export class Models {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -514,32 +518,32 @@ export class Models {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -549,17 +553,17 @@ export class Models {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling DELETE /api/public/models/{id}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

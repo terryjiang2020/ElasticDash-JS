@@ -9,7 +9,7 @@ import {
   type TestEnvironment,
 } from "./helpers/testSetup.js";
 
-describe("LangfuseSpanProcessor E2E Tests", () => {
+describe("ElasticDashSpanProcessor E2E Tests", () => {
   let testEnv: TestEnvironment;
   let assertions: SpanAssertions;
 
@@ -48,12 +48,12 @@ describe("LangfuseSpanProcessor E2E Tests", () => {
 
       assertions.expectSpanAttributeContains(
         "masked-span",
-        "langfuse.observation.input",
+        "elasticdash.observation.input",
         "This contains *** information",
       );
       assertions.expectSpanAttributeContains(
         "masked-span",
-        "langfuse.observation.output",
+        "elasticdash.observation.output",
         "No *** here",
       );
     });
@@ -79,7 +79,7 @@ describe("LangfuseSpanProcessor E2E Tests", () => {
 
       assertions.expectSpanAttribute(
         "error-mask-span",
-        "langfuse.observation.input",
+        "elasticdash.observation.input",
         "<fully masked due to failed mask function>",
       );
     });
@@ -101,16 +101,16 @@ describe("LangfuseSpanProcessor E2E Tests", () => {
       await waitForSpanExport(testEnv.mockExporter, 1);
 
       const inputValue = testEnv.mockExporter.getSpanAttributes("media-span")?.[
-        "langfuse.observation.input"
+        "elasticdash.observation.input"
       ] as string;
       expect(inputValue).toBeDefined();
 
       // Should not contain the original base64 data URI
       expect(inputValue).not.toContain(base64Image);
 
-      // Should contain Langfuse media tag
+      // Should contain ElasticDash media tag
       expect(inputValue).toMatch(
-        /@@@langfuseMedia:type=[^|]+\|id=[^|]+\|source=[^@]+@@@/,
+        /@@@elasticDashMedia:type=[^|]+\|id=[^|]+\|source=[^@]+@@@/,
       );
     });
 
@@ -131,16 +131,16 @@ describe("LangfuseSpanProcessor E2E Tests", () => {
 
       const inputValue = testEnv.mockExporter.getSpanAttributes(
         "multi-media-span",
-      )?.["langfuse.observation.input"] as string;
+      )?.["elasticdash.observation.input"] as string;
       expect(inputValue).toBeDefined();
 
       // Should not contain original base64 data URIs
       expect(inputValue).not.toContain(image1);
       expect(inputValue).not.toContain(image2);
 
-      // Should contain multiple Langfuse media tags
+      // Should contain multiple ElasticDash media tags
       const mediaMatches = inputValue.match(
-        /@@@langfuseMedia:type=[^|]+\|id=[^|]+\|source=[^@]+@@@/g,
+        /@@@elasticDashMedia:type=[^|]+\|id=[^|]+\|source=[^@]+@@@/g,
       );
       expect(mediaMatches).toHaveLength(2);
     });

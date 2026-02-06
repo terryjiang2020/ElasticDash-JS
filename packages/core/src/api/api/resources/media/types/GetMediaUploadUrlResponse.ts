@@ -5,6 +5,6 @@
 export interface GetMediaUploadUrlResponse {
   /** The presigned upload URL. If the asset is already uploaded, this will be null */
   uploadUrl?: string;
-  /** The unique langfuse identifier of a media record */
+  /** The unique elasticdash identifier of a media record */
   mediaId: string;
 }

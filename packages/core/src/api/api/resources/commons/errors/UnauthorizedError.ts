@@ -5,7 +5,7 @@
 import * as errors from "../../../../errors/index.js";
 import * as core from "../../../../core/index.js";
 
-export class UnauthorizedError extends errors.LangfuseAPIError {
+export class UnauthorizedError extends errors.ElasticDashAPIError {
   constructor(body?: unknown, rawResponse?: core.RawResponse) {
     super({
       message: "UnauthorizedError",

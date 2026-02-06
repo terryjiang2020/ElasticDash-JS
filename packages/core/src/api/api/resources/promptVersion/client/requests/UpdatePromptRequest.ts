@@ -9,6 +9,6 @@
  *     }
  */
 export interface UpdatePromptRequest {
-  /** New labels for the prompt version. Labels are unique across versions. The "latest" label is reserved and managed by Langfuse. */
+  /** New labels for the prompt version. Labels are unique across versions. The "latest" label is reserved and managed by ElasticDash. */
   newLabels: string[];
 }

@@ -2,10 +2,10 @@ export * from "./logger/index.js";
 export * from "./constants.js";
 export * from "./api/api/index.js";
 export {
-  LangfuseAPIError,
-  LangfuseAPITimeoutError,
+  ElasticDashAPIError,
+  ElasticDashAPITimeoutError,
 } from "./api/errors/index.js";
-export { LangfuseAPIClient } from "./api/Client.js";
+export { ElasticDashAPIClient } from "./api/Client.js";
 export * from "./utils.js";
 export * from "./types.js";
 export * from "./media.js";

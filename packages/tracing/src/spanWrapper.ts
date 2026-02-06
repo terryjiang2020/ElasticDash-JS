@@ -4,50 +4,50 @@ import {
   createObservationAttributes,
   createTraceAttributes,
 } from "./attributes.js";
-import { getLangfuseTracer } from "./tracerProvider.js";
+import { getElasticDashTracer } from "./tracerProvider.js";
 import {
-  LangfuseGenerationAttributes,
-  LangfuseSpanAttributes,
-  LangfuseEventAttributes,
-  LangfuseTraceAttributes,
+  ElasticDashGenerationAttributes,
+  ElasticDashSpanAttributes,
+  ElasticDashEventAttributes,
+  ElasticDashTraceAttributes,
 } from "./types.js";
 import type {
-  LangfuseAgentAttributes,
-  LangfuseChainAttributes,
-  LangfuseEmbeddingAttributes,
-  LangfuseEvaluatorAttributes,
-  LangfuseGuardrailAttributes,
-  LangfuseObservationAttributes,
-  LangfuseObservationType,
-  LangfuseRetrieverAttributes,
-  LangfuseToolAttributes,
+  ElasticDashAgentAttributes,
+  ElasticDashChainAttributes,
+  ElasticDashEmbeddingAttributes,
+  ElasticDashEvaluatorAttributes,
+  ElasticDashGuardrailAttributes,
+  ElasticDashObservationAttributes,
+  ElasticDashObservationType,
+  ElasticDashRetrieverAttributes,
+  ElasticDashToolAttributes,
 } from "./types.js";
 
 import { startObservation } from "./index.js";
 
 /**
- * Union type representing any Langfuse observation wrapper.
+ * Union type representing any ElasticDash observation wrapper.
  *
- * This type encompasses all observation types supported by Langfuse, providing
+ * This type encompasses all observation types supported by ElasticDash, providing
  * a unified interface for handling different kinds of traced operations. It's
  * particularly useful for generic functions that work with any observation type.
  *
  * ## Included Types
- * - **LangfuseSpan**: General-purpose operations and workflows
- * - **LangfuseGeneration**: LLM calls and AI model interactions
- * - **LangfuseEmbedding**: Text embedding and vector operations
- * - **LangfuseAgent**: AI agent workflows with tool usage
- * - **LangfuseTool**: Individual tool calls and API requests
- * - **LangfuseChain**: Multi-step processes and pipelines
- * - **LangfuseRetriever**: Document retrieval and search operations
- * - **LangfuseEvaluator**: Quality assessment and scoring
- * - **LangfuseGuardrail**: Safety checks and content filtering
- * - **LangfuseEvent**: Point-in-time occurrences and log entries
+ * - **ElasticDashSpan**: General-purpose operations and workflows
+ * - **ElasticDashGeneration**: LLM calls and AI model interactions
+ * - **ElasticDashEmbedding**: Text embedding and vector operations
+ * - **ElasticDashAgent**: AI agent workflows with tool usage
+ * - **ElasticDashTool**: Individual tool calls and API requests
+ * - **ElasticDashChain**: Multi-step processes and pipelines
+ * - **ElasticDashRetriever**: Document retrieval and search operations
+ * - **ElasticDashEvaluator**: Quality assessment and scoring
+ * - **ElasticDashGuardrail**: Safety checks and content filtering
+ * - **ElasticDashEvent**: Point-in-time occurrences and log entries
  *
  * @example
  * ```typescript
  * // Function accepting any observation type
- * function logObservation(obs: LangfuseObservation) {
+ * function logObservation(obs: ElasticDashObservation) {
  *   console.log(`Observation ${obs.id} in trace ${obs.traceId}`);
  *
  *   // All observations have common methods
@@ -67,41 +67,41 @@ import { startObservation } from "./index.js";
  *
  * @public
  */
-export type LangfuseObservation =
-  | LangfuseSpan
-  | LangfuseGeneration
-  | LangfuseEvent
-  | LangfuseAgent
-  | LangfuseTool
-  | LangfuseChain
-  | LangfuseRetriever
-  | LangfuseEvaluator
-  | LangfuseGuardrail
-  | LangfuseEmbedding;
+export type ElasticDashObservation =
+  | ElasticDashSpan
+  | ElasticDashGeneration
+  | ElasticDashEvent
+  | ElasticDashAgent
+  | ElasticDashTool
+  | ElasticDashChain
+  | ElasticDashRetriever
+  | ElasticDashEvaluator
+  | ElasticDashGuardrail
+  | ElasticDashEmbedding;
 
 /**
- * Parameters for creating a Langfuse observation wrapper.
+ * Parameters for creating a ElasticDash observation wrapper.
  *
  * @internal
  */
-type LangfuseObservationParams = {
+type ElasticDashObservationParams = {
   otelSpan: Span;
-  type: LangfuseObservationType;
+  type: ElasticDashObservationType;
   attributes?:
-    | LangfuseSpanAttributes
-    | LangfuseGenerationAttributes
-    | LangfuseEventAttributes;
+    | ElasticDashSpanAttributes
+    | ElasticDashGenerationAttributes
+    | ElasticDashEventAttributes;
 };
 
 /**
- * Base class for all Langfuse observation wrappers providing unified functionality.
+ * Base class for all ElasticDash observation wrappers providing unified functionality.
  *
- * This abstract class serves as the foundation for all observation types in Langfuse,
+ * This abstract class serves as the foundation for all observation types in ElasticDash,
  * encapsulating common operations and properties shared across spans, generations,
  * events, and specialized observation types like agents, tools, and chains.
  *
  * ## Core Capabilities
- * - **OpenTelemetry Integration**: Wraps OTEL spans with Langfuse-specific functionality
+ * - **OpenTelemetry Integration**: Wraps OTEL spans with ElasticDash-specific functionality
  * - **Unique Identification**: Provides span ID and trace ID for correlation
  * - **Lifecycle Management**: Handles observation creation, updates, and completion
  * - **Trace Context**: Enables updating trace-level attributes from any observation
@@ -122,7 +122,7 @@ type LangfuseObservationParams = {
  * @example
  * ```typescript
  * // All observation types share these common capabilities
- * const observation: LangfuseObservation = startObservation('my-operation');
+ * const observation: ElasticDashObservation = startObservation('my-operation');
  *
  * // Common properties available on all observations
  * console.log(`Observation ID: ${observation.id}`);
@@ -148,17 +148,17 @@ type LangfuseObservationParams = {
  *
  * @internal
  */
-abstract class LangfuseBaseObservation {
+abstract class ElasticDashBaseObservation {
   /** The underlying OpenTelemetry span */
   public readonly otelSpan: Span;
   /** The underlying OpenTelemetry span */
-  public readonly type: LangfuseObservationType;
+  public readonly type: ElasticDashObservationType;
   /** The span ID from the OpenTelemetry span context */
   public id: string;
   /** The trace ID from the OpenTelemetry span context */
   public traceId: string;
 
-  constructor(params: LangfuseObservationParams) {
+  constructor(params: ElasticDashObservationParams) {
     this.otelSpan = params.otelSpan;
     this.id = params.otelSpan.spanContext().spanId;
     this.traceId = params.otelSpan.spanContext().traceId;
@@ -171,9 +171,9 @@ abstract class LangfuseBaseObservation {
     }
   }
 
-  /** Gets the Langfuse OpenTelemetry tracer instance */
+  /** Gets the ElasticDash OpenTelemetry tracer instance */
   protected get tracer() {
-    return getLangfuseTracer();
+    return getElasticDashTracer();
   }
 
   /**
@@ -185,7 +185,7 @@ abstract class LangfuseBaseObservation {
     this.otelSpan.end(endTime);
   }
 
-  updateOtelSpanAttributes(attributes: LangfuseObservationAttributes) {
+  updateOtelSpanAttributes(attributes: ElasticDashObservationAttributes) {
     this.otelSpan.setAttributes(
       createObservationAttributes(this.type, attributes),
     );
@@ -194,7 +194,7 @@ abstract class LangfuseBaseObservation {
   /**
    * Updates the parent trace with new attributes.
    */
-  public updateTrace(attributes: LangfuseTraceAttributes) {
+  public updateTrace(attributes: ElasticDashTraceAttributes) {
     this.otelSpan.setAttributes(createTraceAttributes(attributes));
 
     return this;
@@ -234,7 +234,7 @@ abstract class LangfuseBaseObservation {
    * const dataProcessing = parentObservation.startObservation('data-processing', {
    *   input: { userId: '123', dataSize: 1024 },
    *   metadata: { processor: 'fast-lane', version: '2.1' }
-   * }); // Returns LangfuseSpan
+   * }); // Returns ElasticDashSpan
    *
    * // Create child generation with full LLM attributes
    * const llmCall = parentObservation.startObservation('openai-gpt-4', {
@@ -247,7 +247,7 @@ abstract class LangfuseBaseObservation {
    *     topP: 1.0
    *   },
    *   metadata: { priority: 'high', timeout: 30000 }
-   * }, { asType: 'generation' }); // Returns LangfuseGeneration
+   * }, { asType: 'generation' }); // Returns ElasticDashGeneration
    *
    * // Create child agent for complex reasoning
    * const reasoningAgent = parentObservation.startObservation('reasoning-agent', {
@@ -260,7 +260,7 @@ abstract class LangfuseBaseObservation {
    *     tools: ['calculator', 'web-search', 'data-analysis'],
    *     maxIterations: 5
    *   }
-   * }, { asType: 'agent' }); // Returns LangfuseAgent
+   * }, { asType: 'agent' }); // Returns ElasticDashAgent
    *
    * // Create child tool for external API calls
    * const apiCall = reasoningAgent.startObservation('market-data-api', {
@@ -273,7 +273,7 @@ abstract class LangfuseBaseObservation {
    *     rateLimit: 5,
    *     timeout: 10000
    *   }
-   * }, { asType: 'tool' }); // Returns LangfuseTool
+   * }, { asType: 'tool' }); // Returns ElasticDashTool
    *
    * // Create child retriever for document search
    * const docSearch = parentObservation.startObservation('document-retrieval', {
@@ -287,7 +287,7 @@ abstract class LangfuseBaseObservation {
    *     embeddingModel: 'text-embedding-ada-002',
    *     similarity: 'cosine'
    *   }
-   * }, { asType: 'retriever' }); // Returns LangfuseRetriever
+   * }, { asType: 'retriever' }); // Returns ElasticDashRetriever
    *
    * // Create child evaluator for quality assessment
    * const qualityCheck = parentObservation.startObservation('response-evaluator', {
@@ -301,7 +301,7 @@ abstract class LangfuseBaseObservation {
    *     threshold: 0.8,
    *     metrics: ['bleu', 'rouge', 'semantic-similarity']
    *   }
-   * }, { asType: 'evaluator' }); // Returns LangfuseEvaluator
+   * }, { asType: 'evaluator' }); // Returns ElasticDashEvaluator
    *
    * // Create child guardrail for safety checking
    * const safetyCheck = parentObservation.startObservation('content-guardrail', {
@@ -314,7 +314,7 @@ abstract class LangfuseBaseObservation {
    *     strictMode: true,
    *     confidence: 0.95
    *   }
-   * }, { asType: 'guardrail' }); // Returns LangfuseGuardrail
+   * }, { asType: 'guardrail' }); // Returns ElasticDashGuardrail
    *
    * // Create child embedding for vector generation
    * const textEmbedding = parentObservation.startObservation('text-embedder', {
@@ -328,7 +328,7 @@ abstract class LangfuseBaseObservation {
    *     normalization: 'l2',
    *     purpose: 'semantic-search'
    *   }
-   * }, { asType: 'embedding' }); // Returns LangfuseEmbedding
+   * }, { asType: 'embedding' }); // Returns ElasticDashEmbedding
    *
    * // Create child event for point-in-time logging
    * const userAction = parentObservation.startObservation('user-interaction', {
@@ -343,7 +343,7 @@ abstract class LangfuseBaseObservation {
    *     userId: 'user_456',
    *     browser: 'Chrome 120.0'
    *   }
-   * }, { asType: 'event' }); // Returns LangfuseEvent (auto-ended)
+   * }, { asType: 'event' }); // Returns ElasticDashEvent (auto-ended)
    *
    * // Chain operations - each child inherits context
    * dataProcessing.update({ output: { processed: true, records: 1000 } });
@@ -370,69 +370,69 @@ abstract class LangfuseBaseObservation {
    */
   public startObservation(
     name: string,
-    attributes: LangfuseGenerationAttributes,
+    attributes: ElasticDashGenerationAttributes,
     options: { asType: "generation" },
-  ): LangfuseGeneration;
+  ): ElasticDashGeneration;
   public startObservation(
     name: string,
-    attributes: LangfuseEventAttributes,
+    attributes: ElasticDashEventAttributes,
     options: { asType: "event" },
-  ): LangfuseEvent;
+  ): ElasticDashEvent;
   public startObservation(
     name: string,
-    attributes: LangfuseAgentAttributes,
+    attributes: ElasticDashAgentAttributes,
     options: { asType: "agent" },
-  ): LangfuseAgent;
+  ): ElasticDashAgent;
   public startObservation(
     name: string,
-    attributes: LangfuseToolAttributes,
+    attributes: ElasticDashToolAttributes,
     options: { asType: "tool" },
-  ): LangfuseTool;
+  ): ElasticDashTool;
   public startObservation(
     name: string,
-    attributes: LangfuseChainAttributes,
+    attributes: ElasticDashChainAttributes,
     options: { asType: "chain" },
-  ): LangfuseChain;
+  ): ElasticDashChain;
   public startObservation(
     name: string,
-    attributes: LangfuseRetrieverAttributes,
+    attributes: ElasticDashRetrieverAttributes,
     options: { asType: "retriever" },
-  ): LangfuseRetriever;
+  ): ElasticDashRetriever;
   public startObservation(
     name: string,
-    attributes: LangfuseEvaluatorAttributes,
+    attributes: ElasticDashEvaluatorAttributes,
     options: { asType: "evaluator" },
-  ): LangfuseEvaluator;
+  ): ElasticDashEvaluator;
   public startObservation(
     name: string,
-    attributes: LangfuseGuardrailAttributes,
+    attributes: ElasticDashGuardrailAttributes,
     options: { asType: "guardrail" },
-  ): LangfuseGuardrail;
+  ): ElasticDashGuardrail;
   public startObservation(
     name: string,
-    attributes: LangfuseEmbeddingAttributes,
+    attributes: ElasticDashEmbeddingAttributes,
     options: { asType: "embedding" },
-  ): LangfuseEmbedding;
+  ): ElasticDashEmbedding;
   public startObservation(
     name: string,
-    attributes?: LangfuseSpanAttributes,
+    attributes?: ElasticDashSpanAttributes,
     options?: { asType?: "span" },
-  ): LangfuseSpan;
+  ): ElasticDashSpan;
   public startObservation(
     name: string,
     attributes?:
-      | LangfuseSpanAttributes
-      | LangfuseGenerationAttributes
-      | LangfuseEventAttributes
-      | LangfuseAgentAttributes
-      | LangfuseToolAttributes
-      | LangfuseChainAttributes
-      | LangfuseRetrieverAttributes
-      | LangfuseEvaluatorAttributes
-      | LangfuseGuardrailAttributes
-      | LangfuseEmbeddingAttributes,
-    options?: { asType?: LangfuseObservationType },
-  ): LangfuseObservation {
+      | ElasticDashSpanAttributes
+      | ElasticDashGenerationAttributes
+      | ElasticDashEventAttributes
+      | ElasticDashAgentAttributes
+      | ElasticDashToolAttributes
+      | ElasticDashChainAttributes
+      | ElasticDashRetrieverAttributes
+      | ElasticDashEvaluatorAttributes
+      | ElasticDashGuardrailAttributes
+      | ElasticDashEmbeddingAttributes,
+    options?: { asType?: ElasticDashObservationType },
+  ): ElasticDashObservation {
     const { asType = "span" } = options || {};
 
     return startObservation(name, attributes, {
@@ -442,15 +442,15 @@ abstract class LangfuseBaseObservation {
   }
 }
 
-type LangfuseSpanParams = {
+type ElasticDashSpanParams = {
   otelSpan: Span;
-  attributes?: LangfuseSpanAttributes;
+  attributes?: ElasticDashSpanAttributes;
 };
 
 /**
  * General-purpose observation wrapper for tracking operations, functions, and workflows.
  *
- * LangfuseSpan is the default and most versatile observation type, designed for tracing
+ * ElasticDashSpan is the default and most versatile observation type, designed for tracing
  * any operation that has a defined start and end time. It serves as the foundation for
  * building hierarchical traces and can contain any other observation type as children.
  *
@@ -521,13 +521,13 @@ type LangfuseSpanParams = {
  *
  * @see {@link startObservation} - Factory function for creating spans
  * @see {@link startActiveObservation} - Function-scoped span creation
- * @see {@link LangfuseGeneration} - For LLM and AI model interactions
- * @see {@link LangfuseEvent} - For point-in-time occurrences
+ * @see {@link ElasticDashGeneration} - For LLM and AI model interactions
+ * @see {@link ElasticDashEvent} - For point-in-time occurrences
  *
  * @public
  */
-export class LangfuseSpan extends LangfuseBaseObservation {
-  constructor(params: LangfuseSpanParams) {
+export class ElasticDashSpan extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashSpanParams) {
     super({ ...params, type: "span" });
   }
 
@@ -546,22 +546,22 @@ export class LangfuseSpan extends LangfuseBaseObservation {
    * });
    * ```
    */
-  public update(attributes: LangfuseSpanAttributes): LangfuseSpan {
+  public update(attributes: ElasticDashSpanAttributes): ElasticDashSpan {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseAgentParams = {
+type ElasticDashAgentParams = {
   otelSpan: Span;
-  attributes?: LangfuseAgentAttributes;
+  attributes?: ElasticDashAgentAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking AI agent workflows and autonomous operations.
  *
- * LangfuseAgent is designed for observing intelligent agent systems that combine reasoning,
+ * ElasticDashAgent is designed for observing intelligent agent systems that combine reasoning,
  * tool usage, memory management, and decision-making in autonomous workflows. It captures
  * the complex multi-step nature of agent operations, including planning, execution, and
  * self-correction cycles typical in advanced AI agent architectures.
@@ -632,13 +632,13 @@ type LangfuseAgentParams = {
  *
  * @see {@link startObservation} with `{ asType: 'agent' }` - Factory function
  * @see {@link startActiveObservation} with `{ asType: 'agent' }` - Function-scoped agent
- * @see {@link LangfuseTool} - For individual tool executions within agents
- * @see {@link LangfuseChain} - For structured multi-step workflows
+ * @see {@link ElasticDashTool} - For individual tool executions within agents
+ * @see {@link ElasticDashChain} - For structured multi-step workflows
  *
  * @public
  */
-export class LangfuseAgent extends LangfuseBaseObservation {
-  constructor(params: LangfuseAgentParams) {
+export class ElasticDashAgent extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashAgentParams) {
     super({ ...params, type: "agent" });
   }
 
@@ -665,22 +665,22 @@ export class LangfuseAgent extends LangfuseBaseObservation {
    * });
    * ```
    */
-  public update(attributes: LangfuseAgentAttributes): LangfuseAgent {
+  public update(attributes: ElasticDashAgentAttributes): ElasticDashAgent {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseToolParams = {
+type ElasticDashToolParams = {
   otelSpan: Span;
-  attributes?: LangfuseToolAttributes;
+  attributes?: ElasticDashToolAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking individual tool calls and external API interactions.
  *
- * LangfuseTool is designed for observing discrete tool invocations within agent workflows,
+ * ElasticDashTool is designed for observing discrete tool invocations within agent workflows,
  * function calling scenarios, or standalone API integrations. It captures the input parameters,
  * execution results, performance metrics, and error conditions of tool operations, making it
  * essential for debugging tool reliability and optimizing tool selection strategies.
@@ -761,13 +761,13 @@ type LangfuseToolParams = {
  *
  * @see {@link startObservation} with `{ asType: 'tool' }` - Factory function
  * @see {@link startActiveObservation} with `{ asType: 'tool' }` - Function-scoped tool
- * @see {@link LangfuseAgent} - For agent workflows that use multiple tools
- * @see {@link LangfuseChain} - For orchestrated tool sequences
+ * @see {@link ElasticDashAgent} - For agent workflows that use multiple tools
+ * @see {@link ElasticDashChain} - For orchestrated tool sequences
  *
  * @public
  */
-export class LangfuseTool extends LangfuseBaseObservation {
-  constructor(params: LangfuseToolParams) {
+export class ElasticDashTool extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashToolParams) {
     super({ ...params, type: "tool" });
   }
 
@@ -794,22 +794,22 @@ export class LangfuseTool extends LangfuseBaseObservation {
    * });
    * ```
    */
-  public update(attributes: LangfuseToolAttributes): LangfuseTool {
+  public update(attributes: ElasticDashToolAttributes): ElasticDashTool {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseChainParams = {
+type ElasticDashChainParams = {
   otelSpan: Span;
-  attributes?: LangfuseChainAttributes;
+  attributes?: ElasticDashChainAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking structured multi-step workflows and process chains.
  *
- * LangfuseChain is designed for observing sequential, parallel, or conditional workflow orchestration
+ * ElasticDashChain is designed for observing sequential, parallel, or conditional workflow orchestration
  * where multiple operations are coordinated to achieve a larger goal. It captures the flow of data
  * between steps, manages dependencies, tracks progress through complex pipelines, and provides
  * insights into workflow performance and reliability patterns.
@@ -885,13 +885,13 @@ type LangfuseChainParams = {
  *
  * @see {@link startObservation} with `{ asType: 'chain' }` - Factory function
  * @see {@link startActiveObservation} with `{ asType: 'chain' }` - Function-scoped chain
- * @see {@link LangfuseSpan} - For individual workflow steps
- * @see {@link LangfuseAgent} - For intelligent workflow orchestration
+ * @see {@link ElasticDashSpan} - For individual workflow steps
+ * @see {@link ElasticDashAgent} - For intelligent workflow orchestration
  *
  * @public
  */
-export class LangfuseChain extends LangfuseBaseObservation {
-  constructor(params: LangfuseChainParams) {
+export class ElasticDashChain extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashChainParams) {
     super({ ...params, type: "chain" });
   }
 
@@ -918,22 +918,22 @@ export class LangfuseChain extends LangfuseBaseObservation {
    * });
    * ```
    */
-  public update(attributes: LangfuseChainAttributes): LangfuseChain {
+  public update(attributes: ElasticDashChainAttributes): ElasticDashChain {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseRetrieverParams = {
+type ElasticDashRetrieverParams = {
   otelSpan: Span;
-  attributes?: LangfuseRetrieverAttributes;
+  attributes?: ElasticDashRetrieverAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking document retrieval and search operations.
  *
- * LangfuseRetriever is designed for observing information retrieval systems that search,
+ * ElasticDashRetriever is designed for observing information retrieval systems that search,
  * filter, and rank content from various data sources. It captures search queries, retrieval
  * strategies, result quality metrics, and performance characteristics of search operations,
  * making it essential for RAG systems, knowledge bases, and content discovery workflows.
@@ -990,13 +990,13 @@ type LangfuseRetrieverParams = {
  * ```
  *
  * @see {@link startObservation} with `{ asType: 'retriever' }` - Factory function
- * @see {@link LangfuseChain} - For multi-step RAG pipelines
- * @see {@link LangfuseEmbedding} - For embedding generation used in vector search
+ * @see {@link ElasticDashChain} - For multi-step RAG pipelines
+ * @see {@link ElasticDashEmbedding} - For embedding generation used in vector search
  *
  * @public
  */
-export class LangfuseRetriever extends LangfuseBaseObservation {
-  constructor(params: LangfuseRetrieverParams) {
+export class ElasticDashRetriever extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashRetrieverParams) {
     super({ ...params, type: "retriever" });
   }
 
@@ -1006,22 +1006,24 @@ export class LangfuseRetriever extends LangfuseBaseObservation {
    * @param attributes - Retriever attributes to set
    * @returns This retriever for method chaining
    */
-  public update(attributes: LangfuseRetrieverAttributes): LangfuseRetriever {
+  public update(
+    attributes: ElasticDashRetrieverAttributes,
+  ): ElasticDashRetriever {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseEvaluatorParams = {
+type ElasticDashEvaluatorParams = {
   otelSpan: Span;
-  attributes?: LangfuseEvaluatorAttributes;
+  attributes?: ElasticDashEvaluatorAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking quality assessment and evaluation operations.
  *
- * LangfuseEvaluator is designed for observing evaluation systems that assess, score, and
+ * ElasticDashEvaluator is designed for observing evaluation systems that assess, score, and
  * validate the quality of AI outputs, content, or system performance. It captures evaluation
  * criteria, scoring methodologies, benchmark comparisons, and quality metrics, making it
  * essential for AI system validation, content moderation, and performance monitoring.
@@ -1072,13 +1074,13 @@ type LangfuseEvaluatorParams = {
  * ```
  *
  * @see {@link startObservation} with `{ asType: 'evaluator' }` - Factory function
- * @see {@link LangfuseGeneration} - For LLM outputs being evaluated
- * @see {@link LangfuseGuardrail} - For safety and compliance enforcement
+ * @see {@link ElasticDashGeneration} - For LLM outputs being evaluated
+ * @see {@link ElasticDashGuardrail} - For safety and compliance enforcement
  *
  * @public
  */
-export class LangfuseEvaluator extends LangfuseBaseObservation {
-  constructor(params: LangfuseEvaluatorParams) {
+export class ElasticDashEvaluator extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashEvaluatorParams) {
     super({ ...params, type: "evaluator" });
   }
 
@@ -1088,22 +1090,24 @@ export class LangfuseEvaluator extends LangfuseBaseObservation {
    * @param attributes - Evaluator attributes to set
    * @returns This evaluator for method chaining
    */
-  public update(attributes: LangfuseEvaluatorAttributes): LangfuseEvaluator {
+  public update(
+    attributes: ElasticDashEvaluatorAttributes,
+  ): ElasticDashEvaluator {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseGuardrailParams = {
+type ElasticDashGuardrailParams = {
   otelSpan: Span;
-  attributes?: LangfuseGuardrailAttributes;
+  attributes?: ElasticDashGuardrailAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking safety checks and compliance enforcement.
  *
- * LangfuseGuardrail is designed for observing safety and compliance systems that prevent,
+ * ElasticDashGuardrail is designed for observing safety and compliance systems that prevent,
  * detect, and mitigate harmful, inappropriate, or policy-violating content and behaviors
  * in AI applications. It captures safety policies, violation detection, risk assessment,
  * and mitigation actions, ensuring responsible AI deployment and regulatory compliance.
@@ -1152,13 +1156,13 @@ type LangfuseGuardrailParams = {
  * ```
  *
  * @see {@link startObservation} with `{ asType: 'guardrail' }` - Factory function
- * @see {@link LangfuseEvaluator} - For detailed quality and safety assessment
- * @see {@link LangfuseGeneration} - For protecting LLM outputs with guardrails
+ * @see {@link ElasticDashEvaluator} - For detailed quality and safety assessment
+ * @see {@link ElasticDashGeneration} - For protecting LLM outputs with guardrails
  *
  * @public
  */
-export class LangfuseGuardrail extends LangfuseBaseObservation {
-  constructor(params: LangfuseGuardrailParams) {
+export class ElasticDashGuardrail extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashGuardrailParams) {
     super({ ...params, type: "guardrail" });
   }
 
@@ -1168,7 +1172,9 @@ export class LangfuseGuardrail extends LangfuseBaseObservation {
    * @param attributes - Guardrail attributes to set
    * @returns This guardrail for method chaining
    */
-  public update(attributes: LangfuseGuardrailAttributes): LangfuseGuardrail {
+  public update(
+    attributes: ElasticDashGuardrailAttributes,
+  ): ElasticDashGuardrail {
     super.updateOtelSpanAttributes(attributes);
 
     return this;
@@ -1176,19 +1182,19 @@ export class LangfuseGuardrail extends LangfuseBaseObservation {
 }
 
 /**
- * Parameters for creating a Langfuse generation.
+ * Parameters for creating a ElasticDash generation.
  *
  * @internal
  */
-type LangfuseGenerationParams = {
+type ElasticDashGenerationParams = {
   otelSpan: Span;
-  attributes?: LangfuseGenerationAttributes;
+  attributes?: ElasticDashGenerationAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking LLM interactions, AI model calls, and text generation.
  *
- * LangfuseGeneration is purpose-built for observing AI model interactions, providing rich
+ * ElasticDashGeneration is purpose-built for observing AI model interactions, providing rich
  * metadata capture for prompts, completions, model parameters, token usage, and costs.
  * It's the go-to observation type for any operation involving language models, chat APIs,
  * completion APIs, or other generative AI services.
@@ -1286,32 +1292,32 @@ type LangfuseGenerationParams = {
  *
  * @see {@link startObservation} with `{ asType: 'generation' }` - Factory function
  * @see {@link startActiveObservation} with `{ asType: 'generation' }` - Function-scoped generation
- * @see {@link LangfuseSpan} - For general-purpose operations
- * @see {@link LangfuseEmbedding} - For text embedding and vector operations
+ * @see {@link ElasticDashSpan} - For general-purpose operations
+ * @see {@link ElasticDashEmbedding} - For text embedding and vector operations
  *
  * @public
  */
-export class LangfuseGeneration extends LangfuseBaseObservation {
-  constructor(params: LangfuseGenerationParams) {
+export class ElasticDashGeneration extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashGenerationParams) {
     super({ ...params, type: "generation" });
   }
 
-  update(attributes: LangfuseGenerationAttributes): LangfuseGeneration {
+  update(attributes: ElasticDashGenerationAttributes): ElasticDashGeneration {
     this.updateOtelSpanAttributes(attributes);
 
     return this;
   }
 }
 
-type LangfuseEmbeddingParams = {
+type ElasticDashEmbeddingParams = {
   otelSpan: Span;
-  attributes?: LangfuseEmbeddingAttributes;
+  attributes?: ElasticDashEmbeddingAttributes;
 };
 
 /**
  * Specialized observation wrapper for tracking text embedding and vector generation operations.
  *
- * LangfuseEmbedding is designed for observing embedding model interactions that convert
+ * ElasticDashEmbedding is designed for observing embedding model interactions that convert
  * text, images, or other content into high-dimensional vector representations. It captures
  * embedding model parameters, input preprocessing, vector characteristics, and performance
  * metrics, making it essential for semantic search, RAG systems, and similarity-based applications.
@@ -1371,13 +1377,13 @@ type LangfuseEmbeddingParams = {
  * ```
  *
  * @see {@link startObservation} with `{ asType: 'embedding' }` - Factory function
- * @see {@link LangfuseRetriever} - For using embeddings in vector search
- * @see {@link LangfuseGeneration} - For LLM operations that may use embeddings
+ * @see {@link ElasticDashRetriever} - For using embeddings in vector search
+ * @see {@link ElasticDashGeneration} - For LLM operations that may use embeddings
  *
  * @public
  */
-export class LangfuseEmbedding extends LangfuseBaseObservation {
-  constructor(params: LangfuseEmbeddingParams) {
+export class ElasticDashEmbedding extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashEmbeddingParams) {
     super({ ...params, type: "embedding" });
   }
 
@@ -1387,7 +1393,7 @@ export class LangfuseEmbedding extends LangfuseBaseObservation {
    * @param attributes - Embedding attributes to set
    * @returns This embedding for method chaining
    */
-  update(attributes: LangfuseEmbeddingAttributes): LangfuseEmbedding {
+  update(attributes: ElasticDashEmbeddingAttributes): ElasticDashEmbedding {
     this.updateOtelSpanAttributes(attributes);
 
     return this;
@@ -1395,18 +1401,18 @@ export class LangfuseEmbedding extends LangfuseBaseObservation {
 }
 
 /**
- * Parameters for creating a Langfuse event.
+ * Parameters for creating a ElasticDash event.
  *
  * @internal
  */
-type LangfuseEventParams = {
+type ElasticDashEventParams = {
   otelSpan: Span;
-  attributes?: LangfuseEventAttributes;
+  attributes?: ElasticDashEventAttributes;
   timestamp: TimeInput;
 };
 
 /**
- * Langfuse event wrapper for point-in-time observations.
+ * ElasticDash event wrapper for point-in-time observations.
  *
  * Events represent instantaneous occurrences or log entries within a trace.
  * Unlike spans and generations, they don't have duration and are automatically
@@ -1414,8 +1420,8 @@ type LangfuseEventParams = {
  *
  * @public
  */
-export class LangfuseEvent extends LangfuseBaseObservation {
-  constructor(params: LangfuseEventParams) {
+export class ElasticDashEvent extends ElasticDashBaseObservation {
+  constructor(params: ElasticDashEventParams) {
     super({ ...params, type: "event" });
 
     // Events are automatically ended at their timestamp

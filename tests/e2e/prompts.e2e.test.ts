@@ -4,7 +4,7 @@ import {
   MessagesPlaceholder,
 } from "@langchain/core/prompts";
 import {
-  LangfuseClient,
+  ElasticDashClient,
   ChatPromptClient,
   TextPromptClient,
   ChatMessageType,
@@ -16,16 +16,16 @@ import type {
 import { nanoid } from "nanoid";
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
-describe("Langfuse Prompts E2E", () => {
-  let langfuse: LangfuseClient;
+describe("ElasticDash Prompts E2E", () => {
+  let elasticdash: ElasticDashClient;
 
   beforeEach(async () => {
-    langfuse = new LangfuseClient();
+    elasticdash = new ElasticDashClient();
   });
 
   describe("prompts", () => {
     it("should create a prompt", async () => {
-      const createdPrompt = await langfuse.prompt.create({
+      const createdPrompt = await elasticdash.prompt.create({
         name: "test-prompt",
         prompt: "This is a prompt with a {{variable}}",
         labels: ["production"],
@@ -43,7 +43,7 @@ describe("Langfuse Prompts E2E", () => {
     });
 
     it("should create a chat prompt", async () => {
-      const createdPrompt = await langfuse.prompt.create({
+      const createdPrompt = await elasticdash.prompt.create({
         name: "test-chat-prompt",
         type: "chat",
         prompt: [
@@ -71,7 +71,7 @@ describe("Langfuse Prompts E2E", () => {
     });
 
     it("should create a chat prompt with placeholders", async () => {
-      const createdPrompt = await langfuse.prompt.create({
+      const createdPrompt = await elasticdash.prompt.create({
         name: "test-prompt-placeholder",
         type: "chat",
         prompt: [
@@ -110,7 +110,7 @@ describe("Langfuse Prompts E2E", () => {
     });
 
     it("should create prompt with tags", async () => {
-      const createdPrompt = await langfuse.prompt.create({
+      const createdPrompt = await elasticdash.prompt.create({
         name: "test-prompt-tags",
         prompt: "This is a prompt with a {{variable}}",
         tags: ["tag1", "tag2"],
@@ -123,7 +123,7 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should get a prompt by name only", async () => {
       // First create a prompt
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-get-prompt",
         prompt: "This is a test prompt with {{variable}}",
         config: { temperature: 0.5 },
@@ -131,7 +131,7 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       // Then retrieve it
-      const retrievedPrompt = await langfuse.prompt.get("test-get-prompt");
+      const retrievedPrompt = await elasticdash.prompt.get("test-get-prompt");
 
       expect(retrievedPrompt).toBeInstanceOf(TextPromptClient);
       expect(retrievedPrompt.name).toBe("test-get-prompt");
@@ -143,7 +143,7 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should get a prompt by name only with getPrompt", async () => {
       // First create a prompt
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-get-prompt",
         prompt: "This is a test prompt with {{variable}}",
         config: { temperature: 0.5 },
@@ -151,7 +151,7 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       // Then retrieve it
-      const retrievedPrompt = await langfuse.getPrompt("test-get-prompt");
+      const retrievedPrompt = await elasticdash.getPrompt("test-get-prompt");
 
       expect(retrievedPrompt).toBeInstanceOf(TextPromptClient);
       expect(retrievedPrompt.name).toBe("test-get-prompt");
@@ -163,14 +163,14 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should get a prompt with name and version", async () => {
       // First create a prompt
-      const createdPrompt = await langfuse.prompt.create({
+      const createdPrompt = await elasticdash.prompt.create({
         name: "test-get-prompt-version",
         prompt: "This is version 1",
         config: { temperature: 0.5 },
       });
 
       // Then retrieve it by version
-      const retrievedPrompt = await langfuse.prompt.get(
+      const retrievedPrompt = await elasticdash.prompt.get(
         "test-get-prompt-version",
         {
           version: createdPrompt.version,
@@ -187,7 +187,7 @@ describe("Langfuse Prompts E2E", () => {
       // This test needs to be adapted since we can't easily control network timing in E2E
       // We'll test that the timeout option is accepted without error
       await expect(
-        langfuse.prompt.get("non-existent-prompt", {
+        elasticdash.prompt.get("non-existent-prompt", {
           fetchTimeoutMs: 300,
           maxRetries: 2,
         }),
@@ -196,7 +196,7 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should fetch and cache a prompt when not in cache", async () => {
       // Create a prompt first
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-cache-prompt",
         prompt: "This is a cached prompt with {{variable}}",
         config: { temperature: 0.7 },
@@ -204,7 +204,7 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       // Get it (should fetch and cache)
-      const result = await langfuse.prompt.get("test-cache-prompt");
+      const result = await elasticdash.prompt.get("test-cache-prompt");
 
       expect(result).toBeInstanceOf(TextPromptClient);
       expect(result.name).toBe("test-cache-prompt");
@@ -216,27 +216,27 @@ describe("Langfuse Prompts E2E", () => {
       const promptName = "test-cache-prompt-versioned-" + nanoid();
 
       // Create two prompts first
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: promptName,
         prompt: "This is a cached prompt with {{variable}}",
         config: { temperature: 0.7 },
         labels: ["production"],
       });
 
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: promptName,
         prompt: "This is a cached prompt with {{variable}}",
         config: { temperature: 0.7 },
       });
 
       // Get it (should fetch and cache)
-      const result = await langfuse.prompt.get(promptName);
+      const result = await elasticdash.prompt.get(promptName);
 
       expect(result).toBeInstanceOf(TextPromptClient);
       expect(result.name).toBe(promptName);
       expect(result.version).toBe(1);
 
-      const result2 = await langfuse.prompt.get(promptName, {
+      const result2 = await elasticdash.prompt.get(promptName, {
         version: 2,
       });
 
@@ -247,24 +247,24 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should throw an error if prompt not found", async () => {
       await expect(
-        langfuse.prompt.get("non-existent-prompt"),
+        elasticdash.prompt.get("non-existent-prompt"),
       ).rejects.toThrow();
     });
 
     it("should return cached prompt if not expired", async () => {
       // Create a prompt
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-cached-prompt",
         prompt: "Original prompt",
         labels: ["production"],
       });
 
       // Spy on the API get method to count network calls
-      const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+      const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
       // Get it twice - second call should use cache
-      const result1 = await langfuse.prompt.get("test-cached-prompt");
-      const result2 = await langfuse.prompt.get("test-cached-prompt");
+      const result1 = await elasticdash.prompt.get("test-cached-prompt");
+      const result2 = await elasticdash.prompt.get("test-cached-prompt");
 
       expect(result1.name).toBe(result2.name);
       expect(result1.prompt).toBe(result2.prompt);
@@ -279,19 +279,19 @@ describe("Langfuse Prompts E2E", () => {
     it("should return cached prompt if not expired according to custom TTL", async () => {
       const cacheTtlSeconds = 60; // 1 minute
 
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-custom-ttl",
         prompt: "Custom TTL prompt",
         labels: ["production"],
       });
 
       // Spy on the API get method to count network calls
-      const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+      const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
-      const result1 = await langfuse.prompt.get("test-custom-ttl", {
+      const result1 = await elasticdash.prompt.get("test-custom-ttl", {
         cacheTtlSeconds,
       });
-      const result2 = await langfuse.prompt.get("test-custom-ttl", {
+      const result2 = await elasticdash.prompt.get("test-custom-ttl", {
         cacheTtlSeconds,
       });
 
@@ -305,20 +305,20 @@ describe("Langfuse Prompts E2E", () => {
     });
 
     it("should always fetch latest version of prompt if cacheTtlSeconds is 0", async () => {
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-no-cache",
         prompt: "No cache prompt",
         labels: ["production"],
       });
 
       // Spy on the API get method to count network calls
-      const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+      const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
       // Both calls should fetch fresh data
-      const result1 = await langfuse.prompt.get("test-no-cache", {
+      const result1 = await elasticdash.prompt.get("test-no-cache", {
         cacheTtlSeconds: 0,
       });
-      const result2 = await langfuse.prompt.get("test-no-cache", {
+      const result2 = await elasticdash.prompt.get("test-no-cache", {
         cacheTtlSeconds: 0,
       });
 
@@ -333,20 +333,20 @@ describe("Langfuse Prompts E2E", () => {
 
     it("should not make network call when prompt is already cached", async () => {
       // Create a prompt
-      await langfuse.prompt.create({
+      await elasticdash.prompt.create({
         name: "test-already-cached",
         prompt: "Already cached prompt",
         labels: ["production"],
       });
 
       // First call to populate cache
-      await langfuse.prompt.get("test-already-cached");
+      await elasticdash.prompt.get("test-already-cached");
 
       // Now spy on API calls for subsequent requests
-      const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+      const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
       // This call should use cache and make no network request
-      const cachedResult = await langfuse.prompt.get("test-already-cached");
+      const cachedResult = await elasticdash.prompt.get("test-already-cached");
 
       expect(cachedResult.name).toBe("test-already-cached");
       expect(cachedResult.prompt).toBe("Already cached prompt");
@@ -360,14 +360,14 @@ describe("Langfuse Prompts E2E", () => {
     describe("update method", () => {
       it("should update prompt labels successfully", async () => {
         // Create initial prompt
-        const initialPrompt = await langfuse.prompt.create({
+        const initialPrompt = await elasticdash.prompt.create({
           name: "test-update-prompt",
           prompt: "Initial prompt content",
           labels: ["production"],
         });
 
         // Update the labels
-        const updatedPrompt = await langfuse.prompt.update({
+        const updatedPrompt = await elasticdash.prompt.update({
           name: "test-update-prompt",
           version: initialPrompt.version,
           newLabels: ["production", "staging", "testing"],
@@ -381,27 +381,27 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should invalidate cache after update", async () => {
         // Create and cache a prompt
-        const initialPrompt = await langfuse.prompt.create({
+        const initialPrompt = await elasticdash.prompt.create({
           name: "test-cache-invalidation",
           prompt: "Original content",
           labels: ["production"],
         });
 
         // Get it to populate cache
-        const cachedPrompt = await langfuse.prompt.get(
+        const cachedPrompt = await elasticdash.prompt.get(
           "test-cache-invalidation",
         );
         expect(cachedPrompt.labels).toContain("production");
 
         // Update the prompt labels
-        await langfuse.prompt.update({
+        await elasticdash.prompt.update({
           name: "test-cache-invalidation",
           version: initialPrompt.version,
           newLabels: ["production", "updated"],
         });
 
         // Get it again - should fetch fresh data, not cached
-        const freshPrompt = await langfuse.prompt.get(
+        const freshPrompt = await elasticdash.prompt.get(
           "test-cache-invalidation",
         );
         expect(freshPrompt.labels).toContain("updated");
@@ -409,13 +409,13 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should handle update with additional labels", async () => {
-        const initialPrompt = await langfuse.prompt.create({
+        const initialPrompt = await elasticdash.prompt.create({
           name: "test-single-label-update",
           prompt: "Test content",
           labels: ["production"],
         });
 
-        const updatedPrompt = await langfuse.prompt.update({
+        const updatedPrompt = await elasticdash.prompt.update({
           name: "test-single-label-update",
           version: initialPrompt.version,
           newLabels: ["production", "staging"],
@@ -427,7 +427,7 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should throw error when updating non-existent prompt", async () => {
         await expect(
-          langfuse.prompt.update({
+          elasticdash.prompt.update({
             name: "non-existent-prompt",
             version: 1,
             newLabels: ["production"],
@@ -436,14 +436,14 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should throw error when updating with wrong version", async () => {
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "test-wrong-version",
           prompt: "Test content",
           labels: ["production"],
         });
 
         await expect(
-          langfuse.prompt.update({
+          elasticdash.prompt.update({
             name: "test-wrong-version",
             version: 999, // Wrong version
             newLabels: ["production", "updated"],
@@ -456,7 +456,7 @@ describe("Langfuse Prompts E2E", () => {
       it("should delete prompt and invalidate cache", async () => {
         const promptName = "folder/test-delete-prompt-" + nanoid();
 
-        const createdPrompt = await langfuse.prompt.create({
+        const createdPrompt = await elasticdash.prompt.create({
           name: promptName,
           prompt: "This prompt will be deleted",
           labels: ["production"],
@@ -465,17 +465,17 @@ describe("Langfuse Prompts E2E", () => {
         expect(createdPrompt.name).toBe(promptName);
 
         // make it cache
-        const cachedPrompt = await langfuse.prompt.get(promptName);
+        const cachedPrompt = await elasticdash.prompt.get(promptName);
         expect(cachedPrompt.name).toBe(promptName);
         expect(cachedPrompt.prompt).toBe("This prompt will be deleted");
 
         // was cache invalidated?
-        const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+        const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
-        await langfuse.prompt.delete(promptName);
+        await elasticdash.prompt.delete(promptName);
 
         // should now make API call to try an get the prompt as not in cache
-        await expect(langfuse.prompt.get(promptName)).rejects.toThrow();
+        await expect(elasticdash.prompt.get(promptName)).rejects.toThrow();
         expect(fetchSpy).toHaveBeenCalled();
 
         fetchSpy.mockRestore();
@@ -485,33 +485,33 @@ describe("Langfuse Prompts E2E", () => {
         const promptName = "folder/subfolder/test-delete-version-" + nanoid();
 
         // Create version 1
-        const v1 = await langfuse.prompt.create({
+        const v1 = await elasticdash.prompt.create({
           name: promptName,
           prompt: "Version 1",
           labels: ["production"],
         });
 
         // Create version 2
-        const v2 = await langfuse.prompt.create({
+        const v2 = await elasticdash.prompt.create({
           name: promptName,
           prompt: "Version 2",
           labels: ["staging"],
         });
 
         // Cache both versions
-        await langfuse.prompt.get(promptName, { version: v1.version });
-        await langfuse.prompt.get(promptName, { version: v2.version });
+        await elasticdash.prompt.get(promptName, { version: v1.version });
+        await elasticdash.prompt.get(promptName, { version: v2.version });
 
         // Delete version 1 only
-        await langfuse.prompt.delete(promptName, { version: v1.version });
+        await elasticdash.prompt.delete(promptName, { version: v1.version });
 
         // Version 1 should be gone
         await expect(
-          langfuse.prompt.get(promptName, { version: v1.version }),
+          elasticdash.prompt.get(promptName, { version: v1.version }),
         ).rejects.toThrow();
 
         // Version 2 should still exist (and come from cache or fresh fetch)
-        const remainingPrompt = await langfuse.prompt.get(promptName, {
+        const remainingPrompt = await elasticdash.prompt.get(promptName, {
           version: v2.version,
         });
         expect(remainingPrompt.version).toBe(2);
@@ -520,14 +520,14 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should throw error when deleting non-existent prompt", async () => {
         await expect(
-          langfuse.prompt.delete("non-existent/prompt-" + nanoid()),
+          elasticdash.prompt.delete("non-existent/prompt-" + nanoid()),
         ).rejects.toThrow();
       });
     });
 
     describe("fallback behavior", () => {
       it("should use text fallback when prompt not found", async () => {
-        const result = await langfuse.prompt.get(
+        const result = await elasticdash.prompt.get(
           "non-existent-fallback-prompt",
           {
             fallback: "This is a fallback prompt with {{variable}}",
@@ -550,10 +550,13 @@ describe("Langfuse Prompts E2E", () => {
           { role: "user", content: "Hello {{name}}" },
         ];
 
-        const result = await langfuse.prompt.get("non-existent-chat-fallback", {
-          fallback: fallbackMessages,
-          type: "chat",
-        });
+        const result = await elasticdash.prompt.get(
+          "non-existent-chat-fallback",
+          {
+            fallback: fallbackMessages,
+            type: "chat",
+          },
+        );
 
         expect(result).toBeInstanceOf(ChatPromptClient);
         expect(result.name).toBe("non-existent-chat-fallback");
@@ -568,13 +571,13 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should prefer server prompt over fallback when available", async () => {
         // Create a real prompt
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "real-vs-fallback",
           prompt: "Real server prompt",
           labels: ["production"],
         });
 
-        const result = await langfuse.prompt.get("real-vs-fallback", {
+        const result = await elasticdash.prompt.get("real-vs-fallback", {
           fallback: "This is a fallback",
           type: "text",
         });
@@ -585,7 +588,7 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should throw error when no fallback provided and prompt not found", async () => {
         await expect(
-          langfuse.prompt.get("definitely-does-not-exist"),
+          elasticdash.prompt.get("definitely-does-not-exist"),
         ).rejects.toThrow();
       });
     });
@@ -595,7 +598,7 @@ describe("Langfuse Prompts E2E", () => {
         const testConfig = { temperature: 0.8, model: "gpt-4" };
         const testTags = ["integration", "test"];
 
-        const createdPrompt = await langfuse.prompt.create({
+        const createdPrompt = await elasticdash.prompt.create({
           name: "server-integrity-test",
           prompt: "Server integrity test content with {{variable}}",
           labels: ["production"],
@@ -604,7 +607,7 @@ describe("Langfuse Prompts E2E", () => {
         });
 
         // Verify via server API directly
-        const serverPrompt = await langfuse.api.prompts.get(
+        const serverPrompt = await elasticdash.api.prompts.get(
           "server-integrity-test",
         );
 
@@ -625,14 +628,14 @@ describe("Langfuse Prompts E2E", () => {
           { role: "user", content: "Help with {{task}}" },
         ];
 
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "server-chat-integrity",
           type: "chat",
           prompt: chatMessages,
           labels: ["production"],
         });
 
-        const serverPrompt = await langfuse.api.prompts.get(
+        const serverPrompt = await elasticdash.api.prompts.get(
           "server-chat-integrity",
         );
 
@@ -649,20 +652,21 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should maintain data consistency after updates", async () => {
-        const initialPrompt = await langfuse.prompt.create({
+        const initialPrompt = await elasticdash.prompt.create({
           name: "consistency-test",
           prompt: "Initial content",
           labels: ["production"],
           config: { temperature: 0.5 },
         });
 
-        await langfuse.prompt.update({
+        await elasticdash.prompt.update({
           name: "consistency-test",
           version: initialPrompt.version,
           newLabels: ["production", "updated"],
         });
 
-        const serverPrompt = await langfuse.api.prompts.get("consistency-test");
+        const serverPrompt =
+          await elasticdash.api.prompts.get("consistency-test");
         expect(serverPrompt.labels).toContain("updated");
         expect(serverPrompt.labels).toContain("production");
         expect(serverPrompt.config).toEqual({ temperature: 0.5 });
@@ -672,13 +676,13 @@ describe("Langfuse Prompts E2E", () => {
 
     describe("custom label handling", () => {
       it("should create and retrieve prompts with custom labels", async () => {
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "custom-label-test",
           prompt: "Custom label content",
           labels: ["staging", "experimental"],
         });
 
-        const result = await langfuse.prompt.get("custom-label-test", {
+        const result = await elasticdash.prompt.get("custom-label-test", {
           label: "staging",
         });
 
@@ -688,7 +692,7 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should handle prompts without production label", async () => {
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "no-production-label",
           prompt: "No production label content",
           labels: ["development"],
@@ -696,11 +700,11 @@ describe("Langfuse Prompts E2E", () => {
 
         // Should not find with default (production) label
         await expect(
-          langfuse.prompt.get("no-production-label"),
+          elasticdash.prompt.get("no-production-label"),
         ).rejects.toThrow();
 
         // Should find with explicit label
-        const result = await langfuse.prompt.get("no-production-label", {
+        const result = await elasticdash.prompt.get("no-production-label", {
           label: "development",
         });
         expect(result.labels).toContain("development");
@@ -708,21 +712,21 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should prioritize version over label in cache key", async () => {
-        const prompt1 = await langfuse.prompt.create({
+        const prompt1 = await elasticdash.prompt.create({
           name: "version-priority-test",
           prompt: "Version 1 content",
           labels: ["production"],
         });
 
         // Update to create version 2 with different label
-        await langfuse.prompt.update({
+        await elasticdash.prompt.update({
           name: "version-priority-test",
           version: prompt1.version,
           newLabels: ["staging"],
         });
 
         // Get by version should work regardless of current labels
-        const resultByVersion = await langfuse.prompt.get(
+        const resultByVersion = await elasticdash.prompt.get(
           "version-priority-test",
           {
             version: prompt1.version,
@@ -731,7 +735,7 @@ describe("Langfuse Prompts E2E", () => {
         expect(resultByVersion.prompt).toBe("Version 1 content");
 
         // Get by new label should work
-        const resultByLabel = await langfuse.prompt.get(
+        const resultByLabel = await elasticdash.prompt.get(
           "version-priority-test",
           {
             label: "staging",
@@ -747,21 +751,21 @@ describe("Langfuse Prompts E2E", () => {
     describe("concurrent cache behavior", () => {
       it("should prevent multiple concurrent cache refreshes", async () => {
         // Create a prompt that will be cached
-        await langfuse.prompt.create({
+        await elasticdash.prompt.create({
           name: "concurrent-test",
           prompt: "Concurrent test content",
           labels: ["production"],
         });
 
         // Get it once to populate cache
-        await langfuse.prompt.get("concurrent-test");
+        await elasticdash.prompt.get("concurrent-test");
 
         // Mock the cache to be expired
-        const cacheKey = langfuse.prompt["cache"].createKey({
+        const cacheKey = elasticdash.prompt["cache"].createKey({
           name: "concurrent-test",
         });
         const cachedItem =
-          langfuse.prompt["cache"].getIncludingExpired(cacheKey);
+          elasticdash.prompt["cache"].getIncludingExpired(cacheKey);
         if (cachedItem) {
           // Force expiry by setting expiry time to past
           cachedItem["_expiry"] = Date.now() - 1000;
@@ -769,16 +773,16 @@ describe("Langfuse Prompts E2E", () => {
 
         // Spy on the API call to count requests
         const fetchSpy = vi.spyOn(
-          langfuse.prompt,
+          elasticdash.prompt,
           "fetchPromptAndUpdateCache" as any,
         );
 
         // Make multiple concurrent requests
         const promises = [
-          langfuse.prompt.get("concurrent-test"),
-          langfuse.prompt.get("concurrent-test"),
-          langfuse.prompt.get("concurrent-test"),
-          langfuse.prompt.get("concurrent-test"),
+          elasticdash.prompt.get("concurrent-test"),
+          elasticdash.prompt.get("concurrent-test"),
+          elasticdash.prompt.get("concurrent-test"),
+          elasticdash.prompt.get("concurrent-test"),
         ];
 
         const results = await Promise.all(promises);
@@ -800,7 +804,7 @@ describe("Langfuse Prompts E2E", () => {
       it("should handle network timeout gracefully", async () => {
         // This test verifies the timeout mechanism works
         await expect(
-          langfuse.prompt.get("timeout-test", {
+          elasticdash.prompt.get("timeout-test", {
             fetchTimeoutMs: 1, // Very short timeout
             maxRetries: 1,
           }),
@@ -811,7 +815,7 @@ describe("Langfuse Prompts E2E", () => {
         // Empty prompt names should either throw or be handled gracefully
         // This test verifies the behavior is consistent
         try {
-          await langfuse.prompt.get("");
+          await elasticdash.prompt.get("");
           // If it doesn't throw, that's fine - just verify it's handled
         } catch (error) {
           // If it throws, that's also fine - just verify it throws an appropriate error
@@ -821,7 +825,7 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should handle invalid version numbers", async () => {
         await expect(
-          langfuse.prompt.get("test", { version: -1 }),
+          elasticdash.prompt.get("test", { version: -1 }),
         ).rejects.toThrow();
       });
 
@@ -852,14 +856,14 @@ describe("Langfuse Prompts E2E", () => {
         for (const name of specialNames) {
           try {
             // Test creation with special characters
-            await langfuse.prompt.create({
+            await elasticdash.prompt.create({
               name,
               prompt: `Test prompt for special name: ${name}`,
               labels: ["production"],
             });
 
             // Test retrieval with special characters
-            const retrieved = await langfuse.prompt.get(name);
+            const retrieved = await elasticdash.prompt.get(name);
             expect(retrieved.name).toBe(name);
             expect(retrieved.prompt).toBe(
               `Test prompt for special name: ${name}`,
@@ -894,7 +898,7 @@ describe("Langfuse Prompts E2E", () => {
         });
 
         try {
-          await langfuse.prompt.get("test-prompt-retry", {
+          await elasticdash.prompt.get("test-prompt-retry", {
             maxRetries: 3,
           });
         } catch (error) {
@@ -907,10 +911,10 @@ describe("Langfuse Prompts E2E", () => {
       });
 
       it("should respect maxRetries=0 and not retry", async () => {
-        const fetchSpy = vi.spyOn(langfuse.prompt.apiClient.prompts, "get");
+        const fetchSpy = vi.spyOn(elasticdash.prompt.apiClient.prompts, "get");
 
         try {
-          await langfuse.prompt.get("non-existent-no-retry-test", {
+          await elasticdash.prompt.get("non-existent-no-retry-test", {
             maxRetries: 0,
             fetchTimeoutMs: 100,
           });
@@ -933,7 +937,7 @@ describe("Langfuse Prompts E2E", () => {
         // Create the prompt after a short delay (simulating network recovery)
         setTimeout(async () => {
           try {
-            await langfuse.prompt.create({
+            await elasticdash.prompt.create({
               name: testPromptName,
               prompt: "Created after retry",
               labels: ["production"],
@@ -945,7 +949,7 @@ describe("Langfuse Prompts E2E", () => {
 
         // Try to get it immediately (should fail initially, then succeed on retry)
         try {
-          const result = await langfuse.prompt.get(testPromptName, {
+          const result = await elasticdash.prompt.get(testPromptName, {
             maxRetries: 5,
             fetchTimeoutMs: 1000, // Longer timeout to allow creation
           });
@@ -962,13 +966,13 @@ describe("Langfuse Prompts E2E", () => {
         const veryLongName = "a".repeat(500); // 500 character name
 
         try {
-          await langfuse.prompt.create({
+          await elasticdash.prompt.create({
             name: veryLongName,
             prompt: "Test with very long name",
             labels: ["production"],
           });
 
-          const retrieved = await langfuse.prompt.get(veryLongName);
+          const retrieved = await elasticdash.prompt.get(veryLongName);
           expect(retrieved.name).toBe(veryLongName);
         } catch (error) {
           // Long names might not be supported - ensure graceful error
@@ -978,7 +982,7 @@ describe("Langfuse Prompts E2E", () => {
 
       it("should handle malformed configuration gracefully", async () => {
         try {
-          await langfuse.prompt.create({
+          await elasticdash.prompt.create({
             name: "malformed-config-test",
             prompt: "Test prompt",
             labels: ["production"],
@@ -1026,7 +1030,7 @@ describe("Langfuse Prompts E2E", () => {
         const expected = testPrompts[i].expected;
 
         // Create a new prompt
-        const langfusePrompt = new TextPromptClient({
+        const elasticDashPrompt = new TextPromptClient({
           name: `test_${i}`,
           version: 1,
           prompt: testPrompt,
@@ -1041,10 +1045,10 @@ describe("Langfuse Prompts E2E", () => {
 
         // Convert to Langchain prompt
         const langchainPrompt = ChatPromptTemplate.fromTemplate(
-          langfusePrompt.getLangchainPrompt(),
+          elasticDashPrompt.getLangchainPrompt(),
         );
 
-        // langfuse
+        // elasticdash
         const message = await langchainPrompt.format(values);
         expect(message).toBe(expected);
       }
@@ -1102,7 +1106,7 @@ describe("Langfuse Prompts E2E", () => {
         const expected = testPrompts[i].expected;
 
         // Create a new prompt
-        const langfusePrompt = new ChatPromptClient({
+        const elasticDashPrompt = new ChatPromptClient({
           name: `test_${i}`,
           version: 1,
           prompt: testPrompt.map((msg) => ({
@@ -1120,7 +1124,7 @@ describe("Langfuse Prompts E2E", () => {
 
         // Convert to Langchain prompt
         const langchainPrompt = ChatPromptTemplate.fromMessages(
-          langfusePrompt
+          elasticDashPrompt
             .getLangchainPrompt()
             .map((m: any) => [m.role, m.content]),
         );

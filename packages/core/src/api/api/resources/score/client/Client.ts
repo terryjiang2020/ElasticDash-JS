@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace Score {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace Score {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -63,14 +63,14 @@ export class Score {
   /**
    * Create a score (supports both trace and session scores)
    *
-   * @param {LangfuseAPI.CreateScoreRequest} request
+   * @param {ElasticDashAPI.CreateScoreRequest} request
    * @param {Score.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.score.create({
@@ -90,30 +90,31 @@ export class Score {
    *     })
    */
   public create(
-    request: LangfuseAPI.CreateScoreRequest,
+    request: ElasticDashAPI.CreateScoreRequest,
     requestOptions?: Score.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.CreateScoreResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.CreateScoreResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__create(request, requestOptions),
     );
   }
 
   private async __create(
-    request: LangfuseAPI.CreateScoreRequest,
+    request: ElasticDashAPI.CreateScoreRequest,
     requestOptions?: Score.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.CreateScoreResponse>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.CreateScoreResponse>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -138,7 +139,7 @@ export class Score {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.CreateScoreResponse,
+        data: _response.body as ElasticDashAPI.CreateScoreResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -146,32 +147,32 @@ export class Score {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -181,17 +182,17 @@ export class Score {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/scores.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -201,14 +202,14 @@ export class Score {
   /**
    * Delete a score (supports both trace and session scores)
    *
-   * @param {string} scoreId - The unique langfuse identifier of a score
+   * @param {string} scoreId - The unique elasticdash identifier of a score
    * @param {Score.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.score.delete("scoreId")
@@ -230,14 +231,15 @@ export class Score {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -264,32 +266,32 @@ export class Score {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -299,17 +301,17 @@ export class Score {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling DELETE /api/public/scores/{scoreId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

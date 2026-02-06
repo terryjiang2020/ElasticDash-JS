@@ -1,7 +1,7 @@
 import {
   Evaluator,
   ExperimentTask,
-  LangfuseClient,
+  ElasticDashClient,
   RunEvaluator,
   createEvaluatorFromAutoevals,
 } from "@elasticdash/client";
@@ -18,8 +18,8 @@ import {
   type ServerTestEnvironment,
 } from "./helpers/serverSetup.js";
 
-describe("Langfuse Datasets E2E", () => {
-  let langfuse: LangfuseClient;
+describe("ElasticDash Datasets E2E", () => {
+  let elasticdash: ElasticDashClient;
   let testEnv: ServerTestEnvironment;
 
   const dataset = [
@@ -117,16 +117,16 @@ describe("Langfuse Datasets E2E", () => {
 
   beforeEach(async () => {
     testEnv = await setupServerTestEnvironment();
-    langfuse = new LangfuseClient();
+    elasticdash = new ElasticDashClient();
   });
 
   afterEach(async () => {
     await teardownServerTestEnvironment(testEnv);
-    await langfuse.flush();
+    await elasticdash.flush();
   });
 
   it("should run an experiment on local dataset", async () => {
-    const result = await langfuse.experiment.run({
+    const result = await elasticdash.experiment.run({
       name: "Euro capitals",
       description: "Country capital experiment",
       data: dataset,
@@ -186,10 +186,10 @@ describe("Langfuse Datasets E2E", () => {
     });
   });
 
-  it("should run an experiment on a langfuse dataset", async () => {
+  it("should run an experiment on a elasticdash dataset", async () => {
     // create remote dataset
     const datasetName = "euro-capitals-" + nanoid();
-    await langfuse.api.datasets.create({
+    await elasticdash.api.datasets.create({
       name: datasetName,
       description: "Collection of euro countries and capitals",
     });
@@ -197,11 +197,11 @@ describe("Langfuse Datasets E2E", () => {
     // create remote dataset items
     await Promise.all(
       dataset.map((item) =>
-        langfuse.api.datasetItems.create({ datasetName, ...item }),
+        elasticdash.api.datasetItems.create({ datasetName, ...item }),
       ),
     );
 
-    const fetchedDataset = await langfuse.dataset.get(datasetName);
+    const fetchedDataset = await elasticdash.dataset.get(datasetName);
 
     const experimentName = "Euro capitals on LF dataset";
     const result = await fetchedDataset.runExperiment({
@@ -261,7 +261,7 @@ describe("Langfuse Datasets E2E", () => {
     });
 
     // Fetch dataset run from API and validate against database
-    const datasetRun = await langfuse.api.datasets.getRun(
+    const datasetRun = await elasticdash.api.datasets.getRun(
       datasetName,
       result.runName,
     );
@@ -302,7 +302,7 @@ describe("Langfuse Datasets E2E", () => {
   it("should support custom runName parameter", async () => {
     // create remote dataset
     const datasetName = "custom-run-name-test-" + nanoid();
-    await langfuse.api.datasets.create({
+    await elasticdash.api.datasets.create({
       name: datasetName,
       description: "Test custom run names",
     });
@@ -312,11 +312,11 @@ describe("Langfuse Datasets E2E", () => {
       dataset
         .slice(0, 2)
         .map((item) =>
-          langfuse.api.datasetItems.create({ datasetName, ...item }),
+          elasticdash.api.datasetItems.create({ datasetName, ...item }),
         ),
     );
 
-    const fetchedDataset = await langfuse.dataset.get(datasetName);
+    const fetchedDataset = await elasticdash.dataset.get(datasetName);
 
     const customRunName = "Custom Run Name " + nanoid();
     const result = await fetchedDataset.runExperiment({
@@ -335,7 +335,7 @@ describe("Langfuse Datasets E2E", () => {
     expect(result.datasetRunId).toBeDefined();
 
     // Fetch dataset run and verify it has the custom name
-    const datasetRun = await langfuse.api.datasets.getRun(
+    const datasetRun = await elasticdash.api.datasets.getRun(
       datasetName,
       customRunName,
     );
@@ -351,7 +351,7 @@ describe("Langfuse Datasets E2E", () => {
 
   it("should support custom runName with local datasets", async () => {
     const customRunName = "Local Custom Run " + nanoid();
-    const result = await langfuse.experiment.run({
+    const result = await elasticdash.experiment.run({
       name: "Local Test Experiment",
       runName: customRunName,
       description: "Testing custom run name with local data",
@@ -377,7 +377,7 @@ describe("Langfuse Datasets E2E", () => {
         throw new Error("Evaluator failed");
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Error test",
         description: "Test evaluator error handling",
         data: dataset.slice(0, 1), // Just one item
@@ -403,7 +403,7 @@ describe("Langfuse Datasets E2E", () => {
       };
 
       // The experiment should handle the task failure gracefully by skipping the failed item
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Task error test",
         description: "Test task error handling",
         data: dataset.slice(0, 1),
@@ -427,7 +427,7 @@ describe("Langfuse Datasets E2E", () => {
         return `Capital of ${input}`;
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Mixed task results test",
         description: "Test mixed success/failure handling",
         data: dataset.slice(0, 2), // Germany and France
@@ -449,7 +449,7 @@ describe("Langfuse Datasets E2E", () => {
         throw new Error("Run evaluator failed");
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Run evaluator error test",
         description: "Test run evaluator error handling",
         data: dataset.slice(0, 1),
@@ -470,7 +470,7 @@ describe("Langfuse Datasets E2E", () => {
   // Edge Cases Tests
   describe("Edge Cases", () => {
     it("should handle empty dataset", async () => {
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Empty dataset test",
         description: "Test empty dataset handling",
         data: [],
@@ -494,7 +494,7 @@ describe("Langfuse Datasets E2E", () => {
         { input: "Spain", expectedOutput: "Madrid" }, // Complete
       ];
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Incomplete data test",
         description: "Test incomplete dataset handling",
         data: incompleteDataset,
@@ -520,7 +520,7 @@ describe("Langfuse Datasets E2E", () => {
         expectedOutput: `Capital ${i}`,
       }));
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Large dataset test",
         description: "Test performance with larger dataset",
         data: largeDataset,
@@ -560,7 +560,7 @@ describe("Langfuse Datasets E2E", () => {
         };
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Single evaluation test",
         description: "Test single evaluation return",
         data: dataset.slice(0, 2),
@@ -592,7 +592,7 @@ describe("Langfuse Datasets E2E", () => {
         };
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Single run evaluation test",
         description: "Test single run evaluation return",
         data: dataset.slice(0, 2),
@@ -612,7 +612,7 @@ describe("Langfuse Datasets E2E", () => {
     });
 
     it("should support format with includeItemResults option", async () => {
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Format options test",
         description: "Test format options",
         data: dataset,
@@ -666,7 +666,7 @@ describe("Langfuse Datasets E2E", () => {
         expectedOutput: `Expected ${i}`,
       }));
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Concurrency test",
         description: "Test maxConcurrency parameter",
         data: testData,
@@ -696,7 +696,7 @@ describe("Langfuse Datasets E2E", () => {
       };
 
       const start = Date.now();
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Mixed speed evaluators test",
         description: "Test evaluators with different execution times",
         data: dataset.slice(0, 2),
@@ -724,19 +724,19 @@ describe("Langfuse Datasets E2E", () => {
   describe("Data Persistence and API Integration", () => {
     it("should persist scores correctly", async () => {
       const datasetName = "score-persistence-test-" + nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
       const testItem = {
         input: "Test input",
         expectedOutput: "Test output",
       };
 
-      const createdItem = await langfuse.api.datasetItems.create({
+      const createdItem = await elasticdash.api.datasetItems.create({
         datasetName,
         ...testItem,
       });
 
-      const fetchedDataset = await langfuse.dataset.get(datasetName);
+      const fetchedDataset = await elasticdash.dataset.get(datasetName);
 
       const testEvaluator: Evaluator = async () => ({
         name: "persistence-test-eval",
@@ -762,7 +762,7 @@ describe("Langfuse Datasets E2E", () => {
       await waitForServerIngestion(3000);
 
       // Validate scores are persisted
-      const datasetRun = await langfuse.api.datasets.getRun(
+      const datasetRun = await elasticdash.api.datasets.getRun(
         datasetName,
         result.runName,
       );
@@ -777,17 +777,17 @@ describe("Langfuse Datasets E2E", () => {
 
     it("should handle multiple experiments on same dataset", async () => {
       const datasetName = "multi-experiment-test-" + nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
       await Promise.all(
         dataset
           .slice(0, 2)
           .map((item) =>
-            langfuse.api.datasetItems.create({ datasetName, ...item }),
+            elasticdash.api.datasetItems.create({ datasetName, ...item }),
           ),
       );
 
-      const fetchedDataset = await langfuse.dataset.get(datasetName);
+      const fetchedDataset = await elasticdash.dataset.get(datasetName);
 
       // Run first experiment
       const result1 = await fetchedDataset.runExperiment({
@@ -817,11 +817,11 @@ describe("Langfuse Datasets E2E", () => {
       expect(result1.datasetRunId).not.toBe(result2.datasetRunId);
 
       // Validate both runs exist in database
-      const run1 = await langfuse.api.datasets.getRun(
+      const run1 = await elasticdash.api.datasets.getRun(
         datasetName,
         result1.runName,
       );
-      const run2 = await langfuse.api.datasets.getRun(
+      const run2 = await elasticdash.api.datasets.getRun(
         datasetName,
         result2.runName,
       );
@@ -833,15 +833,15 @@ describe("Langfuse Datasets E2E", () => {
 
     it("should preserve dataset run metadata", async () => {
       const datasetName = "metadata-test-" + nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName,
         input: "Test",
         expectedOutput: "Test output",
       });
 
-      const fetchedDataset = await langfuse.dataset.get(datasetName);
+      const fetchedDataset = await elasticdash.dataset.get(datasetName);
 
       const result = await fetchedDataset.runExperiment({
         name: "Metadata test experiment",
@@ -860,7 +860,7 @@ describe("Langfuse Datasets E2E", () => {
       await testEnv.spanProcessor.forceFlush();
       await waitForServerIngestion(2000);
 
-      const datasetRun = await langfuse.api.datasets.getRun(
+      const datasetRun = await elasticdash.api.datasets.getRun(
         datasetName,
         result.runName,
       );
@@ -876,7 +876,7 @@ describe("Langfuse Datasets E2E", () => {
   // Different Evaluator Configurations Tests
   describe("Different Evaluator Configurations", () => {
     it("should work with no evaluators", async () => {
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "No evaluators test",
         description: "Test experiment with no evaluators",
         data: dataset.slice(0, 2),
@@ -903,7 +903,7 @@ describe("Langfuse Datasets E2E", () => {
         comment: `Run-level evaluation of ${itemResults.length} items`,
       });
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Only run evaluators test",
         description: "Test with only run evaluators",
         data: dataset.slice(0, 3),
@@ -945,7 +945,7 @@ describe("Langfuse Datasets E2E", () => {
         };
       };
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Mixed sync/async evaluators test",
         description: "Test mix of sync and async evaluators",
         data: dataset.slice(0, 2),
@@ -982,7 +982,7 @@ describe("Langfuse Datasets E2E", () => {
         dataType: "BOOLEAN",
       });
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Different data types test",
         description: "Test evaluators with different return value types",
         data: dataset.slice(0, 1),
@@ -1032,7 +1032,7 @@ describe("Langfuse Datasets E2E", () => {
         },
       ];
 
-      const result = await langfuse.experiment.run({
+      const result = await elasticdash.experiment.run({
         name: "Complex evaluator test",
         description: "Test evaluators with complex metadata",
         data: dataset.slice(0, 1),

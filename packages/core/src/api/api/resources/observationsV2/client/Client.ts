@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace ObservationsV2 {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace ObservationsV2 {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -86,31 +86,31 @@ export class ObservationsV2 {
    * Multiple filtering options are available via query parameters or the structured `filter` parameter.
    * When using the `filter` parameter, it takes precedence over individual query parameter filters.
    *
-   * @param {LangfuseAPI.GetObservationsV2Request} request
+   * @param {ElasticDashAPI.GetObservationsV2Request} request
    * @param {ObservationsV2.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.observationsV2.getMany()
    */
   public getMany(
-    request: LangfuseAPI.GetObservationsV2Request = {},
+    request: ElasticDashAPI.GetObservationsV2Request = {},
     requestOptions?: ObservationsV2.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.ObservationsV2Response> {
+  ): core.HttpResponsePromise<ElasticDashAPI.ObservationsV2Response> {
     return core.HttpResponsePromise.fromPromise(
       this.__getMany(request, requestOptions),
     );
   }
 
   private async __getMany(
-    request: LangfuseAPI.GetObservationsV2Request = {},
+    request: ElasticDashAPI.GetObservationsV2Request = {},
     requestOptions?: ObservationsV2.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.ObservationsV2Response>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.ObservationsV2Response>> {
     const {
       fields,
       expandMetadata,
@@ -205,14 +205,15 @@ export class ObservationsV2 {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -234,7 +235,7 @@ export class ObservationsV2 {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.ObservationsV2Response,
+        data: _response.body as ElasticDashAPI.ObservationsV2Response,
         rawResponse: _response.rawResponse,
       };
     }
@@ -242,32 +243,32 @@ export class ObservationsV2 {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -277,17 +278,17 @@ export class ObservationsV2 {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/v2/observations.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

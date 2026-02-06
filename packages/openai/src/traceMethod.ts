@@ -1,4 +1,4 @@
-import { LangfuseGeneration, startObservation } from "@elasticdash/tracing";
+import { ElasticDashGeneration, startObservation } from "@elasticdash/tracing";
 import type OpenAI from "openai";
 
 import {
@@ -20,15 +20,15 @@ import { isAsyncIterable } from "./utils.js";
 type GenericMethod = (...args: unknown[]) => unknown;
 
 /**
- * Wraps a method with Langfuse tracing functionality.
+ * Wraps a method with ElasticDash tracing functionality.
  *
  * This function creates a wrapper around OpenAI SDK methods that automatically
- * creates Langfuse generations, captures input/output data, handles streaming
+ * creates ElasticDash generations, captures input/output data, handles streaming
  * responses, and records usage metrics and errors.
  *
  * @param tracedMethod - The OpenAI SDK method to wrap with tracing
  * @param config - Configuration for the trace and generation
- * @returns A wrapped version of the method that creates Langfuse traces
+ * @returns A wrapped version of the method that creates ElasticDash traces
  *
  * @internal
  */
@@ -42,12 +42,12 @@ export const withTracing = <T extends GenericMethod>(
 /**
  * Internal method that handles the actual tracing logic for OpenAI SDK methods.
  *
- * This function creates a Langfuse generation, executes the original method,
+ * This function creates a ElasticDash generation, executes the original method,
  * and captures all relevant data including input, output, usage, and errors.
  * It handles both streaming and non-streaming responses appropriately.
  *
  * @param tracedMethod - The original OpenAI SDK method to execute
- * @param config - Langfuse configuration options
+ * @param config - ElasticDash configuration options
  * @param args - Arguments to pass to the original method
  * @returns The result from the original method, potentially wrapped for streaming
  *
@@ -75,7 +75,7 @@ const wrapMethod = <T extends GenericMethod>(
       model,
       input,
       modelParameters: finalModelParams,
-      prompt: config?.langfusePrompt,
+      prompt: config?.elasticDashPrompt,
       metadata: finalMetadata,
     },
     {
@@ -162,21 +162,21 @@ const wrapMethod = <T extends GenericMethod>(
 };
 
 /**
- * Wraps an async iterable (streaming response) with Langfuse tracing.
+ * Wraps an async iterable (streaming response) with ElasticDash tracing.
  *
  * This function handles streaming OpenAI responses by collecting chunks,
- * parsing usage information, and updating the Langfuse generation with
+ * parsing usage information, and updating the ElasticDash generation with
  * the complete output and usage details once the stream is consumed.
  *
  * @param iterable - The async iterable from OpenAI (streaming response)
- * @param generation - The Langfuse generation to update with stream data
+ * @param generation - The ElasticDash generation to update with stream data
  * @returns An async generator that yields original chunks while collecting data
  *
  * @internal
  */
 function wrapAsyncIterable<R>(
   iterable: AsyncIterable<unknown>,
-  generation: LangfuseGeneration,
+  generation: ElasticDashGeneration,
 ): R {
   async function* tracedOutputGenerator(): AsyncGenerator<
     unknown,

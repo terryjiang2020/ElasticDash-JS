@@ -1,5 +1,5 @@
 /**
- * Attribute propagation utilities for Langfuse OpenTelemetry integration.
+ * Attribute propagation utilities for ElasticDash OpenTelemetry integration.
  *
  * This module provides the `propagateAttributes` function for setting trace-level
  * attributes (userId, sessionId, metadata) that automatically propagate to all child spans
@@ -16,7 +16,7 @@ import {
 
 import {
   ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelSpanAttributes,
 } from "./constants.js";
 import { getGlobalLogger } from "./logger/index.js";
 
@@ -50,27 +50,29 @@ type PropagatedExperimentAttributes = {
   experimentItemRootObservationId: string;
 };
 
-export const LangfuseOtelContextKeys: Record<PropagatedKey, symbol> = {
-  userId: createContextKey("langfuse_user_id"),
-  sessionId: createContextKey("langfuse_session_id"),
-  metadata: createContextKey("langfuse_metadata"),
-  version: createContextKey("langfuse_version"),
-  tags: createContextKey("langfuse_tags"),
-  traceName: createContextKey("langfuse_trace_name"),
+export const ElasticDashOtelContextKeys: Record<PropagatedKey, symbol> = {
+  userId: createContextKey("elasticdash_user_id"),
+  sessionId: createContextKey("elasticdash_session_id"),
+  metadata: createContextKey("elasticdash_metadata"),
+  version: createContextKey("elasticdash_version"),
+  tags: createContextKey("elasticdash_tags"),
+  traceName: createContextKey("elasticdash_trace_name"),
 
   // Experiments
-  experimentId: createContextKey("langfuse_experiment_id"),
-  experimentName: createContextKey("langfuse_experiment_name"),
-  experimentMetadata: createContextKey("langfuse_experiment_metadata"),
-  experimentDatasetId: createContextKey("langfuse_experiment_dataset_id"),
-  experimentItemId: createContextKey("langfuse_experiment_item_id"),
-  experimentItemMetadata: createContextKey("langfuse_experiment_item_metadata"),
+  experimentId: createContextKey("elasticdash_experiment_id"),
+  experimentName: createContextKey("elasticdash_experiment_name"),
+  experimentMetadata: createContextKey("elasticdash_experiment_metadata"),
+  experimentDatasetId: createContextKey("elasticdash_experiment_dataset_id"),
+  experimentItemId: createContextKey("elasticdash_experiment_item_id"),
+  experimentItemMetadata: createContextKey(
+    "elasticdash_experiment_item_metadata",
+  ),
   experimentItemRootObservationId: createContextKey(
-    "langfuse_experiment_item_root_observation_id",
+    "elasticdash_experiment_item_root_observation_id",
   ),
 };
 
-const ELASTICDASH_BAGGAGE_PREFIX = "langfuse_";
+const ELASTICDASH_BAGGAGE_PREFIX = "elasticdash_";
 const ELASTICDASH_BAGGAGE_TAGS_SEPARATOR = ",";
 
 /**
@@ -131,9 +133,9 @@ export interface PropagateAttributesParams {
   asBaggage?: boolean;
 
   /**
-   * **INTERNAL USE ONLY** - For Langfuse experiment framework.
+   * **INTERNAL USE ONLY** - For ElasticDash experiment framework.
    *
-   * This parameter is used internally by the Langfuse experiment system to propagate
+   * This parameter is used internally by the ElasticDash experiment system to propagate
    * experiment context to child spans. It should NOT be used by external code.
    *
    * @internal
@@ -153,7 +155,7 @@ export interface PropagateAttributesParams {
  * currently active span and spans created after entering this context will have these
  * attributes. Pre-existing spans will NOT be retroactively updated.
  *
- * **Why this matters**: Langfuse aggregation queries (e.g., total cost by userId,
+ * **Why this matters**: ElasticDash aggregation queries (e.g., total cost by userId,
  * filtering by sessionId) only include observations that have the attribute set.
  * If you call `propagateAttributes` late in your workflow, earlier spans won't be
  * included in aggregations for that attribute.
@@ -422,45 +424,45 @@ export function getPropagatedAttributesFromContext(
   }
 
   // Handle OTEL context values
-  const userId = context.getValue(LangfuseOtelContextKeys["userId"]);
+  const userId = context.getValue(ElasticDashOtelContextKeys["userId"]);
   if (userId && typeof userId === "string") {
     const spanKey = getSpanKeyForPropagatedKey("userId");
 
     propagatedAttributes[spanKey] = userId;
   }
 
-  const sessionId = context.getValue(LangfuseOtelContextKeys["sessionId"]);
+  const sessionId = context.getValue(ElasticDashOtelContextKeys["sessionId"]);
   if (sessionId && typeof sessionId === "string") {
     const spanKey = getSpanKeyForPropagatedKey("sessionId");
 
     propagatedAttributes[spanKey] = sessionId;
   }
 
-  const version = context.getValue(LangfuseOtelContextKeys["version"]);
+  const version = context.getValue(ElasticDashOtelContextKeys["version"]);
   if (version && typeof version === "string") {
     const spanKey = getSpanKeyForPropagatedKey("version");
 
     propagatedAttributes[spanKey] = version;
   }
 
-  const traceName = context.getValue(LangfuseOtelContextKeys["traceName"]);
+  const traceName = context.getValue(ElasticDashOtelContextKeys["traceName"]);
   if (traceName && typeof traceName === "string") {
     const spanKey = getSpanKeyForPropagatedKey("traceName");
 
     propagatedAttributes[spanKey] = traceName;
   }
 
-  const tags = context.getValue(LangfuseOtelContextKeys["tags"]);
+  const tags = context.getValue(ElasticDashOtelContextKeys["tags"]);
   if (tags && Array.isArray(tags)) {
     const spanKey = getSpanKeyForPropagatedKey("tags");
 
     propagatedAttributes[spanKey] = tags;
   }
 
-  const metadata = context.getValue(LangfuseOtelContextKeys["metadata"]);
+  const metadata = context.getValue(ElasticDashOtelContextKeys["metadata"]);
   if (metadata && typeof metadata === "object" && metadata !== null) {
     for (const [k, v] of Object.entries(metadata)) {
-      const spanKey = `${LangfuseOtelSpanAttributes.TRACE_METADATA}.${k}`;
+      const spanKey = `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.${k}`;
 
       propagatedAttributes[spanKey] = String(v);
     }
@@ -468,7 +470,7 @@ export function getPropagatedAttributesFromContext(
 
   // Extract experiment attributes
   for (const key of experimentKeys) {
-    const contextKey = LangfuseOtelContextKeys[key];
+    const contextKey = ElasticDashOtelContextKeys[key];
     const value = context.getValue(contextKey);
 
     if (value && typeof value === "string") {
@@ -483,7 +485,7 @@ export function getPropagatedAttributesFromContext(
       getSpanKeyForPropagatedKey("experimentItemRootObservationId")
     ]
   ) {
-    propagatedAttributes[LangfuseOtelSpanAttributes.ENVIRONMENT] =
+    propagatedAttributes[ElasticDashOtelSpanAttributes.ENVIRONMENT] =
       ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT;
   }
 
@@ -534,7 +536,7 @@ function setPropagatedAttribute(params: SetPropagatedAttributeParams): Context {
     if (key === "metadata") {
       for (const [k, v] of Object.entries(mergedMetadata)) {
         span.setAttribute(
-          `${LangfuseOtelSpanAttributes.TRACE_METADATA}.${k}`,
+          `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.${k}`,
           v,
         );
       }
@@ -572,7 +574,7 @@ function setPropagatedAttribute(params: SetPropagatedAttributeParams): Context {
 }
 
 function getContextMergedTags(context: Context, newTags: string[]): string[] {
-  const existingTags = context.getValue(LangfuseOtelContextKeys["tags"]);
+  const existingTags = context.getValue(ElasticDashOtelContextKeys["tags"]);
 
   if (existingTags && Array.isArray(existingTags)) {
     return [...new Set([...existingTags, ...newTags])];
@@ -586,7 +588,7 @@ function getContextMergedMetadata(
   newMetadata: Record<string, string>,
 ): Record<string, string> {
   const existingMetadata = context.getValue(
-    LangfuseOtelContextKeys["metadata"],
+    ElasticDashOtelContextKeys["metadata"],
   );
 
   if (
@@ -627,37 +629,37 @@ function isValidPropagatedString(params: {
 }
 
 function getContextKeyForPropagatedKey(key: PropagatedKey): symbol {
-  return LangfuseOtelContextKeys[key];
+  return ElasticDashOtelContextKeys[key];
 }
 
 function getSpanKeyForPropagatedKey(key: PropagatedKey): string {
   switch (key) {
     case "userId":
-      return LangfuseOtelSpanAttributes.TRACE_USER_ID;
+      return ElasticDashOtelSpanAttributes.TRACE_USER_ID;
     case "sessionId":
-      return LangfuseOtelSpanAttributes.TRACE_SESSION_ID;
+      return ElasticDashOtelSpanAttributes.TRACE_SESSION_ID;
     case "version":
-      return LangfuseOtelSpanAttributes.VERSION;
+      return ElasticDashOtelSpanAttributes.VERSION;
     case "traceName":
-      return LangfuseOtelSpanAttributes.TRACE_NAME;
+      return ElasticDashOtelSpanAttributes.TRACE_NAME;
     case "metadata":
-      return LangfuseOtelSpanAttributes.TRACE_METADATA;
+      return ElasticDashOtelSpanAttributes.TRACE_METADATA;
     case "tags":
-      return LangfuseOtelSpanAttributes.TRACE_TAGS;
+      return ElasticDashOtelSpanAttributes.TRACE_TAGS;
     case "experimentId":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_ID;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_ID;
     case "experimentName":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_NAME;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_NAME;
     case "experimentMetadata":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_METADATA;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_METADATA;
     case "experimentDatasetId":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_DATASET_ID;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_DATASET_ID;
     case "experimentItemId":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID;
     case "experimentItemMetadata":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_METADATA;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_METADATA;
     case "experimentItemRootObservationId":
-      return LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ROOT_OBSERVATION_ID;
+      return ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ROOT_OBSERVATION_ID;
     default: {
       const fallback: never = key;
 
@@ -709,11 +711,11 @@ function getSpanKeyFromBaggageKey(baggageKey: string): string | undefined {
 
   const suffix = baggageKey.slice(ELASTICDASH_BAGGAGE_PREFIX.length);
 
-  // Metadata keys have format: langfuse_metadata_{key_name}
+  // Metadata keys have format: elasticdash_metadata_{key_name}
   if (suffix.startsWith("metadata_")) {
     const metadataKey = suffix.slice("metadata_".length);
 
-    return `${LangfuseOtelSpanAttributes.TRACE_METADATA}.${metadataKey}`;
+    return `${ElasticDashOtelSpanAttributes.TRACE_METADATA}.${metadataKey}`;
   }
 
   switch (suffix) {

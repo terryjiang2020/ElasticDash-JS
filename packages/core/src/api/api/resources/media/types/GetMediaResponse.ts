@@ -3,7 +3,7 @@
  */
 
 export interface GetMediaResponse {
-  /** The unique langfuse identifier of a media record */
+  /** The unique elasticdash identifier of a media record */
   mediaId: string;
   /** The MIME type of the media record */
   contentType: string;

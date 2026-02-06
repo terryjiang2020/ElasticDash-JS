@@ -5,23 +5,23 @@ import {
 } from "@elasticdash/core";
 import { TracerProvider, trace } from "@opentelemetry/api";
 
-const ELASTICDASH_GLOBAL_SYMBOL = Symbol.for("langfuse");
+const ELASTICDASH_GLOBAL_SYMBOL = Symbol.for("elasticdash");
 
-type LangfuseGlobalState = {
+type ElasticDashGlobalState = {
   isolatedTracerProvider: TracerProvider | null;
 };
 
-function createState(): LangfuseGlobalState {
+function createState(): ElasticDashGlobalState {
   return {
     isolatedTracerProvider: null,
   };
 }
 
 interface GlobalThis {
-  [ELASTICDASH_GLOBAL_SYMBOL]?: LangfuseGlobalState;
+  [ELASTICDASH_GLOBAL_SYMBOL]?: ElasticDashGlobalState;
 }
 
-function getGlobalState(): LangfuseGlobalState {
+function getGlobalState(): ElasticDashGlobalState {
   const initialState = createState();
 
   try {
@@ -56,9 +56,9 @@ function getGlobalState(): LangfuseGlobalState {
 }
 
 /**
- * Sets an isolated TracerProvider for Langfuse tracing operations.
+ * Sets an isolated TracerProvider for ElasticDash tracing operations.
  *
- * This allows Langfuse to use its own TracerProvider instance, separate from
+ * This allows ElasticDash to use its own TracerProvider instance, separate from
  * the global OpenTelemetry TracerProvider. This is useful for avoiding conflicts
  * with other OpenTelemetry instrumentation in the application.
  *
@@ -82,45 +82,45 @@ function getGlobalState(): LangfuseGlobalState {
  * @example
  * ```typescript
  * import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
- * import { LangfuseSpanProcessor } from '@elasticdash/otel';
- * import { setLangfuseTracerProvider } from '@elasticdash/tracing';
+ * import { ElasticDashSpanProcessor } from '@elasticdash/otel';
+ * import { setElasticDashTracerProvider } from '@elasticdash/tracing';
  *
  * // Create provider with span processors in constructor
  * const provider = new NodeTracerProvider({
- *   spanProcessors: [new LangfuseSpanProcessor()]
+ *   spanProcessors: [new ElasticDashSpanProcessor()]
  * });
  *
- * setLangfuseTracerProvider(provider);
+ * setElasticDashTracerProvider(provider);
  *
- * // Note: Spans created with getLangfuseTracer() may still inherit
+ * // Note: Spans created with getElasticDashTracer() may still inherit
  * // context from spans created with the global tracer
  * ```
  *
  * @param provider - The TracerProvider instance to use, or null to clear the isolated provider
  * @public
  */
-export function setLangfuseTracerProvider(provider: TracerProvider | null) {
+export function setElasticDashTracerProvider(provider: TracerProvider | null) {
   getGlobalState().isolatedTracerProvider = provider;
 }
 
 /**
- * Gets the TracerProvider for Langfuse tracing operations.
+ * Gets the TracerProvider for ElasticDash tracing operations.
  *
- * Returns the isolated TracerProvider if one has been set via setLangfuseTracerProvider(),
+ * Returns the isolated TracerProvider if one has been set via setElasticDashTracerProvider(),
  * otherwise falls back to the global OpenTelemetry TracerProvider.
  *
  * @example
  * ```typescript
- * import { getLangfuseTracerProvider } from '@elasticdash/tracing';
+ * import { getElasticDashTracerProvider } from '@elasticdash/tracing';
  *
- * const provider = getLangfuseTracerProvider();
+ * const provider = getElasticDashTracerProvider();
  * const tracer = provider.getTracer('my-tracer', '1.0.0');
  * ```
  *
- * @returns The TracerProvider instance to use for Langfuse tracing
+ * @returns The TracerProvider instance to use for ElasticDash tracing
  * @public
  */
-export function getLangfuseTracerProvider(): TracerProvider {
+export function getElasticDashTracerProvider(): TracerProvider {
   const { isolatedTracerProvider } = getGlobalState();
 
   if (isolatedTracerProvider) return isolatedTracerProvider;
@@ -129,26 +129,26 @@ export function getLangfuseTracerProvider(): TracerProvider {
 }
 
 /**
- * Gets the OpenTelemetry tracer instance for Langfuse.
+ * Gets the OpenTelemetry tracer instance for ElasticDash.
  *
- * This function returns a tracer specifically configured for Langfuse
+ * This function returns a tracer specifically configured for ElasticDash
  * with the correct tracer name and version. Used internally by all
- * Langfuse tracing functions to ensure consistent trace creation.
+ * ElasticDash tracing functions to ensure consistent trace creation.
  *
- * @returns The Langfuse OpenTelemetry tracer instance
+ * @returns The ElasticDash OpenTelemetry tracer instance
  *
  * @example
  * ```typescript
- * import { getLangfuseTracer } from '@elasticdash/tracing';
+ * import { getElasticDashTracer } from '@elasticdash/tracing';
  *
- * const tracer = getLangfuseTracer();
+ * const tracer = getElasticDashTracer();
  * const span = tracer.startSpan('my-operation');
  * ```
  *
  * @public
  */
-export function getLangfuseTracer() {
-  return getLangfuseTracerProvider().getTracer(
+export function getElasticDashTracer() {
+  return getElasticDashTracerProvider().getTracer(
     ELASTICDASH_TRACER_NAME,
     ELASTICDASH_SDK_VERSION,
   );

@@ -1,4 +1,4 @@
-type LangfuseEnvVar =
+type ElasticDashEnvVar =
   | "ELASTICDASH_PUBLIC_KEY"
   | "ELASTICDASH_SECRET_KEY"
   | "ELASTICDASH_BASE_URL"
@@ -10,7 +10,7 @@ type LangfuseEnvVar =
   | "ELASTICDASH_RELEASE"
   | "ELASTICDASH_TRACING_ENVIRONMENT";
 
-export function getEnv(key: LangfuseEnvVar): string | undefined {
+export function getEnv(key: ElasticDashEnvVar): string | undefined {
   if (typeof process !== "undefined" && process.env[key]) {
     return process.env[key];
   } else if (typeof globalThis !== "undefined") {

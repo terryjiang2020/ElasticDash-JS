@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace MetricsV2 {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace MetricsV2 {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -61,7 +61,7 @@ export class MetricsV2 {
   }
 
   /**
-   * Get metrics from the Langfuse project using a query object. V2 endpoint with optimized performance.
+   * Get metrics from the ElasticDash project using a query object. V2 endpoint with optimized performance.
    *
    * ## V2 Differences
    * - Supports `observations`, `scores-numeric`, and `scores-categorical` views only (traces view not supported)
@@ -69,7 +69,7 @@ export class MetricsV2 {
    * - Backwards-compatible: traceName, traceRelease, traceVersion dimensions are still available on observations view
    * - High cardinality dimensions are not supported and will return a 400 error (see below)
    *
-   * For more details, see the [Metrics API documentation](https://langfuse.com/docs/metrics/features/metrics-api).
+   * For more details, see the [Metrics API documentation](https://elasticdash.com/docs/metrics/features/metrics-api).
    *
    * ## Available Views
    *
@@ -163,14 +163,14 @@ export class MetricsV2 {
    * Available granularities for timeDimension: `auto`, `minute`, `hour`, `day`, `week`, `month`
    * - `auto` bins the data into approximately 50 buckets based on the time range
    *
-   * @param {LangfuseAPI.GetMetricsV2Request} request
+   * @param {ElasticDashAPI.GetMetricsV2Request} request
    * @param {MetricsV2.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.metricsV2.metrics({
@@ -178,18 +178,18 @@ export class MetricsV2 {
    *     })
    */
   public metrics(
-    request: LangfuseAPI.GetMetricsV2Request,
+    request: ElasticDashAPI.GetMetricsV2Request,
     requestOptions?: MetricsV2.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.MetricsV2Response> {
+  ): core.HttpResponsePromise<ElasticDashAPI.MetricsV2Response> {
     return core.HttpResponsePromise.fromPromise(
       this.__metrics(request, requestOptions),
     );
   }
 
   private async __metrics(
-    request: LangfuseAPI.GetMetricsV2Request,
+    request: ElasticDashAPI.GetMetricsV2Request,
     requestOptions?: MetricsV2.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.MetricsV2Response>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.MetricsV2Response>> {
     const { query } = request;
     const _queryParams: Record<
       string,
@@ -200,14 +200,15 @@ export class MetricsV2 {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -229,7 +230,7 @@ export class MetricsV2 {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.MetricsV2Response,
+        data: _response.body as ElasticDashAPI.MetricsV2Response,
         rawResponse: _response.rawResponse,
       };
     }
@@ -237,32 +238,32 @@ export class MetricsV2 {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -272,17 +273,17 @@ export class MetricsV2 {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/v2/metrics.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

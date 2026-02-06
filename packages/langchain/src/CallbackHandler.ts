@@ -1,10 +1,10 @@
 import { getGlobalLogger } from "@elasticdash/core";
 import {
   startObservation,
-  LangfuseGeneration,
-  LangfuseSpan,
-  LangfuseGenerationAttributes,
-  LangfuseSpanAttributes,
+  ElasticDashGeneration,
+  ElasticDashSpan,
+  ElasticDashGenerationAttributes,
+  ElasticDashSpanAttributes,
 } from "@elasticdash/tracing";
 import type { AgentAction, AgentFinish } from "@langchain/core/agents";
 import { BaseCallbackHandler } from "@langchain/core/callbacks/base";
@@ -23,7 +23,7 @@ import type { ChainValues } from "@langchain/core/utils/types";
 
 const LANGSMITH_HIDDEN_TAG = "langsmith:hidden";
 
-type LangfusePrompt = {
+type ElasticDashPrompt = {
   name: string;
   version: number;
   isFallback: boolean;
@@ -49,7 +49,7 @@ type ConstructorParams = {
 };
 
 export class CallbackHandler extends BaseCallbackHandler {
-  name = "LangfuseCallbackHandler";
+  name = "ElasticDashCallbackHandler";
 
   private userId?: string;
   private version?: string;
@@ -59,7 +59,8 @@ export class CallbackHandler extends BaseCallbackHandler {
 
   private completionStartTimes: Record<string, Date> = {};
   private promptToParentRunMap;
-  private runMap: Map<string, LangfuseSpan | LangfuseGeneration> = new Map();
+  private runMap: Map<string, ElasticDashSpan | ElasticDashGeneration> =
+    new Map();
 
   public last_trace_id: string | null = null;
 
@@ -72,7 +73,7 @@ export class CallbackHandler extends BaseCallbackHandler {
     this.traceMetadata = params?.traceMetadata;
     this.version = params?.version;
 
-    this.promptToParentRunMap = new Map<string, LangfusePrompt>();
+    this.promptToParentRunMap = new Map<string, ElasticDashPrompt>();
   }
 
   get logger() {
@@ -109,7 +110,7 @@ export class CallbackHandler extends BaseCallbackHandler {
 
       const runName = name ?? chain.id.at(-1)?.toString() ?? "Langchain Run";
 
-      this.registerLangfusePrompt(parentRunId, metadata);
+      this.registerElasticDashPrompt(parentRunId, metadata);
 
       // In chains, inputs can be a string or an array of BaseMessage
       let finalInput: string | ChainValues = inputs;
@@ -159,15 +160,15 @@ export class CallbackHandler extends BaseCallbackHandler {
           tags: traceTags,
           userId:
             metadata &&
-            "langfuseUserId" in metadata &&
-            typeof metadata["langfuseUserId"] === "string"
-              ? metadata["langfuseUserId"]
+            "elasticDashUserId" in metadata &&
+            typeof metadata["elasticDashUserId"] === "string"
+              ? metadata["elasticDashUserId"]
               : this.userId,
           sessionId:
             metadata &&
-            "langfuseSessionId" in metadata &&
-            typeof metadata["langfuseSessionId"] === "string"
-              ? metadata["langfuseSessionId"]
+            "elasticDashSessionId" in metadata &&
+            typeof metadata["elasticDashSessionId"] === "string"
+              ? metadata["elasticDashSessionId"]
               : this.sessionId,
           metadata: this.traceMetadata,
           version: this.version,
@@ -295,7 +296,7 @@ export class CallbackHandler extends BaseCallbackHandler {
       parentRunId ?? "root",
     );
     if (registeredPrompt && parentRunId) {
-      this.deregisterLangfusePrompt(parentRunId);
+      this.deregisterElasticDashPrompt(parentRunId);
     }
 
     this.startAndRegisterOtelSpan({
@@ -381,7 +382,7 @@ export class CallbackHandler extends BaseCallbackHandler {
           output: finalOutput,
         },
       });
-      this.deregisterLangfusePrompt(runId);
+      this.deregisterElasticDashPrompt(runId);
     } catch (e) {
       this.logger.debug(e instanceof Error ? e.message : String(e));
     }
@@ -658,7 +659,7 @@ export class CallbackHandler extends BaseCallbackHandler {
     }
   }
 
-  private registerLangfusePrompt(
+  private registerElasticDashPrompt(
     parentRunId?: string,
     metadata?: Record<string, unknown>,
   ): void {
@@ -669,15 +670,15 @@ export class CallbackHandler extends BaseCallbackHandler {
     For the simplest chain, a parent run is always created to wrap the individual runs consisting of prompt template formatting and LLM invocation.
     So, we do not need to register any prompt for linking if parentRunId is missing.
     */
-    if (metadata && "langfusePrompt" in metadata && parentRunId) {
+    if (metadata && "elasticDashPrompt" in metadata && parentRunId) {
       this.promptToParentRunMap.set(
         parentRunId,
-        metadata.langfusePrompt as LangfusePrompt,
+        metadata.elasticDashPrompt as ElasticDashPrompt,
       );
     }
   }
 
-  private deregisterLangfusePrompt(runId: string): void {
+  private deregisterElasticDashPrompt(runId: string): void {
     this.promptToParentRunMap.delete(runId);
   }
 
@@ -686,28 +687,28 @@ export class CallbackHandler extends BaseCallbackHandler {
     runName: string;
     runId: string;
     parentRunId?: string;
-    attributes: LangfuseGenerationAttributes;
+    attributes: ElasticDashGenerationAttributes;
     metadata?: Record<string, unknown>;
     tags?: string[];
-  }): LangfuseSpan;
+  }): ElasticDashSpan;
   private startAndRegisterOtelSpan(params: {
     type: "generation";
     runName: string;
     runId: string;
     parentRunId?: string;
-    attributes: LangfuseGenerationAttributes;
+    attributes: ElasticDashGenerationAttributes;
     metadata?: Record<string, unknown>;
     tags?: string[];
-  }): LangfuseGeneration;
+  }): ElasticDashGeneration;
   private startAndRegisterOtelSpan(params: {
     type?: "span" | "generation";
     runName: string;
     runId: string;
     parentRunId?: string;
-    attributes: LangfuseGenerationAttributes;
+    attributes: ElasticDashGenerationAttributes;
     metadata?: Record<string, unknown>;
     tags?: string[];
-  }): LangfuseSpan | LangfuseGeneration {
+  }): ElasticDashSpan | ElasticDashGeneration {
     const { type, runName, runId, parentRunId, attributes, metadata, tags } =
       params;
 
@@ -755,17 +756,17 @@ export class CallbackHandler extends BaseCallbackHandler {
 
   private handleOtelSpanEnd(params: {
     runId: string;
-    attributes?: LangfuseSpanAttributes;
+    attributes?: ElasticDashSpanAttributes;
     type?: "span";
   }): void;
   private handleOtelSpanEnd(params: {
     runId: string;
-    attributes?: LangfuseGenerationAttributes;
+    attributes?: ElasticDashGenerationAttributes;
     type: "generation";
   }): void;
   private handleOtelSpanEnd(params: {
     runId: string;
-    attributes?: LangfuseGenerationAttributes | LangfuseSpanAttributes;
+    attributes?: ElasticDashGenerationAttributes | ElasticDashSpanAttributes;
     type?: "span" | "generation";
   }) {
     const { runId, attributes = {} } = params;
@@ -812,25 +813,25 @@ export class CallbackHandler extends BaseCallbackHandler {
     if (metadata2) {
       Object.assign(finalDict, metadata2);
     }
-    return this.stripLangfuseKeysFromMetadata(finalDict);
+    return this.stripElasticDashKeysFromMetadata(finalDict);
   }
 
-  private stripLangfuseKeysFromMetadata(
+  private stripElasticDashKeysFromMetadata(
     metadata?: Record<string, unknown>,
   ): Record<string, unknown> | undefined {
     if (!metadata) {
       return;
     }
 
-    const langfuseKeys = [
-      "langfusePrompt",
-      "langfuseUserId",
-      "langfuseSessionId",
+    const elasticDashKeys = [
+      "elasticDashPrompt",
+      "elasticDashUserId",
+      "elasticDashSessionId",
     ];
 
     return Object.fromEntries(
       Object.entries(metadata).filter(
-        ([key, _]) => !langfuseKeys.includes(key),
+        ([key, _]) => !elasticDashKeys.includes(key),
       ),
     );
   }

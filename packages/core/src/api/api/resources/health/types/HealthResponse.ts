@@ -10,7 +10,7 @@
  *     }
  */
 export interface HealthResponse {
-  /** Langfuse server version */
+  /** ElasticDash server version */
   version: string;
   status: string;
 }

@@ -1,14 +1,14 @@
 import { getGlobalLogger } from "@elasticdash/core";
 
-import type { LangfusePromptClient } from "./promptClients.js";
+import type { ElasticDashPromptClient } from "./promptClients.js";
 
 export const DEFAULT_PROMPT_CACHE_TTL_SECONDS = 60;
 
-class LangfusePromptCacheItem {
+class ElasticDashPromptCacheItem {
   private _expiry: number;
 
   constructor(
-    public value: LangfusePromptClient,
+    public value: ElasticDashPromptClient,
     ttlSeconds: number,
   ) {
     this._expiry = Date.now() + ttlSeconds * 1000;
@@ -18,18 +18,18 @@ class LangfusePromptCacheItem {
     return Date.now() > this._expiry;
   }
 }
-export class LangfusePromptCache {
-  private _cache: Map<string, LangfusePromptCacheItem>;
+export class ElasticDashPromptCache {
+  private _cache: Map<string, ElasticDashPromptCacheItem>;
   private _defaultTtlSeconds: number;
   private _refreshingKeys: Map<string, Promise<void>>;
 
   constructor() {
-    this._cache = new Map<string, LangfusePromptCacheItem>();
+    this._cache = new Map<string, ElasticDashPromptCacheItem>();
     this._defaultTtlSeconds = DEFAULT_PROMPT_CACHE_TTL_SECONDS;
     this._refreshingKeys = new Map<string, Promise<void>>();
   }
 
-  public getIncludingExpired(key: string): LangfusePromptCacheItem | null {
+  public getIncludingExpired(key: string): ElasticDashPromptCacheItem | null {
     return this._cache.get(key) ?? null;
   }
 
@@ -54,13 +54,13 @@ export class LangfusePromptCache {
 
   public set(
     key: string,
-    value: LangfusePromptClient,
+    value: ElasticDashPromptClient,
     ttlSeconds?: number,
   ): void {
     const effectiveTtlSeconds = ttlSeconds ?? this._defaultTtlSeconds;
     this._cache.set(
       key,
-      new LangfusePromptCacheItem(value, effectiveTtlSeconds),
+      new ElasticDashPromptCacheItem(value, effectiveTtlSeconds),
     );
   }
 

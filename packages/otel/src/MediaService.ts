@@ -1,7 +1,7 @@
 import {
-  LangfuseAPIClient,
-  LangfuseMedia,
-  LangfuseOtelSpanAttributes,
+  ElasticDashAPIClient,
+  ElasticDashMedia,
+  ElasticDashOtelSpanAttributes,
   Logger,
   base64ToBytes,
   getGlobalLogger,
@@ -10,9 +10,9 @@ import { ReadableSpan } from "@opentelemetry/sdk-trace-base";
 
 export class MediaService {
   private pendingMediaUploads: Set<Promise<void>> = new Set();
-  private apiClient: LangfuseAPIClient;
+  private apiClient: ElasticDashAPIClient;
 
-  constructor(params: { apiClient: LangfuseAPIClient }) {
+  constructor(params: { apiClient: ElasticDashAPIClient }) {
     this.apiClient = params.apiClient;
   }
 
@@ -26,12 +26,12 @@ export class MediaService {
 
   public async process(span: ReadableSpan) {
     const mediaAttributes = [
-      LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
-      LangfuseOtelSpanAttributes.TRACE_INPUT,
-      LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
-      LangfuseOtelSpanAttributes.TRACE_OUTPUT,
-      LangfuseOtelSpanAttributes.OBSERVATION_METADATA,
-      LangfuseOtelSpanAttributes.TRACE_METADATA,
+      ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
+      ElasticDashOtelSpanAttributes.TRACE_INPUT,
+      ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
+      ElasticDashOtelSpanAttributes.TRACE_OUTPUT,
+      ElasticDashOtelSpanAttributes.OBSERVATION_METADATA,
+      ElasticDashOtelSpanAttributes.TRACE_METADATA,
     ];
 
     for (const mediaAttribute of mediaAttributes) {
@@ -59,16 +59,16 @@ export class MediaService {
 
         for (const mediaDataUri of foundMedia) {
           // For each media, create media tag and initiate upload
-          const media = new LangfuseMedia({
+          const media = new ElasticDashMedia({
             base64DataUri: mediaDataUri,
             source: "base64_data_uri",
           });
 
-          const langfuseMediaTag = await media.getTag();
+          const elasticDashMediaTag = await media.getTag();
 
-          if (!langfuseMediaTag) {
+          if (!elasticDashMediaTag) {
             this.logger.warn(
-              "Failed to create Langfuse media tag. Skipping media item.",
+              "Failed to create ElasticDash media tag. Skipping media item.",
             );
 
             continue;
@@ -87,7 +87,7 @@ export class MediaService {
           // Replace original attribute with media escaped attribute
           mediaReplacedValue = mediaReplacedValue.replaceAll(
             mediaDataUri,
-            langfuseMediaTag,
+            elasticDashMediaTag,
           );
         }
 
@@ -136,17 +136,17 @@ export class MediaService {
 
                     if (!base64Content) continue;
 
-                    const media = new LangfuseMedia({
+                    const media = new ElasticDashMedia({
                       contentType: part["mediaType"],
                       contentBytes: base64ToBytes(base64Content),
                       source: "bytes",
                     });
 
-                    const langfuseMediaTag = await media.getTag();
+                    const elasticDashMediaTag = await media.getTag();
 
-                    if (!langfuseMediaTag) {
+                    if (!elasticDashMediaTag) {
                       this.logger.warn(
-                        "Failed to create Langfuse media tag. Skipping media item.",
+                        "Failed to create ElasticDash media tag. Skipping media item.",
                       );
 
                       continue;
@@ -161,7 +161,7 @@ export class MediaService {
                     // Replace original attribute with media escaped attribute
                     mediaReplacedValue = mediaReplacedValue.replaceAll(
                       base64Content,
-                      langfuseMediaTag,
+                      elasticDashMediaTag,
                     );
                   }
                 }
@@ -183,7 +183,7 @@ export class MediaService {
   private scheduleUpload(params: {
     span: ReadableSpan;
     field: string;
-    media: LangfuseMedia;
+    media: ElasticDashMedia;
   }) {
     const { span, field, media } = params;
 
@@ -209,7 +209,7 @@ export class MediaService {
     observationId,
     field,
   }: {
-    media: LangfuseMedia;
+    media: ElasticDashMedia;
     traceId: string;
     observationId?: string;
     field: string;

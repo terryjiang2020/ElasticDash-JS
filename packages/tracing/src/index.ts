@@ -1,4 +1,7 @@
-import { getGlobalLogger, LangfuseOtelSpanAttributes } from "@elasticdash/core";
+import {
+  getGlobalLogger,
+  ElasticDashOtelSpanAttributes,
+} from "@elasticdash/core";
 import {
   trace,
   context,
@@ -14,43 +17,43 @@ import {
   createTraceAttributes,
 } from "./attributes.js";
 import {
-  LangfuseAgent,
-  LangfuseEvent,
-  LangfuseGeneration,
-  LangfuseSpan,
-  LangfuseTool,
-  LangfuseChain,
-  LangfuseEmbedding,
-  LangfuseEvaluator,
-  LangfuseGuardrail,
-  LangfuseRetriever,
-  LangfuseObservation,
+  ElasticDashAgent,
+  ElasticDashEvent,
+  ElasticDashGeneration,
+  ElasticDashSpan,
+  ElasticDashTool,
+  ElasticDashChain,
+  ElasticDashEmbedding,
+  ElasticDashEvaluator,
+  ElasticDashGuardrail,
+  ElasticDashRetriever,
+  ElasticDashObservation,
 } from "./spanWrapper.js";
-import { getLangfuseTracer } from "./tracerProvider.js";
+import { getElasticDashTracer } from "./tracerProvider.js";
 import {
-  LangfuseChainAttributes,
-  LangfuseEmbeddingAttributes,
-  LangfuseEvaluatorAttributes,
-  LangfuseGuardrailAttributes,
-  LangfuseRetrieverAttributes,
-  LangfuseToolAttributes,
-  LangfuseAgentAttributes,
-  LangfuseEventAttributes,
-  LangfuseGenerationAttributes,
-  LangfuseObservationType,
-  LangfuseSpanAttributes,
-  LangfuseTraceAttributes,
-  LangfuseObservationAttributes,
+  ElasticDashChainAttributes,
+  ElasticDashEmbeddingAttributes,
+  ElasticDashEvaluatorAttributes,
+  ElasticDashGuardrailAttributes,
+  ElasticDashRetrieverAttributes,
+  ElasticDashToolAttributes,
+  ElasticDashAgentAttributes,
+  ElasticDashEventAttributes,
+  ElasticDashGenerationAttributes,
+  ElasticDashObservationType,
+  ElasticDashSpanAttributes,
+  ElasticDashTraceAttributes,
+  ElasticDashObservationAttributes,
 } from "./types.js";
 
 export type {
-  LangfuseObservationType,
+  ElasticDashObservationType,
   ObservationLevel,
-  LangfuseSpanAttributes,
-  LangfuseEventAttributes,
-  LangfuseGenerationAttributes,
-  LangfuseObservationAttributes,
-  LangfuseTraceAttributes,
+  ElasticDashSpanAttributes,
+  ElasticDashEventAttributes,
+  ElasticDashGenerationAttributes,
+  ElasticDashObservationAttributes,
+  ElasticDashTraceAttributes,
 } from "./types.js";
 
 export * from "./spanWrapper.js";
@@ -59,16 +62,16 @@ export {
   createObservationAttributes,
 } from "./attributes.js";
 export {
-  setLangfuseTracerProvider,
-  getLangfuseTracerProvider,
-  getLangfuseTracer,
+  setElasticDashTracerProvider,
+  getElasticDashTracerProvider,
+  getElasticDashTracer,
 } from "./tracerProvider.js";
 export {
   propagateAttributes,
   type PropagateAttributesParams,
 } from "@elasticdash/core";
 
-export { LangfuseOtelSpanAttributes } from "@elasticdash/core";
+export { ElasticDashOtelSpanAttributes } from "@elasticdash/core";
 
 /**
  * Options for starting observations (spans, generations, events).
@@ -101,7 +104,7 @@ export type StartActiveObservationContext = StartObservationOptions & {
  */
 export type StartObservationOpts = StartObservationOptions & {
   /** Type of observation to create. Defaults to 'span' */
-  asType?: LangfuseObservationType;
+  asType?: ElasticDashObservationType;
 };
 
 /**
@@ -111,11 +114,11 @@ export type StartObservationOpts = StartObservationOptions & {
  */
 export type StartActiveObservationOpts = StartActiveObservationContext & {
   /** Type of observation to create. Defaults to 'span' */
-  asType?: LangfuseObservationType;
+  asType?: ElasticDashObservationType;
 };
 
 /**
- * Creates an OpenTelemetry span with the Langfuse tracer.
+ * Creates an OpenTelemetry span with the ElasticDash tracer.
  *
  * @param params - Parameters for span creation
  * @returns The created OpenTelemetry span
@@ -126,7 +129,7 @@ function createOtelSpan(params: {
   startTime?: TimeInput;
   parentSpanContext?: SpanContext;
 }): Span {
-  return getLangfuseTracer().startSpan(
+  return getElasticDashTracer().startSpan(
     params.name,
     { startTime: params.startTime },
     createParentContext(params.parentSpanContext),
@@ -187,58 +190,58 @@ function wrapPromise<T>(
 // Function overloads for proper type inference
 export function startObservation(
   name: string,
-  attributes: LangfuseGenerationAttributes,
+  attributes: ElasticDashGenerationAttributes,
   options: StartObservationOpts & { asType: "generation" },
-): LangfuseGeneration;
+): ElasticDashGeneration;
 export function startObservation(
   name: string,
-  attributes: LangfuseEventAttributes,
+  attributes: ElasticDashEventAttributes,
   options: StartObservationOpts & { asType: "event" },
-): LangfuseEvent;
+): ElasticDashEvent;
 export function startObservation(
   name: string,
-  attributes: LangfuseAgentAttributes,
+  attributes: ElasticDashAgentAttributes,
   options: StartObservationOpts & { asType: "agent" },
-): LangfuseAgent;
+): ElasticDashAgent;
 export function startObservation(
   name: string,
-  attributes: LangfuseToolAttributes,
+  attributes: ElasticDashToolAttributes,
   options: StartObservationOpts & { asType: "tool" },
-): LangfuseTool;
+): ElasticDashTool;
 export function startObservation(
   name: string,
-  attributes: LangfuseChainAttributes,
+  attributes: ElasticDashChainAttributes,
   options: StartObservationOpts & { asType: "chain" },
-): LangfuseChain;
+): ElasticDashChain;
 export function startObservation(
   name: string,
-  attributes: LangfuseRetrieverAttributes,
+  attributes: ElasticDashRetrieverAttributes,
   options: StartObservationOpts & { asType: "retriever" },
-): LangfuseRetriever;
+): ElasticDashRetriever;
 export function startObservation(
   name: string,
-  attributes: LangfuseEvaluatorAttributes,
+  attributes: ElasticDashEvaluatorAttributes,
   options: StartObservationOpts & { asType: "evaluator" },
-): LangfuseEvaluator;
+): ElasticDashEvaluator;
 export function startObservation(
   name: string,
-  attributes: LangfuseGuardrailAttributes,
+  attributes: ElasticDashGuardrailAttributes,
   options: StartObservationOpts & { asType: "guardrail" },
-): LangfuseGuardrail;
+): ElasticDashGuardrail;
 export function startObservation(
   name: string,
-  attributes: LangfuseEmbeddingAttributes,
+  attributes: ElasticDashEmbeddingAttributes,
   options: StartObservationOpts & { asType: "embedding" },
-): LangfuseEmbedding;
+): ElasticDashEmbedding;
 export function startObservation(
   name: string,
-  attributes?: LangfuseSpanAttributes,
+  attributes?: ElasticDashSpanAttributes,
   options?: StartObservationOpts & { asType?: "span" },
-): LangfuseSpan;
+): ElasticDashSpan;
 /**
- * Creates and starts a new Langfuse observation with automatic TypeScript type inference.
+ * Creates and starts a new ElasticDash observation with automatic TypeScript type inference.
  *
- * This is the primary method for creating observations in Langfuse. It supports multiple
+ * This is the primary method for creating observations in ElasticDash. It supports multiple
  * observation types with full TypeScript type safety - the return type is automatically
  * inferred based on the `asType` parameter.
  *
@@ -356,18 +359,18 @@ export function startObservation(
 export function startObservation(
   name: string,
   attributes?:
-    | LangfuseSpanAttributes
-    | LangfuseGenerationAttributes
-    | LangfuseEventAttributes
-    | LangfuseAgentAttributes
-    | LangfuseToolAttributes
-    | LangfuseChainAttributes
-    | LangfuseRetrieverAttributes
-    | LangfuseEvaluatorAttributes
-    | LangfuseGuardrailAttributes
-    | LangfuseEmbeddingAttributes,
+    | ElasticDashSpanAttributes
+    | ElasticDashGenerationAttributes
+    | ElasticDashEventAttributes
+    | ElasticDashAgentAttributes
+    | ElasticDashToolAttributes
+    | ElasticDashChainAttributes
+    | ElasticDashRetrieverAttributes
+    | ElasticDashEvaluatorAttributes
+    | ElasticDashGuardrailAttributes
+    | ElasticDashEmbeddingAttributes,
   options?: StartObservationOpts,
-): LangfuseObservation {
+): ElasticDashObservation {
   const { asType = "span", ...observationOptions } = options || {};
 
   const otelSpan = createOtelSpan({
@@ -377,49 +380,49 @@ export function startObservation(
 
   switch (asType) {
     case "generation":
-      return new LangfuseGeneration({
+      return new ElasticDashGeneration({
         otelSpan,
         attributes,
       });
 
     case "embedding":
-      return new LangfuseEmbedding({
+      return new ElasticDashEmbedding({
         otelSpan,
         attributes,
       });
 
     case "agent":
-      return new LangfuseAgent({
+      return new ElasticDashAgent({
         otelSpan,
         attributes,
       });
 
     case "tool":
-      return new LangfuseTool({
+      return new ElasticDashTool({
         otelSpan,
         attributes,
       });
 
     case "chain":
-      return new LangfuseChain({
+      return new ElasticDashChain({
         otelSpan,
         attributes,
       });
 
     case "retriever":
-      return new LangfuseRetriever({
+      return new ElasticDashRetriever({
         otelSpan,
         attributes,
       });
 
     case "evaluator":
-      return new LangfuseEvaluator({
+      return new ElasticDashEvaluator({
         otelSpan,
         attributes,
       });
 
     case "guardrail":
-      return new LangfuseGuardrail({
+      return new ElasticDashGuardrail({
         otelSpan,
         attributes,
       });
@@ -427,24 +430,24 @@ export function startObservation(
     case "event": {
       const timestamp = observationOptions?.startTime ?? new Date();
 
-      return new LangfuseEvent({
+      return new ElasticDashEvent({
         otelSpan,
-        attributes: attributes as LangfuseEventAttributes,
+        attributes: attributes as ElasticDashEventAttributes,
         timestamp,
       });
     }
     case "span":
     default:
-      return new LangfuseSpan({
+      return new ElasticDashSpan({
         otelSpan,
-        attributes: attributes as LangfuseSpanAttributes,
+        attributes: attributes as ElasticDashSpanAttributes,
       });
   }
 }
 
 // Function overloads for proper type inference
 export function startActiveObservation<
-  F extends (generation: LangfuseGeneration) => unknown,
+  F extends (generation: ElasticDashGeneration) => unknown,
 >(
   name: string,
   fn: F,
@@ -452,7 +455,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (embedding: LangfuseEmbedding) => unknown,
+  F extends (embedding: ElasticDashEmbedding) => unknown,
 >(
   name: string,
   fn: F,
@@ -460,7 +463,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (agent: LangfuseAgent) => unknown,
+  F extends (agent: ElasticDashAgent) => unknown,
 >(
   name: string,
   fn: F,
@@ -468,7 +471,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (tool: LangfuseTool) => unknown,
+  F extends (tool: ElasticDashTool) => unknown,
 >(
   name: string,
   fn: F,
@@ -476,7 +479,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (chain: LangfuseChain) => unknown,
+  F extends (chain: ElasticDashChain) => unknown,
 >(
   name: string,
   fn: F,
@@ -484,7 +487,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (retriever: LangfuseRetriever) => unknown,
+  F extends (retriever: ElasticDashRetriever) => unknown,
 >(
   name: string,
   fn: F,
@@ -492,7 +495,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (evaluator: LangfuseEvaluator) => unknown,
+  F extends (evaluator: ElasticDashEvaluator) => unknown,
 >(
   name: string,
   fn: F,
@@ -500,7 +503,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (guardrail: LangfuseGuardrail) => unknown,
+  F extends (guardrail: ElasticDashGuardrail) => unknown,
 >(
   name: string,
   fn: F,
@@ -508,7 +511,7 @@ export function startActiveObservation<
 ): ReturnType<F>;
 
 export function startActiveObservation<
-  F extends (span: LangfuseSpan) => unknown,
+  F extends (span: ElasticDashSpan) => unknown,
 >(
   name: string,
   fn: F,
@@ -768,71 +771,71 @@ export function startActiveObservation<
  * @public
  */
 export function startActiveObservation<
-  F extends (observation: LangfuseSpan | LangfuseGeneration) => unknown,
+  F extends (observation: ElasticDashSpan | ElasticDashGeneration) => unknown,
 >(name: string, fn: F, options?: StartActiveObservationOpts): ReturnType<F> {
   const { asType = "span", ...observationOptions } = options || {};
 
-  return getLangfuseTracer().startActiveSpan(
+  return getElasticDashTracer().startActiveSpan(
     name,
     { startTime: observationOptions?.startTime },
     createParentContext(observationOptions?.parentSpanContext) ??
       context.active(),
     (span) => {
       try {
-        let observation: LangfuseObservation;
+        let observation: ElasticDashObservation;
 
         switch (asType) {
           case "generation":
-            observation = new LangfuseGeneration({
+            observation = new ElasticDashGeneration({
               otelSpan: span,
             });
             break;
 
           case "embedding":
-            observation = new LangfuseEmbedding({
+            observation = new ElasticDashEmbedding({
               otelSpan: span,
             });
             break;
 
           case "agent":
-            observation = new LangfuseAgent({
+            observation = new ElasticDashAgent({
               otelSpan: span,
             });
             break;
 
           case "tool":
-            observation = new LangfuseTool({
+            observation = new ElasticDashTool({
               otelSpan: span,
             });
             break;
 
           case "chain":
-            observation = new LangfuseChain({
+            observation = new ElasticDashChain({
               otelSpan: span,
             });
             break;
 
           case "retriever":
-            observation = new LangfuseRetriever({
+            observation = new ElasticDashRetriever({
               otelSpan: span,
             });
             break;
 
           case "evaluator":
-            observation = new LangfuseEvaluator({
+            observation = new ElasticDashEvaluator({
               otelSpan: span,
             });
             break;
 
           case "guardrail":
-            observation = new LangfuseGuardrail({
+            observation = new ElasticDashGuardrail({
               otelSpan: span,
             });
             break;
 
           case "event": {
             const timestamp = observationOptions?.startTime ?? new Date();
-            observation = new LangfuseEvent({
+            observation = new ElasticDashEvent({
               otelSpan: span,
               timestamp,
             });
@@ -840,7 +843,7 @@ export function startActiveObservation<
           }
           case "span":
           default:
-            observation = new LangfuseSpan({
+            observation = new ElasticDashSpan({
               otelSpan: span,
             });
         }
@@ -900,7 +903,7 @@ export function startActiveObservation<
  *
  * @public
  */
-export function updateActiveTrace(attributes: LangfuseTraceAttributes) {
+export function updateActiveTrace(attributes: ElasticDashTraceAttributes) {
   const span = trace.getActiveSpan();
 
   if (!span) {
@@ -918,7 +921,7 @@ export function updateActiveTrace(attributes: LangfuseTraceAttributes) {
  * Updates the currently active observation with new attributes.
  *
  * This function finds the currently active OpenTelemetry span in the execution context
- * and updates it with Langfuse-specific attributes. It supports all observation types
+ * and updates it with ElasticDash-specific attributes. It supports all observation types
  * through TypeScript overloads, providing type safety for attributes based on the
  * specified `asType` parameter. If no active span exists, the update is skipped with a warning.
  *
@@ -1046,44 +1049,44 @@ export function updateActiveTrace(attributes: LangfuseTraceAttributes) {
  * @public
  */
 export function updateActiveObservation(
-  attributes: LangfuseSpanAttributes,
+  attributes: ElasticDashSpanAttributes,
   options?: { asType: "span" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseGenerationAttributes,
+  attributes: ElasticDashGenerationAttributes,
   options: { asType: "generation" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseAgentAttributes,
+  attributes: ElasticDashAgentAttributes,
   options: { asType: "agent" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseToolAttributes,
+  attributes: ElasticDashToolAttributes,
   options: { asType: "tool" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseChainAttributes,
+  attributes: ElasticDashChainAttributes,
   options: { asType: "chain" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseEmbeddingAttributes,
+  attributes: ElasticDashEmbeddingAttributes,
   options: { asType: "embedding" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseEvaluatorAttributes,
+  attributes: ElasticDashEvaluatorAttributes,
   options: { asType: "evaluator" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseGuardrailAttributes,
+  attributes: ElasticDashGuardrailAttributes,
   options: { asType: "guardrail" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseRetrieverAttributes,
+  attributes: ElasticDashRetrieverAttributes,
   options: { asType: "retriever" },
 ): void;
 export function updateActiveObservation(
-  attributes: LangfuseObservationAttributes,
-  options?: { asType?: LangfuseObservationType },
+  attributes: ElasticDashObservationAttributes,
+  options?: { asType?: ElasticDashObservationType },
 ): void {
   const span = trace.getActiveSpan();
 
@@ -1103,7 +1106,7 @@ export function updateActiveObservation(
   // If no 'asType' was provided, drop the observation type OTEL attribute
   // to avoid inadvertendly overwriting the type to "span"
   if (!options?.asType) {
-    otelAttributes[LangfuseOtelSpanAttributes.OBSERVATION_TYPE] = undefined;
+    otelAttributes[ElasticDashOtelSpanAttributes.OBSERVATION_TYPE] = undefined;
   }
 
   span.setAttributes(otelAttributes);
@@ -1118,7 +1121,7 @@ export interface ObserveOptions {
   /** Name for the observation (defaults to function name) */
   name?: string;
   /** Type of observation to create */
-  asType?: LangfuseObservationType;
+  asType?: ElasticDashObservationType;
   /** Whether to capture function input as observation input */
   captureInput?: boolean;
   /** Whether to capture function output as observation output */
@@ -1130,7 +1133,7 @@ export interface ObserveOptions {
 }
 
 /**
- * Decorator function that automatically wraps any function with Langfuse observability.
+ * Decorator function that automatically wraps any function with ElasticDash observability.
  *
  * This higher-order function creates a traced version of your function that automatically
  * handles observation lifecycle, input/output capture, and error tracking. It's perfect
@@ -1521,8 +1524,8 @@ function _captureOutput(value: unknown): unknown {
  *               If empty or falsy, generates a random trace ID.
  *
  *               Using a seed is especially useful when trying to correlate external,
- *               non-W3C compliant IDs with Langfuse trace IDs. This allows you to later
- *               have a method available for scoring the Langfuse trace given only the
+ *               non-W3C compliant IDs with ElasticDash trace IDs. This allows you to later
+ *               have a method available for scoring the ElasticDash trace given only the
  *               external ID by regenerating the same trace ID from the external ID.
  *
  * @returns A Promise that resolves to a 32-character lowercase hexadecimal string suitable for use as an OpenTelemetry trace ID.
@@ -1548,7 +1551,7 @@ function _captureOutput(value: unknown): unknown {
  *   }
  * });
  *
- * // Correlating external IDs with Langfuse traces
+ * // Correlating external IDs with ElasticDash traces
  * const externalId = "ext-12345-67890";
  * const traceId = await createTraceId(externalId);
  *

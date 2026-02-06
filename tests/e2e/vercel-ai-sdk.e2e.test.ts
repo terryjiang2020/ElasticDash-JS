@@ -2,7 +2,7 @@ import { randomUUID } from "crypto";
 import fs from "fs/promises";
 
 import { openai } from "@ai-sdk/openai";
-import { LangfuseClient } from "@elasticdash/client";
+import { ElasticDashClient } from "@elasticdash/client";
 import { startActiveObservation } from "@elasticdash/tracing";
 import {
   embed,
@@ -34,12 +34,12 @@ const weatherTool = tool({
 });
 
 describe("Vercel AI SDK integration E2E tests", () => {
-  let langfuseClient: LangfuseClient;
+  let elasticdashClient: ElasticDashClient;
   let testEnv: ServerTestEnvironment;
 
   beforeEach(async () => {
     testEnv = await setupServerTestEnvironment();
-    langfuseClient = new LangfuseClient();
+    elasticdashClient = new ElasticDashClient();
   });
 
   afterEach(async () => {
@@ -100,7 +100,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -187,7 +187,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -277,7 +277,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -374,7 +374,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -467,7 +467,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -539,7 +539,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -563,14 +563,14 @@ describe("Vercel AI SDK integration E2E tests", () => {
   it("should trace a streamText call with linked prompts", async () => {
     const promptName = randomUUID();
 
-    await langfuseClient.prompt.create({
+    await elasticdashClient.prompt.create({
       name: promptName,
       type: "text",
       prompt: "Invent a new holiday and describe its traditions.",
       labels: ["production"],
     });
 
-    const fetchedPrompt = await langfuseClient.prompt.get(promptName);
+    const fetchedPrompt = await elasticdashClient.prompt.get(promptName);
 
     const testParams = {
       functionId: "test-vercel-stream-text",
@@ -608,7 +608,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
             isEnabled: true,
             functionId,
             metadata: {
-              langfusePrompt: fetchedPrompt.toJSON(),
+              elasticDashPrompt: fetchedPrompt.toJSON(),
               userId,
               sessionId,
               tags,
@@ -632,7 +632,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
     expect(trace.userId).toBe(userId);
@@ -706,7 +706,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
 
@@ -726,7 +726,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
     const inputStr = JSON.stringify(generation.input);
 
     expect(inputStr).toMatch(
-      /@@@langfuseMedia:type=application\/pdf\|id=.+\|source=bytes@@@/,
+      /@@@elasticDashMedia:type=application\/pdf\|id=.+\|source=bytes@@@/,
     );
 
     // Should not contain the original base64 data
@@ -770,7 +770,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
 
     // Fetch trace
     const traceId = span.traceId;
-    const trace = await langfuseClient.api.trace.get(traceId);
+    const trace = await elasticdashClient.api.trace.get(traceId);
 
     expect(trace.id).toBe(traceId);
 
@@ -790,7 +790,7 @@ describe("Vercel AI SDK integration E2E tests", () => {
     const inputStr = JSON.stringify(generation.input);
 
     expect(inputStr).toMatch(
-      /@@@langfuseMedia:type=image\/jpeg\|id=.+\|source=bytes@@@/,
+      /@@@elasticDashMedia:type=image\/jpeg\|id=.+\|source=bytes@@@/,
     );
 
     // Should not contain the original base64 data

@@ -5,13 +5,13 @@ import {
   serializeValue,
   createExperimentId,
   createExperimentItemId,
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelSpanAttributes,
   ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
 } from "@elasticdash/core";
 import { startActiveObservation } from "@elasticdash/tracing";
 import { ProxyTracerProvider, trace } from "@opentelemetry/api";
 
-import { LangfuseClient } from "../LangfuseClient.js";
+import { ElasticDashClient } from "../ElasticDashClient.js";
 
 import {
   ExperimentParams,
@@ -32,9 +32,9 @@ import {
  *
  * @example Basic experiment usage
  * ```typescript
- * const langfuse = new LangfuseClient();
+ * const elasticdash = new ElasticDashClient();
  *
- * const result = await langfuse.experiment.run({
+ * const result = await elasticdash.experiment.run({
  *   name: "Capital Cities Test",
  *   description: "Testing model knowledge of world capitals",
  *   data: [
@@ -59,9 +59,9 @@ import {
  * console.log(await result.format());
  * ```
  *
- * @example Using with Langfuse datasets
+ * @example Using with ElasticDash datasets
  * ```typescript
- * const dataset = await langfuse.dataset.get("my-dataset");
+ * const dataset = await elasticdash.dataset.get("my-dataset");
  *
  * const result = await dataset.runExperiment({
  *   name: "Model Comparison",
@@ -74,17 +74,17 @@ import {
  * @public
  */
 export class ExperimentManager {
-  private langfuseClient: LangfuseClient;
+  private elasticdashClient: ElasticDashClient;
 
   /**
    * Creates a new ExperimentManager instance.
    *
    * @param params - Configuration object
-   * @param params.langfuseClient - The Langfuse client instance for API communication
+   * @param params.elasticdashClient - The ElasticDash client instance for API communication
    * @internal
    */
-  constructor(params: { langfuseClient: LangfuseClient }) {
-    this.langfuseClient = params.langfuseClient;
+  constructor(params: { elasticdashClient: ElasticDashClient }) {
+    this.elasticdashClient = params.elasticdashClient;
   }
 
   /**
@@ -104,8 +104,8 @@ export class ExperimentManager {
    * 1. Executes the task function on each data item with proper tracing
    * 2. Runs item-level evaluators on each task output
    * 3. Executes run-level evaluators on the complete result set
-   * 4. Links results to dataset runs (for Langfuse datasets)
-   * 5. Stores all scores and traces in Langfuse
+   * 4. Links results to dataset runs (for ElasticDash datasets)
+   * 5. Stores all scores and traces in ElasticDash
    *
    * @param config - The experiment configuration
    * @param config.name - Human-readable name for the experiment
@@ -122,7 +122,7 @@ export class ExperimentManager {
    *   - runName: The experiment run name (either provided or generated)
    *   - itemResults: Results for each processed data item
    *   - runEvaluations: Results from run-level evaluators
-   *   - datasetRunId: ID of the dataset run (if using Langfuse datasets)
+   *   - datasetRunId: ID of the dataset run (if using ElasticDash datasets)
    *   - format: Function to format results for display
    *
    * @throws {Error} When task execution fails and cannot be handled gracefully
@@ -130,7 +130,7 @@ export class ExperimentManager {
    *
    * @example Simple experiment
    * ```typescript
-   * const result = await langfuse.experiment.run({
+   * const result = await elasticdash.experiment.run({
    *   name: "Translation Quality Test",
    *   data: [
    *     { input: "Hello world", expectedOutput: "Hola mundo" },
@@ -148,7 +148,7 @@ export class ExperimentManager {
    *
    * @example Experiment with concurrency control
    * ```typescript
-   * const result = await langfuse.experiment.run({
+   * const result = await elasticdash.experiment.run({
    *   name: "Large Scale Evaluation",
    *   data: largeBatchOfItems,
    *   task: expensiveModelCall,
@@ -196,7 +196,7 @@ export class ExperimentManager {
 
     if (!this.isOtelRegistered()) {
       this.logger.warn(
-        "OpenTelemetry has not been set up. Traces will not be sent to Langfuse.See our docs on how to set up OpenTelemetry: https://langfuse.com/docs/observability/sdk/typescript/setup#tracing-setup",
+        "OpenTelemetry has not been set up. Traces will not be sent to ElasticDash.See our docs on how to set up OpenTelemetry: https://elasticdash.com/docs/observability/sdk/typescript/setup#tracing-setup",
       );
     }
 
@@ -249,9 +249,9 @@ export class ExperimentManager {
     let datasetRunUrl = undefined;
     if (datasetRunId && data.length > 0 && "datasetId" in data[0]) {
       const datasetId = data[0].datasetId;
-      const projectUrl = (await this.langfuseClient.getTraceUrl("mock")).split(
-        "/traces",
-      )[0];
+      const projectUrl = (
+        await this.elasticdashClient.getTraceUrl("mock")
+      ).split("/traces")[0];
 
       datasetRunUrl = `${projectUrl}/datasets/${datasetId}/runs/${datasetRunId}`;
     }
@@ -285,12 +285,12 @@ export class ExperimentManager {
 
       if (datasetRunId) {
         runEvaluations.forEach((runEval) =>
-          this.langfuseClient.score.create({ datasetRunId, ...runEval }),
+          this.elasticdashClient.score.create({ datasetRunId, ...runEval }),
         );
       }
     }
 
-    await this.langfuseClient.score.flush();
+    await this.elasticdashClient.score.flush();
 
     return {
       runName,
@@ -319,7 +319,7 @@ export class ExperimentManager {
    * 1. Executes the task within a traced observation span
    * 2. Links the result to a dataset run (if applicable)
    * 3. Runs all item-level evaluators on the output
-   * 4. Stores evaluation scores in Langfuse
+   * 4. Stores evaluation scores in ElasticDash
    * 5. Handles errors gracefully by continuing with remaining evaluators
    *
    * @param params - Parameters for item execution
@@ -380,16 +380,15 @@ export class ExperimentManager {
 
         if (datasetItemId) {
           try {
-            const result = await this.langfuseClient.api.datasetRunItems.create(
-              {
+            const result =
+              await this.elasticdashClient.api.datasetRunItems.create({
                 runName: params.experimentRunName,
                 runDescription: params.experimentDescription,
                 metadata: params.experimentMetadata,
                 datasetItemId,
                 traceId,
                 observationId,
-              },
-            );
+              });
 
             datasetRunId = result.datasetRunId;
           } catch (err) {
@@ -404,12 +403,12 @@ export class ExperimentManager {
 
         // Set non-propagated experiment attributes directly on root span
         const rootSpanAttributes: Record<string, string> = {
-          [LangfuseOtelSpanAttributes.ENVIRONMENT]:
+          [ElasticDashOtelSpanAttributes.ENVIRONMENT]:
             ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
         };
         if (params.experimentDescription) {
           rootSpanAttributes[
-            LangfuseOtelSpanAttributes.EXPERIMENT_DESCRIPTION
+            ElasticDashOtelSpanAttributes.EXPERIMENT_DESCRIPTION
           ] = params.experimentDescription;
         }
 
@@ -417,7 +416,7 @@ export class ExperimentManager {
           const serialized = serializeValue(expectedOutput);
           if (serialized) {
             rootSpanAttributes[
-              LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
+              ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
             ] = serialized;
           }
         }
@@ -501,7 +500,7 @@ export class ExperimentManager {
     );
 
     for (const ev of evals) {
-      this.langfuseClient.score.create({
+      this.elasticdashClient.score.create({
         traceId,
         observationId,
         ...ev,
@@ -526,10 +525,10 @@ export class ExperimentManager {
    * - Experiment overview with aggregate statistics
    * - Average scores across all evaluations
    * - Run-level evaluation results
-   * - Links to dataset runs in the Langfuse UI
+   * - Links to dataset runs in the ElasticDash UI
    *
    * @param params - Formatting parameters
-   * @param params.datasetRunUrl - Optional URL to the dataset run in Langfuse UI
+   * @param params.datasetRunUrl - Optional URL to the dataset run in ElasticDash UI
    * @param params.itemResults - Results from processing each data item
    * @param params.originalData - The original input data items
    * @param params.runEvaluations - Results from run-level evaluators
@@ -551,10 +550,10 @@ export class ExperimentManager {
    *        💭 Very close match with expected output
    *
    *    Dataset Item:
-   *    https://cloud.langfuse.com/project/123/datasets/456/items/789
+   *    https://devserver-logger.elasticdash.com/project/123/datasets/456/items/789
    *
    *    Trace:
-   *    https://cloud.langfuse.com/project/123/traces/abc123
+   *    https://devserver-logger.elasticdash.com/project/123/traces/abc123
    *
    * ──────────────────────────────────────────────────
    * 📊 Translation Quality Test - Testing model accuracy
@@ -572,7 +571,7 @@ export class ExperimentManager {
    *     💭 Good performance with room for improvement
    *
    * 🔗 Dataset Run:
-   *    https://cloud.langfuse.com/project/123/datasets/456/runs/def456
+   *    https://devserver-logger.elasticdash.com/project/123/datasets/456/runs/def456
    * ```
    *
    * @internal
@@ -650,7 +649,7 @@ export class ExperimentManager {
           "datasetId" in originalItem
         ) {
           const projectUrl = (
-            await this.langfuseClient.getTraceUrl("mock")
+            await this.elasticdashClient.getTraceUrl("mock")
           ).split("/traces")[0];
           const datasetItemUrl = `${projectUrl}/datasets/${originalItem.datasetId}/items/${originalItem.id}`;
           output += `\n   Dataset Item:\n   ${datasetItemUrl}\n`;
@@ -658,7 +657,7 @@ export class ExperimentManager {
 
         // Trace link on separate line
         if (result.traceId) {
-          const traceUrl = await this.langfuseClient.getTraceUrl(
+          const traceUrl = await this.elasticdashClient.getTraceUrl(
             result.traceId,
           );
           output += `\n   Trace:\n   ${traceUrl}\n`;

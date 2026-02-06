@@ -39,7 +39,7 @@ export type ExperimentItem<
  * Parameters passed to an experiment task function.
  *
  * Can be either an ExperimentItem (for custom datasets) or a DatasetItem
- * (for Langfuse datasets). The task function should handle both types.
+ * (for ElasticDash datasets). The task function should handle both types.
  *
  * @public
  * @since 4.1.0
@@ -168,7 +168,7 @@ export type ExperimentParams<
   /**
    * Human-readable name for the experiment.
    *
-   * This name will appear in Langfuse UI and experiment results.
+   * This name will appear in ElasticDash UI and experiment results.
    * Choose a descriptive name that identifies the experiment's purpose.
    */
   name: string;
@@ -177,7 +177,7 @@ export type ExperimentParams<
    * Optional exact name for the experiment run.
    *
    * If provided, this will be used as the exact dataset run name if the data
-   * contains Langfuse dataset items. If not provided, this will default to
+   * contains ElasticDash dataset items. If not provided, this will default to
    * the experiment name appended with an ISO timestamp.
    */
   runName?: string;
@@ -201,7 +201,7 @@ export type ExperimentParams<
   /**
    * Array of data items to process.
    *
-   * Can be either custom ExperimentItem[] or DatasetItem[] from Langfuse.
+   * Can be either custom ExperimentItem[] or DatasetItem[] from ElasticDash.
    * Each item should contain input data and optionally expected output.
    */
   data: ExperimentItem<Input, ExpectedOutput, Metadata>[];
@@ -272,17 +272,17 @@ export type ExperimentItemResult<
   evaluations: Evaluation[];
 
   /**
-   * Langfuse trace ID for this item's execution (for debugging and analysis).
+   * ElasticDash trace ID for this item's execution (for debugging and analysis).
    *
-   * Use this ID to view detailed execution traces in the Langfuse UI,
+   * Use this ID to view detailed execution traces in the ElasticDash UI,
    * including timing, inputs, outputs, and any nested observations.
    */
   traceId?: string;
 
   /**
-   * Dataset run ID if this item was part of a Langfuse dataset.
+   * Dataset run ID if this item was part of a ElasticDash dataset.
    *
-   * Present only when running experiments on Langfuse datasets.
+   * Present only when running experiments on ElasticDash datasets.
    * Links this item result to a specific dataset run for tracking and comparison.
    */
   datasetRunId?: string;
@@ -297,7 +297,7 @@ export type ExperimentItemResult<
  *
  * @example Using experiment results
  * ```typescript
- * const result = await langfuse.experiment.run(config);
+ * const result = await elasticdash.experiment.run(config);
  *
  * // Access individual results
  * console.log(`Processed ${result.itemResults.length} items`);
@@ -314,7 +314,7 @@ export type ExperimentItemResult<
  *
  * // Link to dataset run (if available)
  * if (result.datasetRunUrl) {
- *   console.log(`View in Langfuse: dataset run ${result.datasetRunUrl}`);
+ *   console.log(`View in ElasticDash: dataset run ${result.datasetRunUrl}`);
  * }
  * ```
  *
@@ -328,24 +328,24 @@ export type ExperimentResult<
   /**
    * The experiment run name.
    *
-   * This is equal to the dataset run name if experiment was on Langfuse dataset.
+   * This is equal to the dataset run name if experiment was on ElasticDash dataset.
    * Either the provided runName parameter or generated name (experiment name + timestamp).
    */
   runName: string;
 
   /**
-   * ID of the dataset run in Langfuse (only for experiments on Langfuse datasets).
+   * ID of the dataset run in ElasticDash (only for experiments on ElasticDash datasets).
    *
-   * Present only when running experiments on Langfuse datasets.
-   * Use this ID to access the dataset run via the Langfuse API or UI
+   * Present only when running experiments on ElasticDash datasets.
+   * Use this ID to access the dataset run via the ElasticDash API or UI
    * for detailed analysis and comparison with other runs.
    */
   datasetRunId?: string;
 
   /**
-   * URL to the dataset run in the Langfuse UI (only for experiments on Langfuse datasets).
+   * URL to the dataset run in the ElasticDash UI (only for experiments on ElasticDash datasets).
    *
-   * Direct link to view the complete dataset run in the Langfuse web interface,
+   * Direct link to view the complete dataset run in the ElasticDash web interface,
    * including all experiment results, traces, and analytics. Provides easy access
    * to detailed analysis and visualization of the experiment.
    */

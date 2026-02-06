@@ -1,5 +1,5 @@
 import {
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   Trace,
   Observation,
   getEnv,
@@ -9,7 +9,7 @@ import {
 
 export class ServerAssertions {
   private baseUrl: string;
-  public api: LangfuseAPIClient;
+  public api: ElasticDashAPIClient;
 
   constructor() {
     this.baseUrl = getEnv("ELASTICDASH_BASE_URL") || "http://localhost:3000";
@@ -23,7 +23,7 @@ export class ServerAssertions {
       );
     }
 
-    this.api = new LangfuseAPIClient({
+    this.api = new ElasticDashAPIClient({
       baseUrl: this.baseUrl,
       username: publicKey,
       password: secretKey,

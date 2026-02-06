@@ -1,6 +1,6 @@
 {
   "name": "@elasticdash/core",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "description": "Core functions and utilities for ElasticDash packages",
   "type": "module",
   "sideEffects": false,

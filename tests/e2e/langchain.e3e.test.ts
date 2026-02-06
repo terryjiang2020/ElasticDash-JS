@@ -2,7 +2,7 @@ import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { DynamicTool } from "@langchain/core/tools";
 import { StateGraph, MessagesAnnotation } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
-import { LangfuseClient } from "@elasticdash/client";
+import { ElasticDashClient } from "@elasticdash/client";
 import { configureGlobalLogger } from "@elasticdash/core";
 import { CallbackHandler } from "@elasticdash/langchain";
 import { startActiveObservation } from "@elasticdash/tracing";
@@ -17,13 +17,13 @@ import {
 } from "./helpers/serverSetup.js";
 
 describe("Langchain integration E2E tests", () => {
-  let langfuseClient: LangfuseClient;
+  let elasticdashClient: ElasticDashClient;
   let testEnv: ServerTestEnvironment;
 
   beforeEach(async () => {
     configureGlobalLogger({ level: 0 });
     testEnv = await setupServerTestEnvironment();
-    langfuseClient = new LangfuseClient();
+    elasticdashClient = new ElasticDashClient();
   });
 
   afterEach(async () => {
@@ -68,7 +68,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -97,7 +97,7 @@ describe("Langchain integration E2E tests", () => {
     expect(generation!.output.content).toContain(result.content);
   });
 
-  it("should link a langfuse prompt", async () => {
+  it("should link a elasticdash prompt", async () => {
     const testConfig = {
       runName: "Test simple chain:" + nanoid(),
       sessionId: "my-session",
@@ -112,7 +112,7 @@ describe("Langchain integration E2E tests", () => {
     const jokePromptName = "joke-prompt" + nanoid();
     const jokePromptString = "Tell me a one-line joke about {{topic}}";
 
-    await langfuseClient.prompt.create({
+    await elasticdashClient.prompt.create({
       name: jokePromptName,
       type: "chat",
       prompt: [{ role: "user", content: jokePromptString }],
@@ -120,14 +120,17 @@ describe("Langchain integration E2E tests", () => {
     });
 
     // Fetch prompts
-    const langfuseJokePrompt = await langfuseClient.prompt.get(jokePromptName, {
-      type: "chat",
-    });
+    const elasticDashJokePrompt = await elasticdashClient.prompt.get(
+      jokePromptName,
+      {
+        type: "chat",
+      },
+    );
 
     const langchainJokePrompt = ChatPromptTemplate.fromMessages(
-      langfuseJokePrompt.getLangchainPrompt(),
+      elasticDashJokePrompt.getLangchainPrompt(),
     ).withConfig({
-      metadata: { langfusePrompt: langfuseJokePrompt },
+      metadata: { elasticDashPrompt: elasticDashJokePrompt },
     });
 
     const handler = new CallbackHandler({
@@ -155,7 +158,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -182,8 +185,8 @@ describe("Langchain integration E2E tests", () => {
     expect(generation!.promptTokens).toBeDefined();
     expect(generation!.completionTokens).toBeDefined();
     expect(generation!.output.content).toContain(result.content);
-    expect(generation!.promptName).toBe(langfuseJokePrompt.name);
-    expect(generation!.promptVersion).toBe(langfuseJokePrompt.version);
+    expect(generation!.promptName).toBe(elasticDashJokePrompt.name);
+    expect(generation!.promptVersion).toBe(elasticDashJokePrompt.version);
   });
 
   it("should trace a chain that streams responses", async () => {
@@ -231,7 +234,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -323,7 +326,7 @@ describe("Langchain integration E2E tests", () => {
 
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -396,8 +399,8 @@ describe("Langchain integration E2E tests", () => {
           chainLevel: "invoke-metadata",
           executionContext: "e2e-test",
 
-          langfuseSessionId: testConfig.sessionId,
-          langfuseUserId: testConfig.userId,
+          elasticDashSessionId: testConfig.sessionId,
+          elasticDashUserId: testConfig.userId,
         },
         tags: testConfig.tags,
       },
@@ -409,7 +412,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -505,7 +508,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -633,7 +636,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,
@@ -738,7 +741,7 @@ describe("Langchain integration E2E tests", () => {
     const traceId = handler.last_trace_id;
     expect(traceId).toBeDefined();
 
-    const trace = await langfuseClient.api.trace.get(traceId!);
+    const trace = await elasticdashClient.api.trace.get(traceId!);
 
     expect(trace).toMatchObject({
       sessionId: testConfig.sessionId,

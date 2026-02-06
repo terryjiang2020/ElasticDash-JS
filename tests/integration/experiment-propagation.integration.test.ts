@@ -5,9 +5,9 @@
  * item metadata) automatically propagates to all child spans within an experiment run.
  */
 
-import { LangfuseClient } from "@elasticdash/client";
+import { ElasticDashClient } from "@elasticdash/client";
 import {
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelSpanAttributes,
   ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
 } from "@elasticdash/core";
 import { startObservation, startActiveObservation } from "@elasticdash/tracing";
@@ -23,11 +23,11 @@ import {
 
 describe("Experiment Attribute Propagation", () => {
   let testEnv: TestEnvironment;
-  let langfuse: LangfuseClient;
+  let elasticdash: ElasticDashClient;
 
   beforeEach(async () => {
     testEnv = await setupTestEnvironment();
-    langfuse = new LangfuseClient({
+    elasticdash = new ElasticDashClient({
       publicKey: "test-pk",
       secretKey: "test-sk",
       baseUrl: "http://localhost:3000",
@@ -40,7 +40,7 @@ describe("Experiment Attribute Propagation", () => {
 
   describe("Basic Experiment Propagation", () => {
     it("should propagate experiment attributes to child spans", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "test-experiment",
         data: [{ input: "test-input" }],
         task: async ({ input }) => {
@@ -59,33 +59,35 @@ describe("Experiment Attribute Propagation", () => {
 
       // Root span should have experiment attributes
       expect(
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID],
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
       ).toBeDefined();
       expect(
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME],
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME],
       ).toBeDefined();
       expect(
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID],
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID],
       ).toBeDefined();
 
       // Child span should inherit experiment attributes
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID],
-      ).toBe(rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID]);
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
+      ).toBe(rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID]);
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME],
-      ).toBe(rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME]);
-      expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID],
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME],
       ).toBe(
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID],
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME],
+      );
+      expect(
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID],
+      ).toBe(
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID],
       );
     });
 
     it("should propagate experiment metadata to child spans", async () => {
       const experimentMetadata = { model: "gpt-4", temperature: "0.7" };
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "metadata-test",
         metadata: experimentMetadata,
         data: [{ input: "test" }],
@@ -101,11 +103,13 @@ describe("Experiment Attribute Propagation", () => {
       const childSpan = spans.find((s) => s.name === "child");
 
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_METADATA],
+        childSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_METADATA
+        ],
       ).toBeDefined();
       const metadata = JSON.parse(
         childSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_METADATA
+          ElasticDashOtelSpanAttributes.EXPERIMENT_METADATA
         ] as string,
       );
       expect(metadata).toEqual(experimentMetadata);
@@ -114,7 +118,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should propagate experiment item metadata to child spans", async () => {
       const itemMetadata = { source: "user-input", priority: "high" };
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "item-metadata-test",
         data: [{ input: "test", metadata: itemMetadata }],
         task: async () => {
@@ -130,12 +134,12 @@ describe("Experiment Attribute Propagation", () => {
 
       expect(
         childSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_METADATA
+          ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_METADATA
         ],
       ).toBeDefined();
       const metadata = JSON.parse(
         childSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_METADATA
+          ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_METADATA
         ] as string,
       );
       expect(metadata).toEqual(itemMetadata);
@@ -144,7 +148,7 @@ describe("Experiment Attribute Propagation", () => {
 
   describe("Nested Spans", () => {
     it("should propagate to multiple levels of nested child spans", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "nested-test",
         data: [{ input: "test" }],
         task: async () => {
@@ -163,22 +167,22 @@ describe("Experiment Attribute Propagation", () => {
 
       const rootSpan = spans.find((s) => s.name === "experiment-item-run");
       const experimentId =
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID];
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID];
 
       // All nested spans should have the same experiment ID
       const level1 = spans.find((s) => s.name === "level-1");
       const level2 = spans.find((s) => s.name === "level-2");
       const level3 = spans.find((s) => s.name === "level-3");
 
-      expect(level1?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID]).toBe(
-        experimentId,
-      );
-      expect(level2?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID]).toBe(
-        experimentId,
-      );
-      expect(level3?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID]).toBe(
-        experimentId,
-      );
+      expect(
+        level1?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
+      ).toBe(experimentId);
+      expect(
+        level2?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
+      ).toBe(experimentId);
+      expect(
+        level3?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
+      ).toBe(experimentId);
     });
   });
 
@@ -186,7 +190,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should set description only on root span, not child spans", async () => {
       const description = "Test experiment description";
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "description-test",
         description,
         data: [{ input: "test" }],
@@ -205,19 +209,21 @@ describe("Experiment Attribute Propagation", () => {
 
       // Root span should have description
       expect(
-        rootSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_DESCRIPTION],
+        rootSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_DESCRIPTION
+        ],
       ).toBe(description);
 
       // Child span should NOT have description
       expect(
         childSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_DESCRIPTION
+          ElasticDashOtelSpanAttributes.EXPERIMENT_DESCRIPTION
         ],
       ).toBeUndefined();
     });
 
     it("should set expectedOutput only on root span, not child spans", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "expected-output-test",
         data: [{ input: "France", expectedOutput: "Paris" }],
         task: async () => {
@@ -237,14 +243,14 @@ describe("Experiment Attribute Propagation", () => {
       // serializeValue passes strings through unchanged for efficiency
       expect(
         rootSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
+          ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
         ],
       ).toBe("Paris");
 
       // Child span should NOT have expected output
       expect(
         childSpan?.attributes[
-          LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
+          ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_EXPECTED_OUTPUT
         ],
       ).toBeUndefined();
     });
@@ -260,19 +266,19 @@ describe("Experiment Attribute Propagation", () => {
       const experimentIds: string[] = [];
       const itemIds: string[] = [];
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "no-leakage-test",
         data: items,
         task: async (item) => {
           await startActiveObservation("process-item", async (span) => {
             experimentIds.push(
               span.otelSpan.attributes[
-                LangfuseOtelSpanAttributes.EXPERIMENT_ID
+                ElasticDashOtelSpanAttributes.EXPERIMENT_ID
               ] as string,
             );
             itemIds.push(
               span.otelSpan.attributes[
-                LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID
+                ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID
               ] as string,
             );
           });
@@ -294,7 +300,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should generate experiment item ID from input hash for non-dataset items", async () => {
       const input = "test-input-for-hashing";
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "id-generation-test",
         data: [{ input }],
         task: async () => {
@@ -307,7 +313,7 @@ describe("Experiment Attribute Propagation", () => {
       const rootSpan = spans[0];
 
       const experimentItemId =
-        rootSpan.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID];
+        rootSpan.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID];
 
       // Should be 16 hex characters (8 bytes)
       expect(experimentItemId).toMatch(/^[0-9a-f]{16}$/);
@@ -316,7 +322,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should use dataset item ID when available", async () => {
       const datasetItemId = "dataset-item-123";
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "dataset-id-test",
         data: [
           {
@@ -335,7 +341,7 @@ describe("Experiment Attribute Propagation", () => {
       const rootSpan = spans[0];
 
       const experimentItemId =
-        rootSpan.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ID];
+        rootSpan.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ID];
 
       // Should use the dataset item ID directly
       expect(experimentItemId).toBe(datasetItemId);
@@ -346,13 +352,13 @@ describe("Experiment Attribute Propagation", () => {
     it("should propagate the root observation ID to child spans", async () => {
       let rootObservationId: string | undefined;
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "root-id-test",
         data: [{ input: "test" }],
         task: async () => {
           await startActiveObservation("child", async (span) => {
             rootObservationId = span.otelSpan.attributes[
-              LangfuseOtelSpanAttributes.EXPERIMENT_ITEM_ROOT_OBSERVATION_ID
+              ElasticDashOtelSpanAttributes.EXPERIMENT_ITEM_ROOT_OBSERVATION_ID
             ] as string;
           });
           return "output";
@@ -372,7 +378,7 @@ describe("Experiment Attribute Propagation", () => {
   describe("Error Handling", () => {
     it("should propagate attributes even when task throws error", async () => {
       try {
-        await langfuse.experiment.run({
+        await elasticdash.experiment.run({
           name: "error-test",
           data: [{ input: "test" }],
           task: async () => {
@@ -393,17 +399,17 @@ describe("Experiment Attribute Propagation", () => {
 
       // Child span should still have experiment attributes
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_ID],
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_ID],
       ).toBeDefined();
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME],
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME],
       ).toBeDefined();
     });
   });
 
   describe("Concurrent Experiments", () => {
     it("should not mix attributes between concurrent experiments", async () => {
-      const experiment1Promise = langfuse.experiment.run({
+      const experiment1Promise = elasticdash.experiment.run({
         name: "concurrent-exp-1",
         data: [{ input: "input1" }],
         task: async () => {
@@ -414,7 +420,7 @@ describe("Experiment Attribute Propagation", () => {
         },
       });
 
-      const experiment2Promise = langfuse.experiment.run({
+      const experiment2Promise = elasticdash.experiment.run({
         name: "concurrent-exp-2",
         data: [{ input: "input2" }],
         task: async () => {
@@ -434,9 +440,9 @@ describe("Experiment Attribute Propagation", () => {
       const child2 = spans.find((s) => s.name === "child-exp2");
 
       const exp1Name =
-        child1?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME];
+        child1?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME];
       const exp2Name =
-        child2?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_NAME];
+        child2?.attributes[ElasticDashOtelSpanAttributes.EXPERIMENT_NAME];
 
       // Each child should have the correct experiment name
       expect(exp1Name).toContain("concurrent-exp-1");
@@ -454,7 +460,7 @@ describe("Experiment Attribute Propagation", () => {
         number: 42,
       };
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "serialization-test",
         metadata: complexMetadata,
         data: [{ input: "test" }],
@@ -470,7 +476,9 @@ describe("Experiment Attribute Propagation", () => {
       const childSpan = spans.find((s) => s.name === "child");
 
       const metadataAttr =
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_METADATA];
+        childSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_METADATA
+        ];
       expect(metadataAttr).toBeDefined();
 
       const parsed = JSON.parse(metadataAttr as string);
@@ -480,7 +488,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should handle string metadata without double serialization", async () => {
       const stringMetadata = '{"already":"serialized"}';
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "string-metadata-test",
         metadata: stringMetadata as any,
         data: [{ input: "test" }],
@@ -496,7 +504,9 @@ describe("Experiment Attribute Propagation", () => {
       const childSpan = spans.find((s) => s.name === "child");
 
       const metadataAttr =
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_METADATA];
+        childSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_METADATA
+        ];
 
       // Should not be double-serialized
       expect(metadataAttr).toBe(stringMetadata);
@@ -505,7 +515,7 @@ describe("Experiment Attribute Propagation", () => {
 
   describe("Environment Attribute", () => {
     it("should set experiment environment on ALL spans including root", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "environment-test",
         data: [{ input: "test" }],
         task: async () => {
@@ -528,22 +538,22 @@ describe("Experiment Attribute Propagation", () => {
       const level3 = spans.find((s) => s.name === "level-3");
 
       // ALL spans should have the experiment environment attribute
-      expect(rootSpan?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
-      );
-      expect(level1?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
-      );
-      expect(level2?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
-      );
-      expect(level3?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT]).toBe(
-        ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT,
-      );
+      expect(
+        rootSpan?.attributes[ElasticDashOtelSpanAttributes.ENVIRONMENT],
+      ).toBe(ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT);
+      expect(
+        level1?.attributes[ElasticDashOtelSpanAttributes.ENVIRONMENT],
+      ).toBe(ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT);
+      expect(
+        level2?.attributes[ElasticDashOtelSpanAttributes.ENVIRONMENT],
+      ).toBe(ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT);
+      expect(
+        level3?.attributes[ElasticDashOtelSpanAttributes.ENVIRONMENT],
+      ).toBe(ELASTICDASH_SDK_EXPERIMENT_ENVIRONMENT);
     });
 
     it("should set experiment environment value to 'sdk-experiment'", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "environment-value-test",
         data: [{ input: "test" }],
         task: async () => {
@@ -559,7 +569,7 @@ describe("Experiment Attribute Propagation", () => {
 
       // Verify the exact value
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.ENVIRONMENT],
+        childSpan?.attributes[ElasticDashOtelSpanAttributes.ENVIRONMENT],
       ).toBe("sdk-experiment");
     });
   });
@@ -568,7 +578,7 @@ describe("Experiment Attribute Propagation", () => {
     it("should propagate dataset ID when using dataset items", async () => {
       const datasetId = "dataset-abc-123";
 
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "dataset-test",
         data: [
           {
@@ -589,12 +599,14 @@ describe("Experiment Attribute Propagation", () => {
       const childSpan = spans.find((s) => s.name === "child");
 
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_DATASET_ID],
+        childSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_DATASET_ID
+        ],
       ).toBe(datasetId);
     });
 
     it("should not have dataset ID for non-dataset experiments", async () => {
-      await langfuse.experiment.run({
+      await elasticdash.experiment.run({
         name: "non-dataset-test",
         data: [{ input: "test" }],
         task: async () => {
@@ -609,7 +621,9 @@ describe("Experiment Attribute Propagation", () => {
       const childSpan = spans.find((s) => s.name === "child");
 
       expect(
-        childSpan?.attributes[LangfuseOtelSpanAttributes.EXPERIMENT_DATASET_ID],
+        childSpan?.attributes[
+          ElasticDashOtelSpanAttributes.EXPERIMENT_DATASET_ID
+        ],
       ).toBeUndefined();
     });
   });

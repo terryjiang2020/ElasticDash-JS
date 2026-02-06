@@ -1,6 +1,6 @@
 import {
-  LangfuseSpanProcessor,
-  type LangfuseSpanProcessorParams,
+  ElasticDashSpanProcessor,
+  type ElasticDashSpanProcessorParams,
 } from "@elasticdash/otel";
 import { trace } from "@opentelemetry/api";
 import { NodeSDK } from "@opentelemetry/sdk-node";
@@ -9,7 +9,7 @@ import { MockSpanExporter } from "./MockSpanExporter.js";
 
 export interface TestEnvironment {
   sdk: NodeSDK;
-  spanProcessor: LangfuseSpanProcessor;
+  spanProcessor: ElasticDashSpanProcessor;
   mockExporter: MockSpanExporter;
   shutdown: () => Promise<void>;
   serviceName: string;
@@ -19,7 +19,7 @@ export interface TestEnvironment {
 export interface TestSetupOptions {
   serviceName?: string;
   serviceVersion?: string;
-  spanProcessorConfig?: Partial<LangfuseSpanProcessorParams>;
+  spanProcessorConfig?: Partial<ElasticDashSpanProcessorParams>;
   mockExporterConfig?: {
     shouldFail?: boolean;
     exportDelay?: number;
@@ -46,7 +46,7 @@ export async function setupTestEnvironment(
   }
 
   // Create span processor with test configuration
-  const spanProcessor = new LangfuseSpanProcessor({
+  const spanProcessor = new ElasticDashSpanProcessor({
     exporter: mockExporter,
     flushAt: 1, // Flush immediately for testing
     flushInterval: 0, // No scheduled flush

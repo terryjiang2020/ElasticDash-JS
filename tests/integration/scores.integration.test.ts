@@ -10,7 +10,7 @@ import {
 import { trace } from "@opentelemetry/api";
 import { ScoreManager } from "@elasticdash/client";
 import {
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   IngestionEvent,
   resetGlobalLogger,
 } from "@elasticdash/core";
@@ -58,7 +58,7 @@ class MockAPIClient {
 
 function createScoreManager(mockAPIClient: MockAPIClient): ScoreManager {
   return new ScoreManager({
-    apiClient: mockAPIClient as unknown as LangfuseAPIClient,
+    apiClient: mockAPIClient as unknown as ElasticDashAPIClient,
   });
 }
 

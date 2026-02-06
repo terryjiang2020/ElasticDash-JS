@@ -3,7 +3,7 @@
  */
 
 import * as core from "../../../../core/index.js";
-import * as LangfuseAPI from "../../../index.js";
+import * as ElasticDashAPI from "../../../index.js";
 import {
   mergeHeaders,
   mergeOnlyDefinedHeaders,
@@ -17,12 +17,12 @@ export declare namespace AnnotationQueues {
     baseUrl?: core.Supplier<string>;
     username?: core.Supplier<string | undefined>;
     password?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: core.Supplier<string | undefined>;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: core.Supplier<string | undefined>;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: core.Supplier<string | undefined>;
     /** Additional headers to include in requests. */
     headers?: Record<
       string,
@@ -37,12 +37,12 @@ export declare namespace AnnotationQueues {
     maxRetries?: number;
     /** A hook to abort the request. */
     abortSignal?: AbortSignal;
-    /** Override the X-Langfuse-Sdk-Name header */
-    xLangfuseSdkName?: string | undefined;
-    /** Override the X-Langfuse-Sdk-Version header */
-    xLangfuseSdkVersion?: string | undefined;
-    /** Override the X-Langfuse-Public-Key header */
-    xLangfusePublicKey?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Name header */
+    xElasticDashSdkName?: string | undefined;
+    /** Override the X-ElasticDash-Sdk-Version header */
+    xElasticDashSdkVersion?: string | undefined;
+    /** Override the X-ElasticDash-Public-Key header */
+    xElasticDashPublicKey?: string | undefined;
     /** Additional query string parameters to include in the request. */
     queryParams?: Record<string, unknown>;
     /** Additional headers to include in the request. */
@@ -63,31 +63,31 @@ export class AnnotationQueues {
   /**
    * Get all annotation queues
    *
-   * @param {LangfuseAPI.GetAnnotationQueuesRequest} request
+   * @param {ElasticDashAPI.GetAnnotationQueuesRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.listQueues()
    */
   public listQueues(
-    request: LangfuseAPI.GetAnnotationQueuesRequest = {},
+    request: ElasticDashAPI.GetAnnotationQueuesRequest = {},
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.PaginatedAnnotationQueues> {
+  ): core.HttpResponsePromise<ElasticDashAPI.PaginatedAnnotationQueues> {
     return core.HttpResponsePromise.fromPromise(
       this.__listQueues(request, requestOptions),
     );
   }
 
   private async __listQueues(
-    request: LangfuseAPI.GetAnnotationQueuesRequest = {},
+    request: ElasticDashAPI.GetAnnotationQueuesRequest = {},
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.PaginatedAnnotationQueues>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.PaginatedAnnotationQueues>> {
     const { page, limit } = request;
     const _queryParams: Record<
       string,
@@ -105,14 +105,15 @@ export class AnnotationQueues {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -134,7 +135,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.PaginatedAnnotationQueues,
+        data: _response.body as ElasticDashAPI.PaginatedAnnotationQueues,
         rawResponse: _response.rawResponse,
       };
     }
@@ -142,32 +143,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -177,17 +178,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/annotation-queues.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -197,14 +198,14 @@ export class AnnotationQueues {
   /**
    * Create an annotation queue
    *
-   * @param {LangfuseAPI.CreateAnnotationQueueRequest} request
+   * @param {ElasticDashAPI.CreateAnnotationQueueRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.createQueue({
@@ -214,30 +215,31 @@ export class AnnotationQueues {
    *     })
    */
   public createQueue(
-    request: LangfuseAPI.CreateAnnotationQueueRequest,
+    request: ElasticDashAPI.CreateAnnotationQueueRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.AnnotationQueue> {
+  ): core.HttpResponsePromise<ElasticDashAPI.AnnotationQueue> {
     return core.HttpResponsePromise.fromPromise(
       this.__createQueue(request, requestOptions),
     );
   }
 
   private async __createQueue(
-    request: LangfuseAPI.CreateAnnotationQueueRequest,
+    request: ElasticDashAPI.CreateAnnotationQueueRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.AnnotationQueue>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.AnnotationQueue>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -262,7 +264,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.AnnotationQueue,
+        data: _response.body as ElasticDashAPI.AnnotationQueue,
         rawResponse: _response.rawResponse,
       };
     }
@@ -270,32 +272,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -305,17 +307,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/annotation-queues.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -328,11 +330,11 @@ export class AnnotationQueues {
    * @param {string} queueId - The unique identifier of the annotation queue
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.getQueue("queueId")
@@ -340,7 +342,7 @@ export class AnnotationQueues {
   public getQueue(
     queueId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.AnnotationQueue> {
+  ): core.HttpResponsePromise<ElasticDashAPI.AnnotationQueue> {
     return core.HttpResponsePromise.fromPromise(
       this.__getQueue(queueId, requestOptions),
     );
@@ -349,19 +351,20 @@ export class AnnotationQueues {
   private async __getQueue(
     queueId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.AnnotationQueue>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.AnnotationQueue>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -383,7 +386,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.AnnotationQueue,
+        data: _response.body as ElasticDashAPI.AnnotationQueue,
         rawResponse: _response.rawResponse,
       };
     }
@@ -391,32 +394,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -426,17 +429,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/annotation-queues/{queueId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -447,23 +450,23 @@ export class AnnotationQueues {
    * Get items for a specific annotation queue
    *
    * @param {string} queueId - The unique identifier of the annotation queue
-   * @param {LangfuseAPI.GetAnnotationQueueItemsRequest} request
+   * @param {ElasticDashAPI.GetAnnotationQueueItemsRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.listQueueItems("queueId")
    */
   public listQueueItems(
     queueId: string,
-    request: LangfuseAPI.GetAnnotationQueueItemsRequest = {},
+    request: ElasticDashAPI.GetAnnotationQueueItemsRequest = {},
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.PaginatedAnnotationQueueItems> {
+  ): core.HttpResponsePromise<ElasticDashAPI.PaginatedAnnotationQueueItems> {
     return core.HttpResponsePromise.fromPromise(
       this.__listQueueItems(queueId, request, requestOptions),
     );
@@ -471,9 +474,11 @@ export class AnnotationQueues {
 
   private async __listQueueItems(
     queueId: string,
-    request: LangfuseAPI.GetAnnotationQueueItemsRequest = {},
+    request: ElasticDashAPI.GetAnnotationQueueItemsRequest = {},
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.PaginatedAnnotationQueueItems>> {
+  ): Promise<
+    core.WithRawResponse<ElasticDashAPI.PaginatedAnnotationQueueItems>
+  > {
     const { status, page, limit } = request;
     const _queryParams: Record<
       string,
@@ -495,14 +500,15 @@ export class AnnotationQueues {
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -524,7 +530,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.PaginatedAnnotationQueueItems,
+        data: _response.body as ElasticDashAPI.PaginatedAnnotationQueueItems,
         rawResponse: _response.rawResponse,
       };
     }
@@ -532,32 +538,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -567,17 +573,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/annotation-queues/{queueId}/items.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -591,11 +597,11 @@ export class AnnotationQueues {
    * @param {string} itemId - The unique identifier of the annotation queue item
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.getQueueItem("queueId", "itemId")
@@ -604,7 +610,7 @@ export class AnnotationQueues {
     queueId: string,
     itemId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.AnnotationQueueItem> {
+  ): core.HttpResponsePromise<ElasticDashAPI.AnnotationQueueItem> {
     return core.HttpResponsePromise.fromPromise(
       this.__getQueueItem(queueId, itemId, requestOptions),
     );
@@ -614,19 +620,20 @@ export class AnnotationQueues {
     queueId: string,
     itemId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.AnnotationQueueItem>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.AnnotationQueueItem>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -648,7 +655,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.AnnotationQueueItem,
+        data: _response.body as ElasticDashAPI.AnnotationQueueItem,
         rawResponse: _response.rawResponse,
       };
     }
@@ -656,32 +663,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -691,17 +698,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling GET /api/public/annotation-queues/{queueId}/items/{itemId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -712,14 +719,14 @@ export class AnnotationQueues {
    * Add an item to an annotation queue
    *
    * @param {string} queueId - The unique identifier of the annotation queue
-   * @param {LangfuseAPI.CreateAnnotationQueueItemRequest} request
+   * @param {ElasticDashAPI.CreateAnnotationQueueItemRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.createQueueItem("queueId", {
@@ -730,9 +737,9 @@ export class AnnotationQueues {
    */
   public createQueueItem(
     queueId: string,
-    request: LangfuseAPI.CreateAnnotationQueueItemRequest,
+    request: ElasticDashAPI.CreateAnnotationQueueItemRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.AnnotationQueueItem> {
+  ): core.HttpResponsePromise<ElasticDashAPI.AnnotationQueueItem> {
     return core.HttpResponsePromise.fromPromise(
       this.__createQueueItem(queueId, request, requestOptions),
     );
@@ -740,21 +747,22 @@ export class AnnotationQueues {
 
   private async __createQueueItem(
     queueId: string,
-    request: LangfuseAPI.CreateAnnotationQueueItemRequest,
+    request: ElasticDashAPI.CreateAnnotationQueueItemRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.AnnotationQueueItem>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.AnnotationQueueItem>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -779,7 +787,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.AnnotationQueueItem,
+        data: _response.body as ElasticDashAPI.AnnotationQueueItem,
         rawResponse: _response.rawResponse,
       };
     }
@@ -787,32 +795,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -822,17 +830,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/annotation-queues/{queueId}/items.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -844,14 +852,14 @@ export class AnnotationQueues {
    *
    * @param {string} queueId - The unique identifier of the annotation queue
    * @param {string} itemId - The unique identifier of the annotation queue item
-   * @param {LangfuseAPI.UpdateAnnotationQueueItemRequest} request
+   * @param {ElasticDashAPI.UpdateAnnotationQueueItemRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.updateQueueItem("queueId", "itemId", {
@@ -861,9 +869,9 @@ export class AnnotationQueues {
   public updateQueueItem(
     queueId: string,
     itemId: string,
-    request: LangfuseAPI.UpdateAnnotationQueueItemRequest,
+    request: ElasticDashAPI.UpdateAnnotationQueueItemRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.AnnotationQueueItem> {
+  ): core.HttpResponsePromise<ElasticDashAPI.AnnotationQueueItem> {
     return core.HttpResponsePromise.fromPromise(
       this.__updateQueueItem(queueId, itemId, request, requestOptions),
     );
@@ -872,21 +880,22 @@ export class AnnotationQueues {
   private async __updateQueueItem(
     queueId: string,
     itemId: string,
-    request: LangfuseAPI.UpdateAnnotationQueueItemRequest,
+    request: ElasticDashAPI.UpdateAnnotationQueueItemRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): Promise<core.WithRawResponse<LangfuseAPI.AnnotationQueueItem>> {
+  ): Promise<core.WithRawResponse<ElasticDashAPI.AnnotationQueueItem>> {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -911,7 +920,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.AnnotationQueueItem,
+        data: _response.body as ElasticDashAPI.AnnotationQueueItem,
         rawResponse: _response.rawResponse,
       };
     }
@@ -919,32 +928,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -954,17 +963,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling PATCH /api/public/annotation-queues/{queueId}/items/{itemId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -978,11 +987,11 @@ export class AnnotationQueues {
    * @param {string} itemId - The unique identifier of the annotation queue item
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.deleteQueueItem("queueId", "itemId")
@@ -991,7 +1000,7 @@ export class AnnotationQueues {
     queueId: string,
     itemId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.DeleteAnnotationQueueItemResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.DeleteAnnotationQueueItemResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__deleteQueueItem(queueId, itemId, requestOptions),
     );
@@ -1002,20 +1011,21 @@ export class AnnotationQueues {
     itemId: string,
     requestOptions?: AnnotationQueues.RequestOptions,
   ): Promise<
-    core.WithRawResponse<LangfuseAPI.DeleteAnnotationQueueItemResponse>
+    core.WithRawResponse<ElasticDashAPI.DeleteAnnotationQueueItemResponse>
   > {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -1037,7 +1047,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.DeleteAnnotationQueueItemResponse,
+        data: _response.body as ElasticDashAPI.DeleteAnnotationQueueItemResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -1045,32 +1055,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -1080,17 +1090,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling DELETE /api/public/annotation-queues/{queueId}/items/{itemId}.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -1101,14 +1111,14 @@ export class AnnotationQueues {
    * Create an assignment for a user to an annotation queue
    *
    * @param {string} queueId - The unique identifier of the annotation queue
-   * @param {LangfuseAPI.AnnotationQueueAssignmentRequest} request
+   * @param {ElasticDashAPI.AnnotationQueueAssignmentRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.createQueueAssignment("queueId", {
@@ -1117,9 +1127,9 @@ export class AnnotationQueues {
    */
   public createQueueAssignment(
     queueId: string,
-    request: LangfuseAPI.AnnotationQueueAssignmentRequest,
+    request: ElasticDashAPI.AnnotationQueueAssignmentRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.CreateAnnotationQueueAssignmentResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.CreateAnnotationQueueAssignmentResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__createQueueAssignment(queueId, request, requestOptions),
     );
@@ -1127,23 +1137,24 @@ export class AnnotationQueues {
 
   private async __createQueueAssignment(
     queueId: string,
-    request: LangfuseAPI.AnnotationQueueAssignmentRequest,
+    request: ElasticDashAPI.AnnotationQueueAssignmentRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
   ): Promise<
-    core.WithRawResponse<LangfuseAPI.CreateAnnotationQueueAssignmentResponse>
+    core.WithRawResponse<ElasticDashAPI.CreateAnnotationQueueAssignmentResponse>
   > {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -1168,7 +1179,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.CreateAnnotationQueueAssignmentResponse,
+        data: _response.body as ElasticDashAPI.CreateAnnotationQueueAssignmentResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -1176,32 +1187,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -1211,17 +1222,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling POST /api/public/annotation-queues/{queueId}/assignments.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });
@@ -1232,14 +1243,14 @@ export class AnnotationQueues {
    * Delete an assignment for a user to an annotation queue
    *
    * @param {string} queueId - The unique identifier of the annotation queue
-   * @param {LangfuseAPI.AnnotationQueueAssignmentRequest} request
+   * @param {ElasticDashAPI.AnnotationQueueAssignmentRequest} request
    * @param {AnnotationQueues.RequestOptions} requestOptions - Request-specific configuration.
    *
-   * @throws {@link LangfuseAPI.Error}
-   * @throws {@link LangfuseAPI.UnauthorizedError}
-   * @throws {@link LangfuseAPI.AccessDeniedError}
-   * @throws {@link LangfuseAPI.MethodNotAllowedError}
-   * @throws {@link LangfuseAPI.NotFoundError}
+   * @throws {@link ElasticDashAPI.Error}
+   * @throws {@link ElasticDashAPI.UnauthorizedError}
+   * @throws {@link ElasticDashAPI.AccessDeniedError}
+   * @throws {@link ElasticDashAPI.MethodNotAllowedError}
+   * @throws {@link ElasticDashAPI.NotFoundError}
    *
    * @example
    *     await client.annotationQueues.deleteQueueAssignment("queueId", {
@@ -1248,9 +1259,9 @@ export class AnnotationQueues {
    */
   public deleteQueueAssignment(
     queueId: string,
-    request: LangfuseAPI.AnnotationQueueAssignmentRequest,
+    request: ElasticDashAPI.AnnotationQueueAssignmentRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
-  ): core.HttpResponsePromise<LangfuseAPI.DeleteAnnotationQueueAssignmentResponse> {
+  ): core.HttpResponsePromise<ElasticDashAPI.DeleteAnnotationQueueAssignmentResponse> {
     return core.HttpResponsePromise.fromPromise(
       this.__deleteQueueAssignment(queueId, request, requestOptions),
     );
@@ -1258,23 +1269,24 @@ export class AnnotationQueues {
 
   private async __deleteQueueAssignment(
     queueId: string,
-    request: LangfuseAPI.AnnotationQueueAssignmentRequest,
+    request: ElasticDashAPI.AnnotationQueueAssignmentRequest,
     requestOptions?: AnnotationQueues.RequestOptions,
   ): Promise<
-    core.WithRawResponse<LangfuseAPI.DeleteAnnotationQueueAssignmentResponse>
+    core.WithRawResponse<ElasticDashAPI.DeleteAnnotationQueueAssignmentResponse>
   > {
     let _headers: core.Fetcher.Args["headers"] = mergeHeaders(
       this._options?.headers,
       mergeOnlyDefinedHeaders({
         Authorization: await this._getAuthorizationHeader(),
-        "X-Langfuse-Sdk-Name":
-          requestOptions?.xLangfuseSdkName ?? this._options?.xLangfuseSdkName,
-        "X-Langfuse-Sdk-Version":
-          requestOptions?.xLangfuseSdkVersion ??
-          this._options?.xLangfuseSdkVersion,
-        "X-Langfuse-Public-Key":
-          requestOptions?.xLangfusePublicKey ??
-          this._options?.xLangfusePublicKey,
+        "X-ElasticDash-Sdk-Name":
+          requestOptions?.xElasticDashSdkName ??
+          this._options?.xElasticDashSdkName,
+        "X-ElasticDash-Sdk-Version":
+          requestOptions?.xElasticDashSdkVersion ??
+          this._options?.xElasticDashSdkVersion,
+        "X-ElasticDash-Public-Key":
+          requestOptions?.xElasticDashPublicKey ??
+          this._options?.xElasticDashPublicKey,
       }),
       requestOptions?.headers,
     );
@@ -1299,7 +1311,7 @@ export class AnnotationQueues {
     });
     if (_response.ok) {
       return {
-        data: _response.body as LangfuseAPI.DeleteAnnotationQueueAssignmentResponse,
+        data: _response.body as ElasticDashAPI.DeleteAnnotationQueueAssignmentResponse,
         rawResponse: _response.rawResponse,
       };
     }
@@ -1307,32 +1319,32 @@ export class AnnotationQueues {
     if (_response.error.reason === "status-code") {
       switch (_response.error.statusCode) {
         case 400:
-          throw new LangfuseAPI.Error(
+          throw new ElasticDashAPI.Error(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 401:
-          throw new LangfuseAPI.UnauthorizedError(
+          throw new ElasticDashAPI.UnauthorizedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 403:
-          throw new LangfuseAPI.AccessDeniedError(
+          throw new ElasticDashAPI.AccessDeniedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 405:
-          throw new LangfuseAPI.MethodNotAllowedError(
+          throw new ElasticDashAPI.MethodNotAllowedError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         case 404:
-          throw new LangfuseAPI.NotFoundError(
+          throw new ElasticDashAPI.NotFoundError(
             _response.error.body as unknown,
             _response.rawResponse,
           );
         default:
-          throw new errors.LangfuseAPIError({
+          throw new errors.ElasticDashAPIError({
             statusCode: _response.error.statusCode,
             body: _response.error.body,
             rawResponse: _response.rawResponse,
@@ -1342,17 +1354,17 @@ export class AnnotationQueues {
 
     switch (_response.error.reason) {
       case "non-json":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           statusCode: _response.error.statusCode,
           body: _response.error.rawBody,
           rawResponse: _response.rawResponse,
         });
       case "timeout":
-        throw new errors.LangfuseAPITimeoutError(
+        throw new errors.ElasticDashAPITimeoutError(
           "Timeout exceeded when calling DELETE /api/public/annotation-queues/{queueId}/assignments.",
         );
       case "unknown":
-        throw new errors.LangfuseAPIError({
+        throw new errors.ElasticDashAPIError({
           message: _response.error.errorMessage,
           rawResponse: _response.rawResponse,
         });

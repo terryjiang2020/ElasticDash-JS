@@ -1,26 +1,26 @@
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
-import { LangfuseClient } from "@elasticdash/client";
+import { ElasticDashClient } from "@elasticdash/client";
 import { startObservation } from "@elasticdash/tracing";
 import { nanoid } from "nanoid";
 import { describe, it, expect, beforeEach } from "vitest";
 
 import { waitForServerIngestion } from "./helpers/serverSetup.js";
 
-describe("Langfuse Datasets E2E", () => {
-  let langfuse: LangfuseClient;
+describe("ElasticDash Datasets E2E", () => {
+  let elasticdash: ElasticDashClient;
 
   beforeEach(async () => {
-    langfuse = new LangfuseClient();
+    elasticdash = new ElasticDashClient();
   });
 
   describe("dataset and items", () => {
     it("create and get dataset, name only", async () => {
       const datasetName = nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
-      const getDataset = await langfuse.dataset.get(datasetName);
+      const getDataset = await elasticdash.dataset.get(datasetName);
       expect(getDataset).toMatchObject({
         name: datasetName,
       });
@@ -28,8 +28,8 @@ describe("Langfuse Datasets E2E", () => {
 
     it("create and get dataset, name only, special character", async () => {
       const datasetName = nanoid() + "+ 7?";
-      await langfuse.api.datasets.create({ name: datasetName });
-      const getDataset = await langfuse.dataset.get(datasetName);
+      await elasticdash.api.datasets.create({ name: datasetName });
+      const getDataset = await elasticdash.dataset.get(datasetName);
 
       expect(getDataset).toMatchObject({
         name: datasetName,
@@ -39,13 +39,13 @@ describe("Langfuse Datasets E2E", () => {
     it("create and get dataset, object", async () => {
       const datasetName = nanoid();
 
-      await langfuse.api.datasets.create({
+      await elasticdash.api.datasets.create({
         name: datasetName,
         description: "test",
         metadata: { test: "test" },
       });
 
-      const getDataset = await langfuse.dataset.get(datasetName);
+      const getDataset = await elasticdash.dataset.get(datasetName);
 
       expect(getDataset).toMatchObject({
         name: datasetName,
@@ -56,7 +56,7 @@ describe("Langfuse Datasets E2E", () => {
 
     it("create and get dataset item", async () => {
       const datasetNameRandom = nanoid();
-      await langfuse.api.datasets.create({
+      await elasticdash.api.datasets.create({
         name: datasetNameRandom,
         metadata: { test: "test" },
       });
@@ -73,13 +73,13 @@ describe("Langfuse Datasets E2E", () => {
       generation.update({ output: "generation output" });
       generation.end();
 
-      const item1 = await langfuse.api.datasetItems.create({
+      const item1 = await elasticdash.api.datasetItems.create({
         datasetName: datasetNameRandom,
         input: "hello",
         metadata: { test: "test" },
       });
 
-      const item2 = await langfuse.api.datasetItems.create({
+      const item2 = await elasticdash.api.datasetItems.create({
         datasetName: datasetNameRandom,
         input: [
           {
@@ -99,13 +99,13 @@ describe("Langfuse Datasets E2E", () => {
         sourceTraceId: generation.traceId,
       });
 
-      const item3 = await langfuse.api.datasetItems.create({
+      const item3 = await elasticdash.api.datasetItems.create({
         datasetName: datasetNameRandom,
         input: "prompt",
         expectedOutput: "completion",
       });
 
-      const getDataset = await langfuse.dataset.get(datasetNameRandom);
+      const getDataset = await elasticdash.dataset.get(datasetNameRandom);
       expect(getDataset).toMatchObject({
         name: datasetNameRandom,
         description: null,
@@ -134,7 +134,7 @@ describe("Langfuse Datasets E2E", () => {
         ]),
       );
 
-      const getDatasetItem = await langfuse.api.datasetItems.get(item1.id);
+      const getDatasetItem = await elasticdash.api.datasetItems.get(item1.id);
       expect(getDatasetItem).toMatchObject({
         id: item1.id,
         input: "hello",
@@ -144,7 +144,7 @@ describe("Langfuse Datasets E2E", () => {
 
     it("create and get many dataset items to test pagination", async () => {
       const datasetNameRandom = nanoid();
-      await langfuse.api.datasets.create({
+      await elasticdash.api.datasets.create({
         name: datasetNameRandom,
         metadata: { test: "test" },
       });
@@ -153,7 +153,7 @@ describe("Langfuse Datasets E2E", () => {
       const createdItems = [];
       const promises = [];
       for (let i = 0; i < 99; i++) {
-        const promise = langfuse.api.datasetItems
+        const promise = elasticdash.api.datasetItems
           .create({
             datasetName: datasetNameRandom,
             input: "prompt",
@@ -167,7 +167,8 @@ describe("Langfuse Datasets E2E", () => {
       await Promise.all(promises);
 
       // default
-      const getDatasetDefault = await langfuse.dataset.get(datasetNameRandom);
+      const getDatasetDefault =
+        await elasticdash.dataset.get(datasetNameRandom);
       expect(getDatasetDefault.items.length).toEqual(99);
       expect(getDatasetDefault.items).toEqual(
         expect.arrayContaining([
@@ -180,22 +181,28 @@ describe("Langfuse Datasets E2E", () => {
       );
 
       // Verify pagination by fetching in chunks (DatasetManager handles pagination internally)
-      const getDatasetChunk8 = await langfuse.dataset.get(datasetNameRandom, {
-        fetchItemsPageSize: 8,
-      });
+      const getDatasetChunk8 = await elasticdash.dataset.get(
+        datasetNameRandom,
+        {
+          fetchItemsPageSize: 8,
+        },
+      );
       expect(getDatasetChunk8.items.length).toEqual(99);
 
-      const getDatasetChunk11 = await langfuse.dataset.get(datasetNameRandom, {
-        fetchItemsPageSize: 11,
-      });
+      const getDatasetChunk11 = await elasticdash.dataset.get(
+        datasetNameRandom,
+        {
+          fetchItemsPageSize: 11,
+        },
+      );
       expect(getDatasetChunk11.items.length).toEqual(99);
     }, 20000);
 
     it("create, upsert and get dataset item", async () => {
       const datasetName = nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
-      const createRes = await langfuse.api.datasetItems.create({
+      const createRes = await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         input: {
           text: "hello world",
@@ -205,7 +212,7 @@ describe("Langfuse Datasets E2E", () => {
         },
       });
 
-      const getRes = await langfuse.api.datasetItems.get(createRes.id);
+      const getRes = await elasticdash.api.datasetItems.get(createRes.id);
       expect(getRes).toMatchObject({
         id: createRes.id,
         input: { text: "hello world" },
@@ -213,7 +220,7 @@ describe("Langfuse Datasets E2E", () => {
       });
 
       // Update the same item (upsert)
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         id: createRes.id,
         input: {
@@ -228,7 +235,7 @@ describe("Langfuse Datasets E2E", () => {
         status: "ARCHIVED",
       });
 
-      const getUpdateRes = await langfuse.api.datasetItems.get(createRes.id);
+      const getUpdateRes = await elasticdash.api.datasetItems.get(createRes.id);
       expect(getUpdateRes).toMatchObject({
         id: createRes.id,
         input: {
@@ -246,15 +253,15 @@ describe("Langfuse Datasets E2E", () => {
 
     it("e2e dataset runs and linking", async () => {
       const datasetName = nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         input: "Hello trace",
         expectedOutput: "Hello world",
       });
 
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         input: "Hello generation",
         expectedOutput: "Hello world",
@@ -278,7 +285,7 @@ describe("Langfuse Datasets E2E", () => {
       generation.end();
       span.end();
 
-      const dataset = await langfuse.dataset.get(datasetName);
+      const dataset = await elasticdash.dataset.get(datasetName);
       const runName = "test-run-" + datasetName;
 
       // Link dataset items to observations using the new linking API
@@ -287,7 +294,7 @@ describe("Langfuse Datasets E2E", () => {
           await item.link(span, runName);
 
           // Add score to trace
-          langfuse.score.observation(span, {
+          elasticdash.score.observation(span, {
             name: "test-score-trace",
             value: 0.5,
           });
@@ -298,7 +305,7 @@ describe("Langfuse Datasets E2E", () => {
           });
 
           // Add score to generation
-          langfuse.score.observation(generation, {
+          elasticdash.score.observation(generation, {
             name: "test-score-generation",
             value: 0.5,
           });
@@ -308,7 +315,7 @@ describe("Langfuse Datasets E2E", () => {
       await waitForServerIngestion(2_000);
 
       // Verify the dataset run was created
-      const targetRun = await langfuse.api.datasets.getRun(
+      const targetRun = await elasticdash.api.datasets.getRun(
         datasetName,
         runName,
       );
@@ -335,15 +342,15 @@ describe("Langfuse Datasets E2E", () => {
 
     it("e2e multiple runs", async () => {
       const datasetName = nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         input: "Hello trace",
         expectedOutput: "Hello world",
       });
 
-      await langfuse.api.datasetItems.create({
+      await elasticdash.api.datasetItems.create({
         datasetName: datasetName,
         input: "Hello generation",
         expectedOutput: "Hello world",
@@ -367,7 +374,7 @@ describe("Langfuse Datasets E2E", () => {
       generation.end();
       span.end();
 
-      const dataset = await langfuse.dataset.get(datasetName);
+      const dataset = await elasticdash.dataset.get(datasetName);
 
       // Create 9 different runs
       for (let i = 0; i < 9; i++) {
@@ -377,7 +384,7 @@ describe("Langfuse Datasets E2E", () => {
         for (const item of dataset.items) {
           if (item.input === "Hello trace") {
             await item.link(span, runName);
-            langfuse.score.observation(span, {
+            elasticdash.score.observation(span, {
               name: "test-score-trace",
               value: 0.5,
             });
@@ -386,7 +393,7 @@ describe("Langfuse Datasets E2E", () => {
               description: "test-run-description",
               metadata: { test: "test" },
             });
-            langfuse.score.observation(generation, {
+            elasticdash.score.observation(generation, {
               name: "test-score-generation",
               value: 0.5,
             });
@@ -395,7 +402,7 @@ describe("Langfuse Datasets E2E", () => {
       }
 
       // Get all runs
-      const getRuns = await langfuse.api.datasets.getRuns(datasetName);
+      const getRuns = await elasticdash.api.datasets.getRuns(datasetName);
 
       expect(getRuns.data.length).toEqual(9);
       expect(getRuns.data[0]).toMatchObject({
@@ -406,7 +413,7 @@ describe("Langfuse Datasets E2E", () => {
       });
 
       // Test pagination
-      const getRunsQuery = await langfuse.api.datasets.getRuns(datasetName, {
+      const getRunsQuery = await elasticdash.api.datasets.getRuns(datasetName, {
         limit: 2,
         page: 1,
       });
@@ -435,16 +442,16 @@ describe("Langfuse Datasets E2E", () => {
 
       // Create a dataset
       const datasetName = nanoid();
-      await langfuse.api.datasets.create({ name: datasetName });
+      await elasticdash.api.datasets.create({ name: datasetName });
 
       // Add two items to the dataset
       await Promise.all([
-        langfuse.api.datasetItems.create({
+        elasticdash.api.datasetItems.create({
           datasetName: datasetName,
           input: "Germany",
           expectedOutput: "Berlin",
         }),
-        langfuse.api.datasetItems.create({
+        elasticdash.api.datasetItems.create({
           datasetName: datasetName,
           input: "France",
           expectedOutput: "Paris",
@@ -452,7 +459,7 @@ describe("Langfuse Datasets E2E", () => {
       ]);
 
       // Execute chain on dataset items
-      const dataset = await langfuse.dataset.get(datasetName);
+      const dataset = await elasticdash.dataset.get(datasetName);
       const runName = "test-run-" + new Date().toISOString();
       const runDescription = "test-run-description";
       const runMetadata = { test: "test" };
@@ -481,7 +488,7 @@ describe("Langfuse Datasets E2E", () => {
           });
 
           // Add score
-          langfuse.score.observation(span, {
+          elasticdash.score.observation(span, {
             name: "test-score",
             value: 0.5,
           });
@@ -505,7 +512,7 @@ describe("Langfuse Datasets E2E", () => {
       await waitForServerIngestion(2_000);
 
       // Verify that the dataset run was created correctly
-      const targetRun = await langfuse.api.datasets.getRun(
+      const targetRun = await elasticdash.api.datasets.getRun(
         datasetName,
         runName,
       );

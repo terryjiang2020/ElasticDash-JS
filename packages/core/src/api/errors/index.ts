@@ -1,2 +1,2 @@
-export { LangfuseAPIError } from "./LangfuseAPIError.js";
-export { LangfuseAPITimeoutError } from "./LangfuseAPITimeoutError.js";
+export { ElasticDashAPIError } from "./ElasticDashAPIError.js";
+export { ElasticDashAPITimeoutError } from "./ElasticDashAPITimeoutError.js";

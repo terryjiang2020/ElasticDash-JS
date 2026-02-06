@@ -27,6 +27,6 @@ export interface Trace {
   tags: string[];
   /** Public traces are accessible via url without login */
   public: boolean;
-  /** The environment from which this trace originated. Can be any lowercase alphanumeric string with hyphens and underscores that does not start with 'langfuse'. */
+  /** The environment from which this trace originated. Can be any lowercase alphanumeric string with hyphens and underscores that does not start with 'elasticdash'. */
   environment: string;
 }

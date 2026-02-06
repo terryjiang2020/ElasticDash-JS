@@ -1,5 +1,5 @@
-import { LangfuseClient } from "@elasticdash/client";
-import { resetGlobalLogger, LangfuseMedia } from "@elasticdash/core";
+import { ElasticDashClient } from "@elasticdash/client";
+import { resetGlobalLogger, ElasticDashMedia } from "@elasticdash/core";
 import { startObservation } from "@elasticdash/tracing";
 import { nanoid } from "nanoid";
 import { describe, it, expect, beforeEach, afterEach, beforeAll } from "vitest";
@@ -83,13 +83,13 @@ describe("Media E2E Tests", () => {
       const spanName = `media-processing-span-${testId}`;
 
       // Create base64 data URI from mock audio bytes
-      const base64DataUri = new LangfuseMedia({
+      const base64DataUri = new ElasticDashMedia({
         source: "bytes",
         contentBytes: Buffer.from(mockAudioBytes),
         contentType: "audio/wav",
       }).base64DataUri;
 
-      // Create span with LangfuseMedia in metadata (should use toJSON to convert to media reference)
+      // Create span with ElasticDashMedia in metadata (should use toJSON to convert to media reference)
       const span = startObservation(spanName, {
         input: {
           operation: "media processing test",
@@ -115,7 +115,7 @@ describe("Media E2E Tests", () => {
       // Wait for server-side ingestion processing
       await waitForServerIngestion(2000);
 
-      // Fetch the trace from Langfuse server
+      // Fetch the trace from ElasticDash server
       const trace = await assertions.fetchTrace(span.traceId);
 
       // Find the span observation
@@ -127,9 +127,9 @@ describe("Media E2E Tests", () => {
       if (observation.input) {
         const inputStr = JSON.stringify(observation.input);
 
-        // Should contain Langfuse media reference in input
+        // Should contain ElasticDash media reference in input
         expect(inputStr).toMatch(
-          /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
         );
 
         // Should not contain the original base64 data
@@ -142,9 +142,9 @@ describe("Media E2E Tests", () => {
 
       const metadataStr = JSON.stringify(observation.metadata);
 
-      // Should contain Langfuse media reference in metadata
+      // Should contain ElasticDash media reference in metadata
       expect(metadataStr).toMatch(
-        /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+        /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
       );
 
       // Should not contain the original base64 data
@@ -153,15 +153,16 @@ describe("Media E2E Tests", () => {
       );
 
       // Test media resolution back to base64 data URI
-      const langfuseClient = new LangfuseClient();
+      const elasticdashClient = new ElasticDashClient();
 
       // Wait longer for media upload to complete
       await waitForServerIngestion(5000);
 
-      const mediaResolvedTrace = await langfuseClient.media.resolveReferences({
-        obj: trace,
-        resolveWith: "base64DataUri",
-      });
+      const mediaResolvedTrace =
+        await elasticdashClient.media.resolveReferences({
+          obj: trace,
+          resolveWith: "base64DataUri",
+        });
 
       // Check that the resolved trace has the original base64 data back
       if (mediaResolvedTrace.observations) {
@@ -177,7 +178,7 @@ describe("Media E2E Tests", () => {
 
           // Should not contain the media reference anymore
           expect(resolvedInputStr).not.toMatch(
-            /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+            /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
           );
         }
 
@@ -189,7 +190,7 @@ describe("Media E2E Tests", () => {
 
           // Should not contain the media reference anymore
           expect(resolvedMetadataStr).not.toMatch(
-            /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+            /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
           );
         }
       }
@@ -229,10 +230,10 @@ describe("Media E2E Tests", () => {
         const input2 = JSON.stringify(span2Obs.input);
 
         const inputRef1 = input1.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
         const inputRef2 = input2.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
 
         if (inputRef1 && inputRef2) {
@@ -245,10 +246,10 @@ describe("Media E2E Tests", () => {
         const metadata2 = JSON.stringify(span2Obs.metadata);
 
         const metaRef1 = metadata1.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
         const metaRef2 = metadata2.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
 
         if (metaRef1 && metaRef2) {
@@ -271,14 +272,14 @@ describe("Media E2E Tests", () => {
           const span3 = startObservation(span3Name, {
             input: {
               operation: "media resolved reuse test",
-              audioData: new LangfuseMedia({
+              audioData: new ElasticDashMedia({
                 source: "base64_data_uri",
                 base64DataUri: resolvedAudioData,
               }),
             },
             metadata: {
               context: {
-                nested: new LangfuseMedia({
+                nested: new ElasticDashMedia({
                   source: "base64_data_uri",
                   base64DataUri: resolvedAudioData,
                 }),
@@ -307,10 +308,10 @@ describe("Media E2E Tests", () => {
             const input1 = JSON.stringify(observation.input);
 
             const inputRef3 = input3.match(
-              /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+              /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
             );
             const inputRef1 = input1.match(
-              /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+              /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
             );
 
             if (inputRef3 && inputRef1) {
@@ -321,18 +322,18 @@ describe("Media E2E Tests", () => {
       }
     }, 30_000); // Increased timeout for the full round-trip test
 
-    it("replace media reference string in object when using LangfuseMedia objects", async () => {
+    it("replace media reference string in object when using ElasticDashMedia objects", async () => {
       const testId = nanoid(8);
       const spanName = `media-processing-span-${testId}`;
 
       // Create base64 data URI from mock audio bytes
-      const media = new LangfuseMedia({
+      const media = new ElasticDashMedia({
         source: "bytes",
         contentBytes: Buffer.from(mockAudioBytes),
         contentType: "audio/wav",
       });
 
-      // Create span with LangfuseMedia in metadata (should use toJSON to convert to media reference)
+      // Create span with ElasticDashMedia in metadata (should use toJSON to convert to media reference)
       const span = startObservation(spanName, {
         input: {
           operation: "media processing test",
@@ -358,7 +359,7 @@ describe("Media E2E Tests", () => {
       // Wait for server-side ingestion processing
       await waitForServerIngestion(2000);
 
-      // Fetch the trace from Langfuse server
+      // Fetch the trace from ElasticDash server
       const trace = await assertions.fetchTrace(span.traceId);
 
       // Find the span observation
@@ -370,9 +371,9 @@ describe("Media E2E Tests", () => {
       if (observation.input) {
         const inputStr = JSON.stringify(observation.input);
 
-        // Should contain Langfuse media reference in input
+        // Should contain ElasticDash media reference in input
         expect(inputStr).toMatch(
-          /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
         );
 
         // Should not contain the original base64 data
@@ -385,9 +386,9 @@ describe("Media E2E Tests", () => {
 
       const metadataStr = JSON.stringify(observation.metadata);
 
-      // Should contain Langfuse media reference in metadata
+      // Should contain ElasticDash media reference in metadata
       expect(metadataStr).toMatch(
-        /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+        /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
       );
 
       // Should not contain the original base64 data
@@ -396,15 +397,16 @@ describe("Media E2E Tests", () => {
       );
 
       // Test media resolution back to base64 data URI
-      const langfuseClient = new LangfuseClient();
+      const elasticdashClient = new ElasticDashClient();
 
       // Wait longer for media upload to complete
       await waitForServerIngestion(5000);
 
-      const mediaResolvedTrace = await langfuseClient.media.resolveReferences({
-        obj: trace,
-        resolveWith: "base64DataUri",
-      });
+      const mediaResolvedTrace =
+        await elasticdashClient.media.resolveReferences({
+          obj: trace,
+          resolveWith: "base64DataUri",
+        });
 
       // Check that the resolved trace has the original base64 data back
       if (mediaResolvedTrace.observations) {
@@ -420,7 +422,7 @@ describe("Media E2E Tests", () => {
 
           // Should not contain the media reference anymore
           expect(resolvedInputStr).not.toMatch(
-            /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+            /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
           );
         }
 
@@ -432,7 +434,7 @@ describe("Media E2E Tests", () => {
 
           // Should not contain the media reference anymore
           expect(resolvedMetadataStr).not.toMatch(
-            /@@@langfuseMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
+            /@@@elasticDashMedia:type=audio\/wav\|id=.+\|source=base64_data_uri@@@/,
           );
         }
       }
@@ -472,10 +474,10 @@ describe("Media E2E Tests", () => {
         const input2 = JSON.stringify(span2Obs.input);
 
         const inputRef1 = input1.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
         const inputRef2 = input2.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
 
         if (inputRef1 && inputRef2) {
@@ -488,10 +490,10 @@ describe("Media E2E Tests", () => {
         const metadata2 = JSON.stringify(span2Obs.metadata);
 
         const metaRef1 = metadata1.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
         const metaRef2 = metadata2.match(
-          /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+          /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
         );
 
         if (metaRef1 && metaRef2) {
@@ -514,14 +516,14 @@ describe("Media E2E Tests", () => {
           const span3 = startObservation(span3Name, {
             input: {
               operation: "media resolved reuse test",
-              audioData: new LangfuseMedia({
+              audioData: new ElasticDashMedia({
                 source: "base64_data_uri",
                 base64DataUri: resolvedAudioData,
               }),
             },
             metadata: {
               context: {
-                nested: new LangfuseMedia({
+                nested: new ElasticDashMedia({
                   source: "base64_data_uri",
                   base64DataUri: resolvedAudioData,
                 }),
@@ -550,10 +552,10 @@ describe("Media E2E Tests", () => {
             const input1 = JSON.stringify(observation.input);
 
             const inputRef3 = input3.match(
-              /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+              /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
             );
             const inputRef1 = input1.match(
-              /@@@langfuseMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
+              /@@@elasticDashMedia:type=audio\/wav\|id=([^|]+)\|source=base64_data_uri@@@/,
             );
 
             if (inputRef3 && inputRef1) {

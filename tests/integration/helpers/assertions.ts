@@ -214,11 +214,11 @@ export class SpanAssertions {
       `Expected attribute '${attributeKey}' to not contain base64 data URIs`,
     ).not.toMatch(/data:[^;]+;base64,[A-Za-z0-9+/]+=*/);
 
-    // Should contain Langfuse media tags
+    // Should contain ElasticDash media tags
     expect(
       stringValue,
-      `Expected attribute '${attributeKey}' to contain Langfuse media tags`,
-    ).toMatch(/@@@langfuse-media:[a-f0-9-]+@@@/);
+      `Expected attribute '${attributeKey}' to contain ElasticDash media tags`,
+    ).toMatch(/@@@elasticdash-media:[a-f0-9-]+@@@/);
   }
 
   /**

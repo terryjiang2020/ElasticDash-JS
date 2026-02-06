@@ -1,5 +1,5 @@
 import {
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   IngestionEvent,
   getEnv,
   generateUUID,
@@ -14,7 +14,7 @@ const MAX_QUEUE_SIZE = 100_000; // prevent memory leaks
 const MAX_BATCH_SIZE = 100;
 
 /**
- * Manager for creating and batching score events in Langfuse.
+ * Manager for creating and batching score events in ElasticDash.
  *
  * The ScoreManager handles automatic batching and flushing of score events
  * to optimize API usage. Scores are automatically sent when the queue reaches
@@ -23,7 +23,7 @@ const MAX_BATCH_SIZE = 100;
  * @public
  */
 export class ScoreManager {
-  private apiClient: LangfuseAPIClient;
+  private apiClient: ElasticDashAPIClient;
   private eventQueue: IngestionEvent[] = [];
   private flushPromise: Promise<void> | null = null;
   private flushTimer: any = null;
@@ -36,7 +36,7 @@ export class ScoreManager {
    * @param params - Configuration object containing the API client
    * @internal
    */
-  constructor(params: { apiClient: LangfuseAPIClient }) {
+  constructor(params: { apiClient: ElasticDashAPIClient }) {
     this.apiClient = params.apiClient;
 
     const envFlushAtCount = getEnv("ELASTICDASH_FLUSH_AT");
@@ -63,7 +63,7 @@ export class ScoreManager {
    *
    * @example
    * ```typescript
-   * langfuse.score.create({
+   * elasticdash.score.create({
    *   name: "quality",
    *   value: 0.85,
    *   traceId: "trace-123",
@@ -122,7 +122,7 @@ export class ScoreManager {
    * import { startSpan } from '@elasticdash/tracing';
    *
    * const span = startSpan({ name: "my-operation" });
-   * langfuse.score.observation(
+   * elasticdash.score.observation(
    *   { otelSpan: span },
    *   { name: "accuracy", value: 0.92 }
    * );
@@ -158,7 +158,7 @@ export class ScoreManager {
    * import { startSpan } from '@elasticdash/tracing';
    *
    * const span = startSpan({ name: "my-operation" });
-   * langfuse.score.trace(
+   * elasticdash.score.trace(
    *   { otelSpan: span },
    *   { name: "overall_quality", value: 0.88 }
    * );
@@ -194,7 +194,7 @@ export class ScoreManager {
    *
    * startActiveSpan({ name: "my-operation" }, (span) => {
    *   // Inside the active span
-   *   langfuse.score.activeObservation({
+   *   elasticdash.score.activeObservation({
    *     name: "relevance",
    *     value: 0.95
    *   });
@@ -238,7 +238,7 @@ export class ScoreManager {
    *
    * startActiveSpan({ name: "my-operation" }, (span) => {
    *   // Inside the active span
-   *   langfuse.score.activeTrace({
+   *   elasticdash.score.activeTrace({
    *     name: "user_satisfaction",
    *     value: 4,
    *     comment: "User rated 4 out of 5 stars"
@@ -302,7 +302,7 @@ export class ScoreManager {
   }
 
   /**
-   * Flushes all pending score events to the Langfuse API.
+   * Flushes all pending score events to the ElasticDash API.
    *
    * This method ensures all queued scores are sent immediately rather than
    * waiting for the automatic flush interval or batch size threshold.
@@ -311,8 +311,8 @@ export class ScoreManager {
    *
    * @example
    * ```typescript
-   * langfuse.score.create({ name: "quality", value: 0.8 });
-   * await langfuse.score.flush(); // Ensures the score is sent immediately
+   * elasticdash.score.create({ name: "quality", value: 0.8 });
+   * await elasticdash.score.flush(); // Ensures the score is sent immediately
    * ```
    */
   public async flush() {
@@ -323,14 +323,14 @@ export class ScoreManager {
    * Gracefully shuts down the score manager by flushing all pending scores.
    *
    * This method should be called before your application exits to ensure
-   * all score data is sent to Langfuse.
+   * all score data is sent to ElasticDash.
    *
    * @returns Promise that resolves when shutdown is complete
    *
    * @example
    * ```typescript
    * // Before application exit
-   * await langfuse.score.shutdown();
+   * await elasticdash.score.shutdown();
    * ```
    */
   public async shutdown() {

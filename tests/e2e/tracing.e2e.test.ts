@@ -27,7 +27,7 @@ describe("Server Export E2E Tests", () => {
     await teardownServerTestEnvironment(testEnv);
   });
 
-  it("should export span with nested generation to Langfuse server", async () => {
+  it("should export span with nested generation to ElasticDash server", async () => {
     const testId = nanoid(8);
     const traceName = `e2e-test-trace-${testId}`;
     const parentSpanName = `e2e-parent-span-${testId}`;
@@ -86,7 +86,7 @@ describe("Server Export E2E Tests", () => {
     // Wait for server-side async ingestion processing
     await waitForServerIngestion(2000);
 
-    // Fetch the trace from Langfuse server and verify
+    // Fetch the trace from ElasticDash server and verify
     const traces = await assertions.fetchTraces({
       name: traceName,
       limit: 1,
@@ -146,13 +146,13 @@ describe("Server Export E2E Tests", () => {
     }
 
     console.log(
-      "✅ E2E test passed: Trace exported successfully to Langfuse server",
+      "✅ E2E test passed: Trace exported successfully to ElasticDash server",
     );
     console.log(`📊 Trace ID: ${trace.id}`);
     console.log(`📈 Observations: ${trace.observations.length}`);
   });
 
-  it("should export startActiveObservation with nested startActiveObservation generation to Langfuse server", async () => {
+  it("should export startActiveObservation with nested startActiveObservation generation to ElasticDash server", async () => {
     const testId = nanoid(8);
     const traceName = `e2e-active-span-trace-${testId}`;
     const parentSpanName = `active-parent-operation-${testId}`;
@@ -286,7 +286,7 @@ describe("Server Export E2E Tests", () => {
     console.log(`📊 Trace ID: ${trace.id}`);
   });
 
-  it("should export observe wrapper with interoperability to Langfuse server", async () => {
+  it("should export observe wrapper with interoperability to ElasticDash server", async () => {
     const testId = nanoid(8);
     const traceName = `e2e-observe-interop-trace-${testId}`;
     const coordinatorSpanName = `workflow-coordinator-${testId}`;
@@ -517,7 +517,7 @@ describe("Server Export E2E Tests", () => {
     );
   });
 
-  it("should export spans media handling to Langfuse server", async () => {
+  it("should export spans media handling to ElasticDash server", async () => {
     const testId = nanoid(8);
     const traceName = `e2e-masking-media-trace-${testId}`;
     const coordinatorSpanName = `media-masking-workflow-${testId}`;
@@ -1080,7 +1080,7 @@ Both media items were successfully processed. The image is a minimal transparent
       }
       // Should contain media reference markers or be processed
       if (
-        inputStr.includes("@@@langfuseMedia:") ||
+        inputStr.includes("@@@elasticDashMedia:") ||
         !inputStr.includes("data:image/png;base64,iVBORw0K")
       ) {
         console.log("✅ Media content appears to be processed correctly");

@@ -1,11 +1,14 @@
 {
   "name": "elasticdash-js",
-  "version": "0.0.5",
+  "version": "0.0.10",
   "description": "ElasticDash JavaScript / TypeScript SDK",
   "author": "ElasticDash",
   "license": "MIT",
   "private": false,
   "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "pnpm -r run build",
     "docs": "pnpm build && typedoc --options ./typedoc.config.cjs",

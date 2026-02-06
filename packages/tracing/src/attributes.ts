@@ -1,19 +1,19 @@
-import { LangfuseOtelSpanAttributes } from "@elasticdash/core";
+import { ElasticDashOtelSpanAttributes } from "@elasticdash/core";
 import { type Attributes } from "@opentelemetry/api";
 
 import {
-  LangfuseObservationAttributes,
-  LangfuseObservationType,
-  LangfuseTraceAttributes,
+  ElasticDashObservationAttributes,
+  ElasticDashObservationType,
+  ElasticDashTraceAttributes,
 } from "./types.js";
 
 /**
- * Creates OpenTelemetry attributes from Langfuse trace attributes.
+ * Creates OpenTelemetry attributes from ElasticDash trace attributes.
  *
  * Converts user-friendly trace attributes into the internal OpenTelemetry
  * attribute format required by the span processor.
  *
- * @param attributes - Langfuse trace attributes to convert
+ * @param attributes - ElasticDash trace attributes to convert
  * @returns OpenTelemetry attributes object with non-null values
  *
  * @example
@@ -45,18 +45,18 @@ export function createTraceAttributes({
   tags,
   environment,
   public: isPublic,
-}: LangfuseTraceAttributes = {}): Attributes {
+}: ElasticDashTraceAttributes = {}): Attributes {
   const attributes = {
-    [LangfuseOtelSpanAttributes.TRACE_NAME]: name,
-    [LangfuseOtelSpanAttributes.TRACE_USER_ID]: userId,
-    [LangfuseOtelSpanAttributes.TRACE_SESSION_ID]: sessionId,
-    [LangfuseOtelSpanAttributes.VERSION]: version,
-    [LangfuseOtelSpanAttributes.RELEASE]: release,
-    [LangfuseOtelSpanAttributes.TRACE_INPUT]: _serialize(input),
-    [LangfuseOtelSpanAttributes.TRACE_OUTPUT]: _serialize(output),
-    [LangfuseOtelSpanAttributes.TRACE_TAGS]: tags,
-    [LangfuseOtelSpanAttributes.ENVIRONMENT]: environment,
-    [LangfuseOtelSpanAttributes.TRACE_PUBLIC]: isPublic,
+    [ElasticDashOtelSpanAttributes.TRACE_NAME]: name,
+    [ElasticDashOtelSpanAttributes.TRACE_USER_ID]: userId,
+    [ElasticDashOtelSpanAttributes.TRACE_SESSION_ID]: sessionId,
+    [ElasticDashOtelSpanAttributes.VERSION]: version,
+    [ElasticDashOtelSpanAttributes.RELEASE]: release,
+    [ElasticDashOtelSpanAttributes.TRACE_INPUT]: _serialize(input),
+    [ElasticDashOtelSpanAttributes.TRACE_OUTPUT]: _serialize(output),
+    [ElasticDashOtelSpanAttributes.TRACE_TAGS]: tags,
+    [ElasticDashOtelSpanAttributes.ENVIRONMENT]: environment,
+    [ElasticDashOtelSpanAttributes.TRACE_PUBLIC]: isPublic,
     ..._flattenAndSerializeMetadata(metadata, "trace"),
   };
 
@@ -66,8 +66,8 @@ export function createTraceAttributes({
 }
 
 export function createObservationAttributes(
-  type: LangfuseObservationType,
-  attributes: LangfuseObservationAttributes,
+  type: ElasticDashObservationType,
+  attributes: ElasticDashObservationAttributes,
 ): Attributes {
   const {
     metadata,
@@ -85,25 +85,25 @@ export function createObservationAttributes(
   } = attributes;
 
   let otelAttributes: Attributes = {
-    [LangfuseOtelSpanAttributes.OBSERVATION_TYPE]: type,
-    [LangfuseOtelSpanAttributes.OBSERVATION_LEVEL]: level,
-    [LangfuseOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE]: statusMessage,
-    [LangfuseOtelSpanAttributes.VERSION]: version,
-    [LangfuseOtelSpanAttributes.OBSERVATION_INPUT]: _serialize(input),
-    [LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT]: _serialize(output),
-    [LangfuseOtelSpanAttributes.OBSERVATION_MODEL]: model,
-    [LangfuseOtelSpanAttributes.OBSERVATION_USAGE_DETAILS]:
+    [ElasticDashOtelSpanAttributes.OBSERVATION_TYPE]: type,
+    [ElasticDashOtelSpanAttributes.OBSERVATION_LEVEL]: level,
+    [ElasticDashOtelSpanAttributes.OBSERVATION_STATUS_MESSAGE]: statusMessage,
+    [ElasticDashOtelSpanAttributes.VERSION]: version,
+    [ElasticDashOtelSpanAttributes.OBSERVATION_INPUT]: _serialize(input),
+    [ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT]: _serialize(output),
+    [ElasticDashOtelSpanAttributes.OBSERVATION_MODEL]: model,
+    [ElasticDashOtelSpanAttributes.OBSERVATION_USAGE_DETAILS]:
       _serialize(usageDetails),
-    [LangfuseOtelSpanAttributes.OBSERVATION_COST_DETAILS]:
+    [ElasticDashOtelSpanAttributes.OBSERVATION_COST_DETAILS]:
       _serialize(costDetails),
-    [LangfuseOtelSpanAttributes.OBSERVATION_COMPLETION_START_TIME]:
+    [ElasticDashOtelSpanAttributes.OBSERVATION_COMPLETION_START_TIME]:
       _serialize(completionStartTime),
-    [LangfuseOtelSpanAttributes.OBSERVATION_MODEL_PARAMETERS]:
+    [ElasticDashOtelSpanAttributes.OBSERVATION_MODEL_PARAMETERS]:
       _serialize(modelParameters),
     ...(prompt && !prompt.isFallback
       ? {
-          [LangfuseOtelSpanAttributes.OBSERVATION_PROMPT_NAME]: prompt.name,
-          [LangfuseOtelSpanAttributes.OBSERVATION_PROMPT_VERSION]:
+          [ElasticDashOtelSpanAttributes.OBSERVATION_PROMPT_NAME]: prompt.name,
+          [ElasticDashOtelSpanAttributes.OBSERVATION_PROMPT_VERSION]:
             prompt.version,
         }
       : {}),
@@ -137,7 +137,7 @@ function _serialize(obj: unknown): string | undefined {
  *
  * Converts nested metadata objects into dot-notation attribute keys.
  * For example, `{ database: { host: 'localhost' } }` becomes
- * `{ 'langfuse.metadata.database.host': 'localhost' }`.
+ * `{ 'elasticdash.metadata.database.host': 'localhost' }`.
  *
  * @param metadata - Metadata object to flatten
  * @param type - Whether this is for observation or trace metadata
@@ -150,8 +150,8 @@ function _flattenAndSerializeMetadata(
 ): Record<string, string> {
   const prefix =
     type === "observation"
-      ? LangfuseOtelSpanAttributes.OBSERVATION_METADATA
-      : LangfuseOtelSpanAttributes.TRACE_METADATA;
+      ? ElasticDashOtelSpanAttributes.OBSERVATION_METADATA
+      : ElasticDashOtelSpanAttributes.TRACE_METADATA;
 
   const metadataAttributes: Record<string, string> = {};
 

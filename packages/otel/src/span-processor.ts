@@ -1,9 +1,9 @@
 import {
   Logger,
   getGlobalLogger,
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   ELASTICDASH_SDK_VERSION,
-  LangfuseOtelSpanAttributes,
+  ElasticDashOtelSpanAttributes,
   getEnv,
   base64Encode,
   getPropagatedAttributesFromContext,
@@ -44,7 +44,7 @@ import { MediaService } from "./MediaService.js";
 export type MaskFunction = (params: { data: any }) => any;
 
 /**
- * Function type for determining whether a span should be exported to Langfuse.
+ * Function type for determining whether a span should be exported to ElasticDash.
  *
  * @param params - Object containing the span to evaluate
  * @param params.otelSpan - The OpenTelemetry span to evaluate
@@ -63,29 +63,29 @@ export type MaskFunction = (params: { data: any }) => any;
 export type ShouldExportSpan = (params: { otelSpan: ReadableSpan }) => boolean;
 
 /**
- * Configuration parameters for the LangfuseSpanProcessor.
+ * Configuration parameters for the ElasticDashSpanProcessor.
  *
  * @public
  */
-export interface LangfuseSpanProcessorParams {
+export interface ElasticDashSpanProcessorParams {
   /**
    * Custom OpenTelemetry span exporter. If not provided, a default OTLP exporter will be used.
    */
   exporter?: SpanExporter;
 
   /**
-   * Langfuse public API key. Can also be set via ELASTICDASH_PUBLIC_KEY environment variable.
+   * ElasticDash public API key. Can also be set via ELASTICDASH_PUBLIC_KEY environment variable.
    */
   publicKey?: string;
 
   /**
-   * Langfuse secret API key. Can also be set via ELASTICDASH_SECRET_KEY environment variable.
+   * ElasticDash secret API key. Can also be set via ELASTICDASH_SECRET_KEY environment variable.
    */
   secretKey?: string;
 
   /**
-   * Langfuse instance base URL. Can also be set via ELASTICDASH_BASE_URL environment variable.
-   * @defaultValue "https://cloud.langfuse.com"
+   * ElasticDash instance base URL. Can also be set via ELASTICDASH_BASE_URL environment variable.
+   * @defaultValue "https://devserver-logger.elasticdash.com"
    */
   baseUrl?: string;
 
@@ -105,7 +105,7 @@ export interface LangfuseSpanProcessorParams {
   mask?: MaskFunction;
 
   /**
-   * Function to determine whether a span should be exported to Langfuse.
+   * Function to determine whether a span should be exported to ElasticDash.
    */
   shouldExportSpan?: ShouldExportSpan;
 
@@ -143,10 +143,10 @@ export interface LangfuseSpanProcessorParams {
 }
 
 /**
- * OpenTelemetry span processor for sending spans to Langfuse.
+ * OpenTelemetry span processor for sending spans to ElasticDash.
  *
  * This processor extends the standard BatchSpanProcessor to provide:
- * - Automatic batching and flushing of spans to Langfuse
+ * - Automatic batching and flushing of spans to ElasticDash
  * - Media content extraction and upload from base64 data URIs
  * - Data masking capabilities for sensitive information
  * - Conditional span export based on custom logic
@@ -155,14 +155,14 @@ export interface LangfuseSpanProcessorParams {
  * @example
  * ```typescript
  * import { NodeSDK } from '@opentelemetry/sdk-node';
- * import { LangfuseSpanProcessor } from '@elasticdash/otel';
+ * import { ElasticDashSpanProcessor } from '@elasticdash/otel';
  *
  * const sdk = new NodeSDK({
  *   spanProcessors: [
- *     new LangfuseSpanProcessor({
+ *     new ElasticDashSpanProcessor({
  *       publicKey: 'pk_...',
  *       secretKey: 'sk_...',
- *       baseUrl: 'https://cloud.langfuse.com',
+ *       baseUrl: 'https://devserver-logger.elasticdash.com',
  *       environment: 'production',
  *       mask: ({ data }) => {
  *         // Mask sensitive data
@@ -177,7 +177,7 @@ export interface LangfuseSpanProcessorParams {
  *
  * @public
  */
-export class LangfuseSpanProcessor implements SpanProcessor {
+export class ElasticDashSpanProcessor implements SpanProcessor {
   private pendingEndedSpans: Set<Promise<void>> = new Set();
 
   private publicKey?: string;
@@ -186,18 +186,18 @@ export class LangfuseSpanProcessor implements SpanProcessor {
   private release?: string;
   private mask?: MaskFunction;
   private shouldExportSpan?: ShouldExportSpan;
-  private apiClient: LangfuseAPIClient;
+  private apiClient: ElasticDashAPIClient;
   private processor: SpanProcessor;
   private mediaService: MediaService;
 
   /**
-   * Creates a new LangfuseSpanProcessor instance.
+   * Creates a new ElasticDashSpanProcessor instance.
    *
    * @param params - Configuration parameters for the processor
    *
    * @example
    * ```typescript
-   * const processor = new LangfuseSpanProcessor({
+   * const processor = new ElasticDashSpanProcessor({
    *   publicKey: 'pk_...',
    *   secretKey: 'sk_...',
    *   environment: 'staging',
@@ -216,7 +216,7 @@ export class LangfuseSpanProcessor implements SpanProcessor {
    * });
    * ```
    */
-  constructor(params?: LangfuseSpanProcessorParams) {
+  constructor(params?: ElasticDashSpanProcessorParams) {
     const logger = getGlobalLogger();
 
     const publicKey = params?.publicKey ?? getEnv("ELASTICDASH_PUBLIC_KEY");
@@ -225,7 +225,7 @@ export class LangfuseSpanProcessor implements SpanProcessor {
       params?.baseUrl ??
       getEnv("ELASTICDASH_BASE_URL") ??
       getEnv("ELASTICDASH_BASEURL") ?? // legacy v2
-      "https://cloud.langfuse.com";
+      "https://devserver-logger.elasticdash.com";
 
     if (!params?.exporter && !publicKey) {
       logger.warn(
@@ -251,9 +251,9 @@ export class LangfuseSpanProcessor implements SpanProcessor {
         url: `${baseUrl}/api/public/otel/v1/traces`,
         headers: {
           Authorization: `Basic ${authHeaderValue}`,
-          x_langfuse_sdk_name: "javascript",
-          x_langfuse_sdk_version: ELASTICDASH_SDK_VERSION,
-          x_langfuse_public_key: publicKey ?? "<missing>",
+          x_elasticdash_sdk_name: "javascript",
+          x_elasticdash_sdk_version: ELASTICDASH_SDK_VERSION,
+          x_elasticdash_public_key: publicKey ?? "<missing>",
           ...params?.additionalHeaders,
         },
         timeoutMillis: timeoutSeconds * 1_000,
@@ -276,20 +276,20 @@ export class LangfuseSpanProcessor implements SpanProcessor {
     this.release = params?.release ?? getEnv("ELASTICDASH_RELEASE");
     this.mask = params?.mask;
     this.shouldExportSpan = params?.shouldExportSpan;
-    this.apiClient = new LangfuseAPIClient({
+    this.apiClient = new ElasticDashAPIClient({
       baseUrl: this.baseUrl,
       username: this.publicKey,
       password: secretKey,
-      xLangfusePublicKey: this.publicKey,
-      xLangfuseSdkVersion: ELASTICDASH_SDK_VERSION,
-      xLangfuseSdkName: "javascript",
+      xElasticDashPublicKey: this.publicKey,
+      xElasticDashSdkVersion: ELASTICDASH_SDK_VERSION,
+      xElasticDashSdkName: "javascript",
       environment: "", // noop as baseUrl is set
       headers: params?.additionalHeaders,
     });
 
     this.mediaService = new MediaService({ apiClient: this.apiClient });
 
-    logger.debug("Initialized LangfuseSpanProcessor with params:", {
+    logger.debug("Initialized ElasticDashSpanProcessor with params:", {
       publicKey,
       baseUrl,
       environment: this.environment,
@@ -315,8 +315,8 @@ export class LangfuseSpanProcessor implements SpanProcessor {
   public onStart(span: Span, parentContext: Context): void {
     // Set propagated attributes, environment and release attributes
     span.setAttributes({
-      [LangfuseOtelSpanAttributes.ENVIRONMENT]: this.environment,
-      [LangfuseOtelSpanAttributes.RELEASE]: this.release,
+      [ElasticDashOtelSpanAttributes.ENVIRONMENT]: this.environment,
+      [ElasticDashOtelSpanAttributes.RELEASE]: this.release,
       ...getPropagatedAttributesFromContext(parentContext),
     });
 
@@ -324,7 +324,7 @@ export class LangfuseSpanProcessor implements SpanProcessor {
   }
 
   /**
-   * Called when a span ends. Processes the span for export to Langfuse.
+   * Called when a span ends. Processes the span for export to ElasticDash.
    *
    * This method:
    * 1. Checks if the span should be exported using the shouldExportSpan function
@@ -395,6 +395,40 @@ export class LangfuseSpanProcessor implements SpanProcessor {
       }
     }
 
+    // Set top-level input/output if missing, using trace or observation fields (trace preferred)
+    if (span.attributes) {
+      // Input
+      if (span.attributes.input == null) {
+        if (
+          span.attributes[ElasticDashOtelSpanAttributes.TRACE_INPUT] != null
+        ) {
+          span.attributes.input =
+            span.attributes[ElasticDashOtelSpanAttributes.TRACE_INPUT];
+        } else if (
+          span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_INPUT] !=
+          null
+        ) {
+          span.attributes.input =
+            span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_INPUT];
+        }
+      }
+      // Output
+      if (span.attributes.output == null) {
+        if (
+          span.attributes[ElasticDashOtelSpanAttributes.TRACE_OUTPUT] != null
+        ) {
+          span.attributes.output =
+            span.attributes[ElasticDashOtelSpanAttributes.TRACE_OUTPUT];
+        } else if (
+          span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT] !=
+          null
+        ) {
+          span.attributes.output =
+            span.attributes[ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT];
+        }
+      }
+    }
+
     this.applyMaskInPlace(span);
     await this.mediaService.process(span);
 
@@ -423,12 +457,12 @@ export class LangfuseSpanProcessor implements SpanProcessor {
   }
   private applyMaskInPlace(span: ReadableSpan): void {
     const maskCandidates = [
-      LangfuseOtelSpanAttributes.OBSERVATION_INPUT,
-      LangfuseOtelSpanAttributes.TRACE_INPUT,
-      LangfuseOtelSpanAttributes.OBSERVATION_OUTPUT,
-      LangfuseOtelSpanAttributes.TRACE_OUTPUT,
-      LangfuseOtelSpanAttributes.OBSERVATION_METADATA,
-      LangfuseOtelSpanAttributes.TRACE_METADATA,
+      ElasticDashOtelSpanAttributes.OBSERVATION_INPUT,
+      ElasticDashOtelSpanAttributes.TRACE_INPUT,
+      ElasticDashOtelSpanAttributes.OBSERVATION_OUTPUT,
+      ElasticDashOtelSpanAttributes.TRACE_OUTPUT,
+      ElasticDashOtelSpanAttributes.OBSERVATION_METADATA,
+      ElasticDashOtelSpanAttributes.TRACE_METADATA,
     ];
 
     for (const maskCandidate of maskCandidates) {

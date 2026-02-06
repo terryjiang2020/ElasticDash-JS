@@ -1,11 +1,11 @@
 import { Dataset, DatasetRunItem, DatasetItem } from "@elasticdash/core";
 import { Span } from "@opentelemetry/api";
 
+import { ElasticDashClient } from "../ElasticDashClient.js";
 import { ExperimentResult, ExperimentParams } from "../experiment/types.js";
-import { LangfuseClient } from "../LangfuseClient.js";
 
 /**
- * Function type for running experiments on Langfuse datasets.
+ * Function type for running experiments on ElasticDash datasets.
  *
  * This function type is attached to fetched datasets to enable convenient
  * experiment execution directly on dataset objects.
@@ -15,7 +15,7 @@ import { LangfuseClient } from "../LangfuseClient.js";
  *
  * @example
  * ```typescript
- * const dataset = await langfuse.dataset.get("my-dataset");
+ * const dataset = await elasticdash.dataset.get("my-dataset");
  * const result = await dataset.runExperiment({
  *   name: "Model Evaluation",
  *   runName: "Model Evaluation Run 1", // optional
@@ -40,7 +40,7 @@ export type RunExperimentOnDataset = (
  *
  * @example Working with a fetched dataset
  * ```typescript
- * const dataset = await langfuse.dataset.get("my-evaluation-dataset");
+ * const dataset = await elasticdash.dataset.get("my-evaluation-dataset");
  *
  * // Access dataset metadata
  * console.log(dataset.name, dataset.description);
@@ -79,7 +79,7 @@ export type FetchedDataset = Dataset & {
  * This is essential for creating dataset runs and tracking experiment lineage.
  *
  * @param obj - Object containing the OpenTelemetry span to link to
- * @param obj.otelSpan - The OpenTelemetry span from a Langfuse observation
+ * @param obj.otelSpan - The OpenTelemetry span from a ElasticDash observation
  * @param runName - Name of the experiment run for grouping related items
  * @param runArgs - Optional configuration for the dataset run
  * @param runArgs.description - Description of the experiment run
@@ -88,7 +88,7 @@ export type FetchedDataset = Dataset & {
  *
  * @example Basic linking
  * ```typescript
- * const dataset = await langfuse.dataset.get("my-dataset");
+ * const dataset = await elasticdash.dataset.get("my-dataset");
  * const span = startObservation("my-task", { input: "test" });
  * span.update({ output: "result" });
  * span.end();
@@ -116,7 +116,7 @@ export type FetchedDataset = Dataset & {
  * );
  * ```
  *
- * @see {@link https://langfuse.com/docs/datasets} Langfuse datasets documentation
+ * @see {@link https://elasticdash.com/docs/datasets} ElasticDash datasets documentation
  * @public
  * @since 4.0.0
  */
@@ -132,7 +132,7 @@ export type LinkDatasetItemFunction = (
 ) => Promise<DatasetRunItem>;
 
 /**
- * Manager for dataset operations in Langfuse.
+ * Manager for dataset operations in ElasticDash.
  *
  * Provides methods to retrieve datasets and their items, with automatic
  * pagination handling and convenient linking functionality for experiments.
@@ -140,7 +140,7 @@ export type LinkDatasetItemFunction = (
  * @public
  */
 export class DatasetManager {
-  private langfuseClient: LangfuseClient;
+  private elasticdashClient: ElasticDashClient;
 
   /**
    * Creates a new DatasetManager instance.
@@ -148,8 +148,8 @@ export class DatasetManager {
    * @param params - Configuration object containing the API client
    * @internal
    */
-  constructor(params: { langfuseClient: LangfuseClient }) {
-    this.langfuseClient = params.langfuseClient;
+  constructor(params: { elasticdashClient: ElasticDashClient }) {
+    this.elasticdashClient = params.elasticdashClient;
   }
 
   /**
@@ -167,7 +167,7 @@ export class DatasetManager {
    *
    * @example Basic dataset retrieval
    * ```typescript
-   * const dataset = await langfuse.dataset.get("my-evaluation-dataset");
+   * const dataset = await elasticdash.dataset.get("my-evaluation-dataset");
    * console.log(`Dataset ${dataset.name} has ${dataset.items.length} items`);
    *
    * // Access dataset properties
@@ -177,7 +177,7 @@ export class DatasetManager {
    *
    * @example Working with dataset items
    * ```typescript
-   * const dataset = await langfuse.dataset.get("qa-dataset");
+   * const dataset = await elasticdash.dataset.get("qa-dataset");
    *
    * for (const item of dataset.items) {
    *   console.log("Question:", item.input);
@@ -190,7 +190,7 @@ export class DatasetManager {
    *
    * @example Running experiments on datasets
    * ```typescript
-   * const dataset = await langfuse.dataset.get("benchmark-dataset");
+   * const dataset = await elasticdash.dataset.get("benchmark-dataset");
    *
    * const result = await dataset.runExperiment({
    *   name: "GPT-4 Benchmark",
@@ -217,7 +217,7 @@ export class DatasetManager {
    * @example Handling large datasets
    * ```typescript
    * // For very large datasets, use smaller page sizes
-   * const largeDataset = await langfuse.dataset.get(
+   * const largeDataset = await elasticdash.dataset.get(
    *   "large-dataset",
    *   { fetchItemsPageSize: 100 }
    * );
@@ -235,13 +235,13 @@ export class DatasetManager {
       fetchItemsPageSize: number;
     },
   ): Promise<FetchedDataset> {
-    const dataset = await this.langfuseClient.api.datasets.get(name);
+    const dataset = await this.elasticdashClient.api.datasets.get(name);
     const items: DatasetItem[] = [];
 
     let page = 1;
 
     while (true) {
-      const itemsResponse = await this.langfuseClient.api.datasetItems.list({
+      const itemsResponse = await this.elasticdashClient.api.datasetItems.list({
         datasetName: name,
         limit: options?.fetchItemsPageSize ?? 50,
         page,
@@ -262,7 +262,7 @@ export class DatasetManager {
     }));
 
     const runExperiment: RunExperimentOnDataset = (params) => {
-      return this.langfuseClient.experiment.run({
+      return this.elasticdashClient.experiment.run({
         data: items,
         ...params,
       });
@@ -295,7 +295,7 @@ export class DatasetManager {
         metadata?: any;
       },
     ): Promise<DatasetRunItem> => {
-      return await this.langfuseClient.api.datasetRunItems.create({
+      return await this.elasticdashClient.api.datasetRunItems.create({
         runName,
         datasetItemId: item.id,
         traceId: obj.otelSpan.spanContext().traceId,

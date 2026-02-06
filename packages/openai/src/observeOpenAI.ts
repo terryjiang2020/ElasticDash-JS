@@ -2,7 +2,7 @@ import { withTracing } from "./traceMethod.js";
 import type { ElasticDashConfig } from "./types.js";
 
 /**
- * Wraps an OpenAI SDK client with automatic Langfuse tracing.
+ * Wraps an OpenAI SDK client with automatic ElasticDash tracing.
  *
  * This function creates a proxy around the OpenAI SDK that automatically
  * traces all method calls, capturing detailed information about requests,
@@ -11,7 +11,7 @@ import type { ElasticDashConfig } from "./types.js";
  *
  * The wrapper recursively traces nested objects in the OpenAI SDK, ensuring
  * that all API calls (chat completions, embeddings, fine-tuning, etc.) are
- * automatically captured as Langfuse generations.
+ * automatically captured as ElasticDash generations.
  *
  * @param sdk - The OpenAI SDK client instance to wrap with tracing
  * @param elasticDashConfig - Optional configuration for tracing behavior
@@ -71,11 +71,11 @@ import type { ElasticDashConfig } from "./types.js";
  *
  * @example
  * ```typescript
- * // Using with Langfuse prompt management
+ * // Using with ElasticDash prompt management
  * const openai = observeOpenAI(new OpenAI({
  *   apiKey: process.env.OPENAI_API_KEY
  * }), {
- *   langfusePrompt: {
+ *   elasticDashPrompt: {
  *     name: 'chat-assistant-v2',
  *     version: 3,
  *     isFallback: false

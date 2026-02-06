@@ -207,7 +207,7 @@ export class TextPromptClient extends BasePromptClient {
    *
    * @example
    * ```typescript
-   * const prompt = await langfuse.prompt.get("greeting", { type: "text" });
+   * const prompt = await elasticdash.prompt.get("greeting", { type: "text" });
    * const compiled = prompt.compile({ name: "Alice" });
    * // If prompt is "Hello {{name}}!", result is "Hello Alice!"
    * ```
@@ -229,7 +229,7 @@ export class TextPromptClient extends BasePromptClient {
    *
    * @example
    * ```typescript
-   * const prompt = await langfuse.prompt.get("greeting", { type: "text" });
+   * const prompt = await elasticdash.prompt.get("greeting", { type: "text" });
    * const langchainFormat = prompt.getLangchainPrompt();
    * // Transforms "Hello {{name}}!" to "Hello {name}!"
    * ```
@@ -317,7 +317,7 @@ export class ChatPromptClient extends BasePromptClient {
    *
    * @example
    * ```typescript
-   * const prompt = await langfuse.prompt.get("conversation", { type: "chat" });
+   * const prompt = await elasticdash.prompt.get("conversation", { type: "chat" });
    * const compiled = prompt.compile(
    *   { user_name: "Alice" },
    *   { examples: [{ role: "user", content: "Hello" }, { role: "assistant", content: "Hi!" }] }
@@ -405,7 +405,7 @@ export class ChatPromptClient extends BasePromptClient {
    *
    * @example
    * ```typescript
-   * const prompt = await langfuse.prompt.get("conversation", { type: "chat" });
+   * const prompt = await elasticdash.prompt.get("conversation", { type: "chat" });
    * const langchainFormat = prompt.getLangchainPrompt({
    *   placeholders: { examples: [{ role: "user", content: "Hello" }] }
    * });
@@ -501,4 +501,4 @@ export class ChatPromptClient extends BasePromptClient {
  *
  * @public
  */
-export type LangfusePromptClient = TextPromptClient | ChatPromptClient;
+export type ElasticDashPromptClient = TextPromptClient | ChatPromptClient;

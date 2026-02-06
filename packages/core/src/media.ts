@@ -3,7 +3,7 @@ import { getGlobalLogger } from "./logger/index.js";
 import { base64ToBytes, bytesToBase64 } from "./utils.js";
 
 /**
- * Parameters for creating a LangfuseMedia instance.
+ * Parameters for creating a ElasticDashMedia instance.
  *
  * Supports two input formats:
  * - Base64 data URI (e.g., "data:image/png;base64,...")
@@ -11,7 +11,7 @@ import { base64ToBytes, bytesToBase64 } from "./utils.js";
  *
  * @public
  */
-export type LangfuseMediaParams =
+export type ElasticDashMediaParams =
   | {
       /** Indicates the media is provided as a base64 data URI */
       source: "base64_data_uri";
@@ -28,9 +28,9 @@ export type LangfuseMediaParams =
     };
 
 /**
- * A class for wrapping media objects for upload to Langfuse.
+ * A class for wrapping media objects for upload to ElasticDash.
  *
- * This class handles the preparation and formatting of media content for Langfuse,
+ * This class handles the preparation and formatting of media content for ElasticDash,
  * supporting both base64 data URIs and raw content bytes. It automatically:
  * - Parses base64 data URIs to extract content type and bytes
  * - Generates SHA-256 hashes for content integrity
@@ -40,13 +40,13 @@ export type LangfuseMediaParams =
  * @example
  * ```typescript
  * // From base64 data URI
- * const media1 = new LangfuseMedia({
+ * const media1 = new ElasticDashMedia({
  *   source: "base64_data_uri",
  *   base64DataUri: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=="
  * });
  *
  * // From raw bytes
- * const media2 = new LangfuseMedia({
+ * const media2 = new ElasticDashMedia({
  *   source: "bytes",
  *   contentBytes: new Uint8Array([72, 101, 108, 108, 111])
  *   contentType: "text/plain"
@@ -58,26 +58,26 @@ export type LangfuseMediaParams =
  *
  * @public
  */
-export class LangfuseMedia {
+export class ElasticDashMedia {
   _contentBytes?: Uint8Array;
   _contentType?: MediaContentType;
   _source?: string;
 
   /**
-   * Creates a new LangfuseMedia instance.
+   * Creates a new ElasticDashMedia instance.
    *
    * @param params - Media parameters specifying the source and content
    *
    * @example
    * ```typescript
    * // Create from base64 data URI
-   * const media = new LangfuseMedia({
+   * const media = new ElasticDashMedia({
    *   source: "base64_data_uri",
    *   base64DataUri: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ..."
    * });
    * ```
    */
-  constructor(params: LangfuseMediaParams) {
+  constructor(params: ElasticDashMediaParams) {
     const { source } = params;
 
     this._source = source;
@@ -145,7 +145,7 @@ export class LangfuseMedia {
    *
    * @example
    * ```typescript
-   * const media = new LangfuseMedia({...});
+   * const media = new ElasticDashMedia({...});
    * console.log(media.id); // "A1B2C3D4E5F6G7H8I9J0K1"
    * ```
    */
@@ -188,7 +188,7 @@ export class LangfuseMedia {
       return bytesToBase64(new Uint8Array(hash));
     } catch (error) {
       getGlobalLogger().warn(
-        "[Langfuse] Failed to generate SHA-256 hash for media content:",
+        "[ElasticDash] Failed to generate SHA-256 hash for media content:",
         error,
       );
 
@@ -199,17 +199,17 @@ export class LangfuseMedia {
   /**
    * Gets the media reference tag for embedding in trace data.
    *
-   * The tag format is: `@@@langfuseMedia:type=<contentType>|id=<mediaId>|source=<source>@@@`
+   * The tag format is: `@@@elasticDashMedia:type=<contentType>|id=<mediaId>|source=<source>@@@`
    * This tag can be embedded in trace attributes and will be replaced with actual
-   * media content when the trace is viewed in Langfuse.
+   * media content when the trace is viewed in ElasticDash.
    *
    * @returns The media reference tag, or null if required data is missing
    *
    * @example
    * ```typescript
-   * const media = new LangfuseMedia({...});
+   * const media = new ElasticDashMedia({...});
    * console.log(media.tag);
-   * // "@@@langfuseMedia:type=image/png|id=A1B2C3D4E5F6G7H8I9J0K1|source=base64_data_uri@@@"
+   * // "@@@elasticDashMedia:type=image/png|id=A1B2C3D4E5F6G7H8I9J0K1|source=base64_data_uri@@@"
    * ```
    */
   async getTag(): Promise<string | null> {
@@ -217,7 +217,7 @@ export class LangfuseMedia {
 
     if (!this._contentType || !this._source || !id) return null;
 
-    return `@@@langfuseMedia:type=${this._contentType}|id=${id}|source=${this._source}@@@`;
+    return `@@@elasticDashMedia:type=${this._contentType}|id=${id}|source=${this._source}@@@`;
   }
 
   /**
@@ -227,7 +227,7 @@ export class LangfuseMedia {
    *
    * @example
    * ```typescript
-   * const media = new LangfuseMedia({...});
+   * const media = new ElasticDashMedia({...});
    * console.log(media.base64DataUri);
    * // "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB..."
    * ```

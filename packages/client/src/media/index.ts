@@ -1,5 +1,5 @@
 import {
-  LangfuseAPIClient,
+  ElasticDashAPIClient,
   ParsedMediaReference,
   MediaContentType,
   getGlobalLogger,
@@ -12,7 +12,7 @@ import {
  * @template T - The type of the object being processed
  * @public
  */
-export type LangfuseMediaResolveMediaReferencesParams<T> = {
+export type ElasticDashMediaResolveMediaReferencesParams<T> = {
   /** The object to process for media references */
   obj: T;
   /** The format to resolve media references to (currently only "base64DataUri" is supported) */
@@ -22,7 +22,7 @@ export type LangfuseMediaResolveMediaReferencesParams<T> = {
 };
 
 /**
- * Manager for media operations in Langfuse.
+ * Manager for media operations in ElasticDash.
  *
  * Provides methods to resolve media references in objects by replacing
  * them with actual media content (e.g., base64 data URIs).
@@ -30,7 +30,7 @@ export type LangfuseMediaResolveMediaReferencesParams<T> = {
  * @public
  */
 export class MediaManager {
-  private apiClient: LangfuseAPIClient;
+  private apiClient: ElasticDashAPIClient;
 
   /**
    * Creates a new MediaManager instance.
@@ -38,7 +38,7 @@ export class MediaManager {
    * @param params - Configuration object containing the API client
    * @internal
    */
-  constructor(params: { apiClient: LangfuseAPIClient }) {
+  constructor(params: { apiClient: ElasticDashAPIClient }) {
     this.apiClient = params.apiClient;
   }
 
@@ -46,8 +46,8 @@ export class MediaManager {
    * Replaces media reference strings in an object with base64 data URIs.
    *
    * This method recursively traverses an object looking for media reference strings
-   * in the format "@@@langfuseMedia:...@@@". When found, it fetches the actual media
-   * content from Langfuse and replaces the reference string with a base64 data URI.
+   * in the format "@@@elasticDashMedia:...@@@". When found, it fetches the actual media
+   * content from ElasticDash and replaces the reference string with a base64 data URI.
    *
    * If fetching media content fails for a reference string, a warning is logged
    * and the reference string is left unchanged.
@@ -58,13 +58,13 @@ export class MediaManager {
    * @example
    * ```typescript
    * const obj = {
-   *   image: "@@@langfuseMedia:type=image/jpeg|id=123|source=bytes@@@",
+   *   image: "@@@elasticDashMedia:type=image/jpeg|id=123|source=bytes@@@",
    *   nested: {
-   *     pdf: "@@@langfuseMedia:type=application/pdf|id=456|source=bytes@@@"
+   *     pdf: "@@@elasticDashMedia:type=application/pdf|id=456|source=bytes@@@"
    *   }
    * };
    *
-   * const result = await langfuse.media.resolveReferences({
+   * const result = await elasticdash.media.resolveReferences({
    *   obj,
    *   resolveWith: "base64DataUri"
    * });
@@ -79,7 +79,7 @@ export class MediaManager {
    * ```
    */
   public async resolveReferences<T>(
-    params: LangfuseMediaResolveMediaReferencesParams<T>,
+    params: ElasticDashMediaResolveMediaReferencesParams<T>,
   ): Promise<T> {
     const { obj, maxDepth = 10 } = params;
 
@@ -90,7 +90,7 @@ export class MediaManager {
 
       // Handle string with potential media references
       if (typeof obj === "string") {
-        const regex = /@@@langfuseMedia:.+?@@@/g;
+        const regex = /@@@elasticDashMedia:.+?@@@/g;
         const referenceStringMatches = obj.match(regex);
         if (!referenceStringMatches) {
           return obj;
@@ -176,7 +176,7 @@ export class MediaManager {
    * Parses a media reference string into a ParsedMediaReference.
    *
    * Example reference string:
-   *     "@@@langfuseMedia:type=image/jpeg|id=some-uuid|source=base64DataUri@@@"
+   *     "@@@elasticDashMedia:type=image/jpeg|id=some-uuid|source=base64DataUri@@@"
    *
    * @param referenceString - The reference string to parse.
    * @returns An object with the mediaId, source, and contentType.
@@ -186,12 +186,12 @@ export class MediaManager {
   public static parseReferenceString(
     referenceString: string,
   ): ParsedMediaReference {
-    const prefix = "@@@langfuseMedia:";
+    const prefix = "@@@elasticDashMedia:";
     const suffix = "@@@";
 
     if (!referenceString.startsWith(prefix)) {
       throw new Error(
-        "Reference string does not start with '@@@langfuseMedia:type='",
+        "Reference string does not start with '@@@elasticDashMedia:type='",
       );
     }
 
