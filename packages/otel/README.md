@@ -4,8 +4,8 @@ This is the OTEL package of the ElasticDash JS SDK containing the `LangfuseSpanP
 
 ## Packages
 
-| Package                                        | NPM                                                                                                                     | Description                                               | Environments |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ |
+| Package                                        | NPM                                                                                                                     | Description                                                  | Environments |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------ |
 | [@elasticdash/client](./packages/client)       | [![NPM](https://img.shields.io/npm/v/@elasticdash/client.svg)](https://www.npmjs.com/package/@elasticdash/client)       | ElasticDash API client for universal JavaScript environments | Universal JS |
 | [@elasticdash/tracing](./packages/tracing)     | [![NPM](https://img.shields.io/npm/v/@elasticdash/tracing.svg)](https://www.npmjs.com/package/@elasticdash/tracing)     | ElasticDash instrumentation methods based on OpenTelemetry   | Node.js 20+  |
 | [@elasticdash/otel](./packages/otel)           | [![NPM](https://img.shields.io/npm/v/@elasticdash/otel.svg)](https://www.npmjs.com/package/@elasticdash/otel)           | ElasticDash OpenTelemetry export helpers                     | Node.js 20+  |

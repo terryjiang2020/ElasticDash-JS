@@ -8,6 +8,7 @@ We're excited to have you join our community. ElasticDash Discussions is the pla
 - Get help and support from the community and maintainers
 
 We encourage you to:
+
 - Introduce yourself and tell us about your projects
 - Engage with others, offer help, and share your experiences
 - Be open-minded and welcoming—this is a community we build together 💪

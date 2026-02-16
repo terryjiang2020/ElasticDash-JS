@@ -43,8 +43,8 @@ process.env.ELASTICDASH_BASE_URL = "https://logger.elasticdash.com";
 
 ## Packages
 
-| Package                                        | NPM                                                                                                                     | Description                                               | Environments |
-| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- | ------------ |
+| Package                                        | NPM                                                                                                                     | Description                                                  | Environments |
+| ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------ |
 | [@elasticdash/client](./packages/client)       | [![NPM](https://img.shields.io/npm/v/@elasticdash/client.svg)](https://www.npmjs.com/package/@elasticdash/client)       | ElasticDash API client for universal JavaScript environments | Universal JS |
 | [@elasticdash/tracing](./packages/tracing)     | [![NPM](https://img.shields.io/npm/v/@elasticdash/tracing.svg)](https://www.npmjs.com/package/@elasticdash/tracing)     | ElasticDash instrumentation methods based on OpenTelemetry   | Node.js 20+  |
 | [@elasticdash/otel](./packages/otel)           | [![NPM](https://img.shields.io/npm/v/@elasticdash/otel.svg)](https://www.npmjs.com/package/@elasticdash/otel)           | ElasticDash OpenTelemetry export helpers                     | Node.js 20+  |
@@ -67,7 +67,9 @@ elasticdash.authCheck().then((ok) => {
   if (ok) {
     console.log("ElasticDash client is authenticated and ready!");
   } else {
-    console.error("Authentication failed. Please check your credentials and host.");
+    console.error(
+      "Authentication failed. Please check your credentials and host.",
+    );
   }
 });
 ```
@@ -87,8 +89,12 @@ const completion = await openai.chat.completions.create({
   name: "test-chat",
   model: "gpt-4o",
   messages: [
-    { role: "system", content: "You are a very accurate calculator. You output only the result of the calculation." },
-    { role: "user", content: "1 + 1 = " }
+    {
+      role: "system",
+      content:
+        "You are a very accurate calculator. You output only the result of the calculation.",
+    },
+    { role: "user", content: "1 + 1 = " },
   ],
   metadata: { someMetadataKey: "someValue" },
 });
@@ -108,17 +114,26 @@ elasticdash.authCheck().then((ok) => {
   if (ok) {
     console.log("ElasticDash client is authenticated and ready!");
   } else {
-    console.error("Authentication failed. Please check your credentials and host.");
+    console.error(
+      "Authentication failed. Please check your credentials and host.",
+    );
   }
 });
 
 // Create a span using a context manager (pseudo-code, see API for details)
-const span = elasticdash.startAsCurrentObservation({ asType: "span", name: "process-request" });
+const span = elasticdash.startAsCurrentObservation({
+  asType: "span",
+  name: "process-request",
+});
 // Your processing logic here
 span.update({ input: "Llm input here" });
 
 // Create a nested generation for an LLM call
-const generation = elasticdash.startAsCurrentObservation({ asType: "generation", name: "llm-response", model: "gpt-3.5-turbo" });
+const generation = elasticdash.startAsCurrentObservation({
+  asType: "generation",
+  name: "llm-response",
+  model: "gpt-3.5-turbo",
+});
 generation.update({ input: "Llm input here" });
 // Your LLM call logic here
 span.update({ output: "Processing complete" });
