@@ -2,14 +2,14 @@
 
 ## Development
 
-This is a monorepo containing the Langfuse TypeScript/JavaScript SDK packages:
+This is a monorepo containing the ElasticDash TypeScript/JavaScript SDK packages:
 
-- **[@elasticdash/core](./packages/core)** - Shared utilities, types and logger for Langfuse packages
-- **[@elasticdash/client](./packages/client)** - Langfuse API client for universal JavaScript environments
-- **[@elasticdash/tracing](./packages/tracing)** - Langfuse instrumentation methods based on OpenTelemetry
-- **[@elasticdash/otel](./packages/otel)** - Langfuse OpenTelemetry export helpers
-- **[@elasticdash/openai](./packages/openai)** - Langfuse integration for OpenAI SDK
-- **[@elasticdash/langchain](./packages/langchain)** - Langfuse integration for LangChain
+- **[@elasticdash/core](./packages/core)** - Shared utilities, types and logger for ElasticDash packages
+- **[@elasticdash/client](./packages/client)** - ElasticDash API client for universal JavaScript environments
+- **[@elasticdash/tracing](./packages/tracing)** - ElasticDash instrumentation methods based on OpenTelemetry
+- **[@elasticdash/otel](./packages/otel)** - ElasticDash OpenTelemetry export helpers
+- **[@elasticdash/openai](./packages/openai)** - ElasticDash integration for OpenAI SDK
+- **[@elasticdash/langchain](./packages/langchain)** - ElasticDash integration for LangChain
 
 ## Getting Started
 
@@ -50,11 +50,11 @@ pnpm test:integration:watch
 
 ### End-to-end tests
 
-End-to-end tests require a running Langfuse platform instance (dev server) to test the full integration flow.
+End-to-end tests require a running ElasticDash platform instance (dev server) to test the full integration flow.
 
 **Setup**
 
-1. Start local Langfuse server
+1. Start local ElasticDash server
 2. Create testing project
 3. Set environment variables: `ELASTICDASH_BASE_URL`, `ELASTICDASH_PUBLIC_KEY`, `ELASTICDASH_SECRET_KEY`
 

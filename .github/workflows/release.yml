@@ -79,8 +79,8 @@ jobs:
         env:
           GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: |
-          git config user.name "langfuse-bot"
-          git config user.email "langfuse-bot@langfuse.com"
+          git config user.name "elasticdash-bot"
+          git config user.email "elasticdash-bot@elasticdash.com"
 
           echo "$GH_ACCESS_TOKEN" | gh auth login --with-token
           gh auth setup-git
@@ -170,7 +170,7 @@ jobs:
           for pkg in packages/*/dist; do
             pkg_name=$(basename $(dirname $pkg))
             echo "Creating archive for $pkg_name..."
-            tar -czf release-artifacts/langfuse-js-sdk-${pkg_name}-${{ steps.version.outputs.version }}.tar.gz -C $(dirname $pkg) dist
+            tar -czf release-artifacts/elasticdash-js-sdk-${pkg_name}-${{ steps.version.outputs.version }}.tar.gz -C $(dirname $pkg) dist
           done
           echo "Build artifacts:"
           ls -lh release-artifacts/
@@ -191,13 +191,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "✅ Langfuse JS/TS SDK v${{ steps.version.outputs.version }} published to npm",
+              "text": "✅ ElasticDash JS/TS SDK v${{ steps.version.outputs.version }} published to npm",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "✅ Langfuse JS/TS SDK Released",
+                    "text": "✅ ElasticDash JS/TS SDK Released",
                     "emoji": true
                   }
                 },
@@ -286,13 +286,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "🧪 Langfuse JS/TS SDK dry run completed for v${{ steps.version.outputs.version }}",
+              "text": "🧪 ElasticDash JS/TS SDK dry run completed for v${{ steps.version.outputs.version }}",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "🧪 Langfuse JS/TS SDK Dry Run",
+                    "text": "🧪 ElasticDash JS/TS SDK Dry Run",
                     "emoji": true
                   }
                 },
@@ -369,13 +369,13 @@ jobs:
         with:
           payload: |
             {
-              "text": "❌ Langfuse JS/TS SDK release workflow failed",
+              "text": "❌ ElasticDash JS/TS SDK release workflow failed",
               "blocks": [
                 {
                   "type": "header",
                   "text": {
                     "type": "plain_text",
-                    "text": "❌ Langfuse JS/TS SDK Release Failed",
+                    "text": "❌ ElasticDash JS/TS SDK Release Failed",
                     "emoji": true
                   }
                 },

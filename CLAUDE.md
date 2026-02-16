@@ -1,8 +1,8 @@
-# ElasticDash-JS (Langfuse JavaScript/TypeScript SDK)
+# ElasticDash-JS (ElasticDash JavaScript/TypeScript SDK)
 
 ## Overview
 
-This is a modular monorepo for the Langfuse JavaScript/TypeScript SDK client libraries. The project provides instrumentation and client libraries for observability and tracing in LLM applications.
+This is a modular monorepo for the ElasticDash JavaScript/TypeScript SDK client libraries. The project provides instrumentation and client libraries for observability and tracing in LLM applications.
 
 ## Project Structure
 
@@ -44,7 +44,7 @@ pnpm build --watch    # Build and watch for changes
 pnpm test             # Run unit tests
 pnpm test:watch       # Run tests in watch mode
 pnpm test:integration # Run integration tests
-pnpm test:e2e         # Run end-to-end tests (requires Langfuse server)
+pnpm test:e2e         # Run end-to-end tests (requires ElasticDash server)
 ```
 
 ### Code Quality
@@ -78,7 +78,7 @@ pnpm release:rc       # Create release candidate
 
 - Node.js 20+
 - pnpm package manager
-- For E2E tests: Running Langfuse platform instance
+- For E2E tests: Running ElasticDash platform instance
 
 ## Testing Setup
 
@@ -89,7 +89,7 @@ pnpm release:rc       # Create release candidate
 
 ### E2E Tests
 
-- Requires running Langfuse server
+- Requires running ElasticDash server
 - Set environment variables: `ELASTICDASH_BASE_URL`, `ELASTICDASH_PUBLIC_KEY`, `ELASTICDASH_SECRET_KEY`
 
 ## Architecture
